@@ -1,0 +1,32 @@
+{
+  "Table Cell": {
+    "key": "b8cda05e791cf3a576e2f5edd1bb2c2e18312b6f",
+    "id": "3645:3742",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Checkbox",
+        "variantOptions": [
+          "Header",
+          "Checkbox",
+          "Base",
+          "Subtle",
+          "Badge",
+          "Actions",
+          "Image",
+          "Link",
+          "Status Badge",
+          "User"
+        ]
+      },
+      "Alignment": {
+        "type": "VARIANT",
+        "defaultValue": "Left",
+        "variantOptions": [
+          "Left",
+          "Right"
+        ]
+      }
+    }
+  }
+}

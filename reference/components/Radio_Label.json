@@ -1,0 +1,42 @@
+{
+  "Radio Label": {
+    "key": "3691734b491973b341c47d81b3fcc04db425138a",
+    "id": "3487:1800",
+    "properties": {
+      "Show description#6296:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Label#13715:1029": {
+        "type": "TEXT",
+        "defaultValue": "The quick brown fox jumps over a lazy dog."
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Enabled",
+        "variantOptions": [
+          "Enabled",
+          "Hover",
+          "Focus",
+          "Disabled"
+        ]
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Unchecked",
+        "variantOptions": [
+          "Checked",
+          "Unchecked"
+        ]
+      },
+      "Border": {
+        "type": "VARIANT",
+        "defaultValue": "False",
+        "variantOptions": [
+          "False",
+          "True"
+        ]
+      }
+    }
+  }
+}

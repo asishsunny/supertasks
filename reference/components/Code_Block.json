@@ -1,0 +1,27 @@
+{
+  "Code Block": {
+    "key": "d341de727785f97890e6f236d0f11576b2833597",
+    "id": "4058:1519",
+    "properties": {
+      "Show Row Numbers#5051:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Badge#6325:28": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Simple",
+        "variantOptions": [
+          "Simple",
+          "Base",
+          "Advanced",
+          "Hide Bot",
+          "Hide Top"
+        ]
+      }
+    }
+  }
+}

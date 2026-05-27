@@ -1,0 +1,56 @@
+{
+  "Sidebar List Item": {
+    "key": "be935bb6cd0f06a47f438cf5ff85f9889cd1a3be",
+    "id": "5996:5755",
+    "properties": {
+      "Show Icon#6000:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Title#13715:997": {
+        "type": "TEXT",
+        "defaultValue": "Title"
+      },
+      "Icon#17774:16": {
+        "type": "INSTANCE_SWAP",
+        "defaultValue": "598:690",
+        "preferredValues": []
+      },
+      "Contrast": {
+        "type": "VARIANT",
+        "defaultValue": "Light",
+        "variantOptions": [
+          "Light"
+        ]
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Title",
+        "variantOptions": [
+          "Title",
+          "Parent",
+          "Child",
+          "Child Bottom",
+          "Extension"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Selected"
+        ]
+      },
+      "Open": {
+        "type": "VARIANT",
+        "defaultValue": "True",
+        "variantOptions": [
+          "True",
+          "False"
+        ]
+      }
+    }
+  }
+}

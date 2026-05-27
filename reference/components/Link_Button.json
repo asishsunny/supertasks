@@ -1,0 +1,46 @@
+{
+  "Link Button": {
+    "key": "fb9a69fe76888cd7f4b3550a6a297a4415781602",
+    "id": "5844:11193",
+    "properties": {
+      "Show Icon Left#5845:9": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Icon Right#5845:26": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Label#13715:922": {
+        "type": "TEXT",
+        "defaultValue": "Label"
+      },
+      "Style": {
+        "type": "VARIANT",
+        "defaultValue": "Base",
+        "variantOptions": [
+          "Base",
+          "Interactive",
+          "Muted"
+        ]
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "Base",
+        "variantOptions": [
+          "Base"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Focus",
+          "Disabled"
+        ]
+      }
+    }
+  }
+}

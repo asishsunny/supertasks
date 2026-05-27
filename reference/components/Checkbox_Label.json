@@ -1,0 +1,49 @@
+{
+  "Checkbox Label": {
+    "key": "57f92289b0058a66394c03f7e3aa577006166d91",
+    "id": "3465:3465",
+    "properties": {
+      "Show Description#6208:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Label#13715:745": {
+        "type": "TEXT",
+        "defaultValue": "The quick brown fox jumps over a lazy dog."
+      },
+      "Contrast": {
+        "type": "VARIANT",
+        "defaultValue": "Light",
+        "variantOptions": [
+          "Light"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Focus",
+          "Disabled"
+        ]
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Unchecked",
+        "variantOptions": [
+          "Checked",
+          "Unchecked"
+        ]
+      },
+      "Border": {
+        "type": "VARIANT",
+        "defaultValue": "False",
+        "variantOptions": [
+          "False",
+          "True"
+        ]
+      }
+    }
+  }
+}

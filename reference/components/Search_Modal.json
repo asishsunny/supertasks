@@ -1,0 +1,15 @@
+{
+  "Search Modal": {
+    "key": "b25551db2430f80745d7e66074c358a5ed199b9e",
+    "id": "5942:6981",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default"
+        ]
+      }
+    }
+  }
+}

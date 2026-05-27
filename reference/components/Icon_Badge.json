@@ -1,0 +1,25 @@
+{
+  "Icon Badge": {
+    "key": "4bbf218cf2a122cb2e294adf36c2eca38773d48f",
+    "id": "4890:8462",
+    "properties": {
+      "Icon#13715:656": {
+        "type": "INSTANCE_SWAP",
+        "defaultValue": "930:805",
+        "preferredValues": []
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Neutral",
+        "variantOptions": [
+          "Neutral",
+          "Information",
+          "Feature",
+          "Success",
+          "Warning",
+          "Error"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "Text Input": {
+    "key": "42511912c5d6afe839fbafbf117f7bbfb3fdbd32",
+    "id": "3503:3161",
+    "properties": {
+      "Placeholder#13715:424": {
+        "type": "TEXT",
+        "defaultValue": "Placeholder"
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "Base (32)",
+        "variantOptions": [
+          "Small (28)",
+          "Base (32)"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Focus",
+          "Filled",
+          "Filled Badges",
+          "Disabled",
+          "Error"
+        ]
+      },
+      "Color": {
+        "type": "VARIANT",
+        "defaultValue": "bg-field",
+        "variantOptions": [
+          "bg-field",
+          "bg-field-component"
+        ]
+      }
+    }
+  }
+}

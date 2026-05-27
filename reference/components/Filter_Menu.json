@@ -1,0 +1,28 @@
+{
+  "Filter Menu": {
+    "key": "935148584f104c71da2f8b636de4ffa7fdebb1d5",
+    "id": "5959:6882",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "2 items",
+        "variantOptions": [
+          "2 items",
+          "3 items",
+          "4 items",
+          "5 items",
+          "6 items",
+          "Sorting",
+          "Categories",
+          "Currencies",
+          "Loading",
+          "Date",
+          "Numbers",
+          "Numbers (Between)",
+          "String",
+          "No Results"
+        ]
+      }
+    }
+  }
+}

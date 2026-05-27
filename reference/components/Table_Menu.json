@@ -1,0 +1,20 @@
+{
+  "Table Menu": {
+    "key": "1770ef5f5b7188a6cfcb7896ac435d02c3277c61",
+    "id": "5962:8116",
+    "properties": {
+      "Show Supportive text#7606:3": {
+        "type": "BOOLEAN",
+        "defaultValue": false
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Loading"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "sections": [
+    {
+      "name": "dashboard-stats",
+      "route": "/dashboard",
+      "selector": ".flex.flex-col.gap-4 > div:first-child",
+      "reference": "stat-cards.png",
+      "figmaNodeId": "4223:126282"
+    },
+    {
+      "name": "dashboard-charts",
+      "route": "/dashboard",
+      "selector": ".flex.flex-col.gap-4 > div:nth-child(2)",
+      "reference": "chart-cards.png",
+      "figmaNodeId": "4223:126295"
+    },
+    {
+      "name": "dashboard-table",
+      "route": "/dashboard",
+      "selector": ".flex.flex-col.gap-4 > div:nth-child(3)",
+      "reference": "table-recent.png",
+      "figmaNodeId": "4223:126439"
+    },
+    {
+      "name": "kanban-board",
+      "route": "/tasks/kanban",
+      "selector": ".flex.flex-col.gap-4 > div:nth-child(2)",
+      "reference": "kanban.png",
+      "figmaNodeId": "4229:78906"
+    },
+    {
+      "name": "tasks-controls",
+      "route": "/tasks",
+      "selector": ".flex.flex-col.gap-4 > div:first-child",
+      "reference": "controls.png",
+      "figmaNodeId": "4229:9176"
+    }
+  ]
+}

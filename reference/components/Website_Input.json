@@ -1,0 +1,32 @@
+{
+  "Website Input": {
+    "key": "731e5d4728ebded17a0a55cb98479fe99af72801",
+    "id": "5992:836",
+    "properties": {
+      "URL#13715:557": {
+        "type": "TEXT",
+        "defaultValue": "www.example.com"
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "Base (32)",
+        "variantOptions": [
+          "Small (28)",
+          "Base (32)"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Focus",
+          "Filled",
+          "Disabled",
+          "Error"
+        ]
+      }
+    }
+  }
+}

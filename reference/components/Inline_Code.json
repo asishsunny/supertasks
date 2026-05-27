@@ -1,0 +1,16 @@
+{
+  "Inline Code": {
+    "key": "4e7653fd803d168127b5895b82d2b506972bb705",
+    "id": "4393:1889",
+    "properties": {
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover"
+        ]
+      }
+    }
+  }
+}

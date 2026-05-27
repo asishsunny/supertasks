@@ -1,0 +1,27 @@
+{
+  "Table Row": {
+    "key": "cb983cde590143a3d90e0bf2612c8454af924fb6",
+    "id": "3651:3405",
+    "properties": {
+      "Selectable": {
+        "type": "VARIANT",
+        "defaultValue": "True",
+        "variantOptions": [
+          "True",
+          "False"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Selected",
+          "Selected Hover",
+          "Loading"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "Code Block Actions": {
+    "key": "7c78769106be685ca62fe921ce37ec1f5698c9e5",
+    "id": "4970:515",
+    "properties": {
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Pressed"
+        ]
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Icon",
+        "variantOptions": [
+          "Icon",
+          "Text"
+        ]
+      }
+    }
+  }
+}

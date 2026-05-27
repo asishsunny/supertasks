@@ -1,0 +1,16 @@
+{
+  "Sidebar": {
+    "key": "6471df474c27c92e21ce1acd6ad3699aa511a4af",
+    "id": "6004:3463",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Main",
+        "variantOptions": [
+          "Main",
+          "Settings"
+        ]
+      }
+    }
+  }
+}

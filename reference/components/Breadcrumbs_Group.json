@@ -1,0 +1,28 @@
+{
+  "Breadcrumbs Group": {
+    "key": "6cbcf084f3a615653e2b07d03b248af492f03943",
+    "id": "5876:1073",
+    "properties": {
+      "Show Level 1#5876:3": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Level 3#5876:4": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Level 2#5876:5": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Theme": {
+        "type": "VARIANT",
+        "defaultValue": "Muted",
+        "variantOptions": [
+          "Muted",
+          "Subtle"
+        ]
+      }
+    }
+  }
+}

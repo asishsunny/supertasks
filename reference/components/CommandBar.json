@@ -1,0 +1,19 @@
+{
+  "CommandBar": {
+    "key": "e9767e222c7b5d1b5f67d0dba746a39f672780f7",
+    "id": "4740:6806",
+    "properties": {
+      "Show Middle Action#6239:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Contrast": {
+        "type": "VARIANT",
+        "defaultValue": "Light",
+        "variantOptions": [
+          "Light"
+        ]
+      }
+    }
+  }
+}

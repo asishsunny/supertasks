@@ -1,0 +1,41 @@
+{
+  "Avatar": {
+    "key": "94549d295c6fb7e5585bac570f1dcf0243b5d9da",
+    "id": "3623:3417",
+    "properties": {
+      "Initials#13715:604": {
+        "type": "TEXT",
+        "defaultValue": "L"
+      },
+      "Content": {
+        "type": "VARIANT",
+        "defaultValue": "Letters",
+        "variantOptions": [
+          "Letters",
+          "Image",
+          "Icon"
+        ]
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Rounded",
+        "variantOptions": [
+          "Rounded",
+          "Squared"
+        ]
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "2xsmall (20)",
+        "variantOptions": [
+          "2xsmall (20)",
+          "Xsmall (24)",
+          "Small (28)",
+          "Base (32)",
+          "Large (40)",
+          "Xlarge (48)"
+        ]
+      }
+    }
+  }
+}

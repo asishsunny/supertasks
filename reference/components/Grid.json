@@ -1,0 +1,15 @@
+{
+  "Grid": {
+    "key": "92a7a6c75e231d04482745e30a616571e29827f0",
+    "id": "6059:330",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default"
+        ]
+      }
+    }
+  }
+}

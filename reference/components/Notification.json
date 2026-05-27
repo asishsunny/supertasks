@@ -1,0 +1,19 @@
+{
+  "Notification": {
+    "key": "064bcaa4832c734366a05ccb34ee0c6f1174a642",
+    "id": "5789:1540",
+    "properties": {
+      "Show File#5792:15": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default"
+        ]
+      }
+    }
+  }
+}

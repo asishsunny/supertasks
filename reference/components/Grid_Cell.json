@@ -1,0 +1,29 @@
+{
+  "Grid Cell": {
+    "key": "83a40f5f8741bbc983628bb03327a634bf4f6c57",
+    "id": "6054:2604",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Passive Muted",
+        "variantOptions": [
+          "Passive Muted",
+          "Passive Subtle",
+          "Passive Plus",
+          "Currency Input",
+          "Text Input",
+          "Select"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Active",
+          "Filled"
+        ]
+      }
+    }
+  }
+}

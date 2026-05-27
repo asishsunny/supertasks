@@ -1,0 +1,50 @@
+{
+  "Alert": {
+    "key": "feaa5bfb8a1d0890446b78a82b0a3cff24c893d2",
+    "id": "5271:3816",
+    "properties": {
+      "Show Actions#6188:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Close#6415:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Title#13715:570": {
+        "type": "TEXT",
+        "defaultValue": "Title"
+      },
+      "Description#13715:587": {
+        "type": "TEXT",
+        "defaultValue": "Description"
+      },
+      "Status": {
+        "type": "VARIANT",
+        "defaultValue": "Info",
+        "variantOptions": [
+          "Info",
+          "Error",
+          "Warning",
+          "Success"
+        ]
+      },
+      "Content": {
+        "type": "VARIANT",
+        "defaultValue": "Title + Description",
+        "variantOptions": [
+          "Title",
+          "Title + Description"
+        ]
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "In page",
+        "variantOptions": [
+          "In page",
+          "Card"
+        ]
+      }
+    }
+  }
+}

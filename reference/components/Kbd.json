@@ -1,0 +1,33 @@
+{
+  "Kbd": {
+    "key": "8efbcb6fc8d0427714b83fe0668d2c19098a77ab",
+    "id": "3606:2182",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Single",
+        "variantOptions": [
+          "Single",
+          "Multiple"
+        ]
+      },
+      "Color": {
+        "type": "VARIANT",
+        "defaultValue": "bg-field",
+        "variantOptions": [
+          "bg-field",
+          "contrast-bg-base",
+          "bg-field-component"
+        ]
+      },
+      "Radius": {
+        "type": "VARIANT",
+        "defaultValue": "Squared",
+        "variantOptions": [
+          "Squared",
+          "Rounded"
+        ]
+      }
+    }
+  }
+}

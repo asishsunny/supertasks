@@ -1,0 +1,16 @@
+{
+  "Table Filter": {
+    "key": "15eb6c06007c10f476e7452297dde33e067a2c51",
+    "id": "4395:10431",
+    "properties": {
+      "Filter": {
+        "type": "VARIANT",
+        "defaultValue": "Disabled",
+        "variantOptions": [
+          "Disabled",
+          "Enabled"
+        ]
+      }
+    }
+  }
+}

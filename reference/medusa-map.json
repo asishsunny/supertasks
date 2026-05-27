@@ -1,0 +1,174 @@
+{
+  "Badge": {
+    "tag": "Badge",
+    "import": "@medusajs/ui",
+    "textChild": "Badge",
+    "variants": {
+      "State": {
+        "prop": "color",
+        "map": {
+          "Neutral": "grey",
+          "Information": "blue",
+          "Feature": "purple",
+          "Success": "green",
+          "Warning": "orange",
+          "Error": "red"
+        }
+      }
+    },
+    "defaultProps": { "size": "small", "rounded": "full" }
+  },
+  "Status Badge": {
+    "tag": "StatusBadge",
+    "import": "@medusajs/ui",
+    "textChild": "Badge",
+    "variants": {
+      "Status": {
+        "prop": "color",
+        "map": {
+          "Neutral": "grey",
+          "Information": "blue",
+          "Feature": "purple",
+          "Success": "green",
+          "Warning": "orange",
+          "Error": "red"
+        }
+      }
+    }
+  },
+  "Avatar": {
+    "tag": "_custom:avatar"
+  },
+  "Button": {
+    "tag": "Button",
+    "import": "@medusajs/ui",
+    "textChild": "Label",
+    "variants": {
+      "Style": {
+        "prop": "variant",
+        "map": {
+          "Primary": "primary",
+          "Secondary": "secondary",
+          "Danger": "danger",
+          "Transparent": "transparent"
+        }
+      },
+      "Size": {
+        "prop": "size",
+        "map": {
+          "Small (28)": "small",
+          "Base (32)": "base",
+          "Large (40)": "large",
+          "Xlarge (48)": "xlarge"
+        }
+      }
+    }
+  },
+  "IconButton": {
+    "tag": "IconButton",
+    "import": "@medusajs/ui",
+    "iconChild": true,
+    "variants": {
+      "Style": {
+        "prop": "variant",
+        "map": {
+          "Primary": "primary",
+          "Secondary": "secondary",
+          "Transparent": "transparent",
+          "Transparent Muted": "transparent"
+        }
+      },
+      "Size": {
+        "prop": "size",
+        "map": {
+          "Small (28)": "small",
+          "Base (32)": "base",
+          "Large (40)": "large"
+        }
+      }
+    }
+  },
+  "Switch": {
+    "tag": "Switch",
+    "import": "@medusajs/ui",
+    "selfClosing": true
+  },
+  "Label": {
+    "tag": "Label",
+    "import": "@medusajs/ui",
+    "textChild": "Label"
+  },
+  "Text Input": {
+    "tag": "Input",
+    "import": "@medusajs/ui",
+    "selfClosing": true,
+    "placeholderChild": "Placeholder"
+  },
+  "Text Area Input": {
+    "tag": "Textarea",
+    "import": "@medusajs/ui",
+    "selfClosing": true,
+    "placeholderChild": "Placeholder"
+  },
+  "Single / Multi Select": {
+    "tag": "Select",
+    "import": "@medusajs/ui",
+    "selfClosing": true
+  },
+  "Kbd": {
+    "tag": "Kbd",
+    "import": "@medusajs/ui",
+    "textChild": "Label"
+  },
+  "Table Cell": {
+    "tag": "_table-cell"
+  },
+  "Table Header": {
+    "tag": "_skip"
+  },
+  "Table Footer": {
+    "tag": "_skip"
+  },
+  "Table Filter": {
+    "tag": "_skip"
+  },
+  "Horizontal Divider": {
+    "tag": "_skip"
+  },
+  "Vertical Divider": {
+    "tag": "_skip"
+  },
+  "Sidebar": {
+    "tag": "_skip"
+  },
+  "Sidebar Header": {
+    "tag": "_skip"
+  },
+  "Sidebar List Item": {
+    "tag": "_skip"
+  },
+  "Topbar": {
+    "tag": "_skip"
+  },
+  "Breadcrumbs Group": {
+    "tag": "_skip"
+  },
+  "Breadcrumb Items": {
+    "tag": "_skip"
+  },
+  "User Badge": {
+    "tag": "_skip"
+  },
+  "Segment Item": {
+    "tag": "_skip"
+  },
+  "Search Input": {
+    "tag": "_skip"
+  },
+  "Modal": {
+    "tag": "_skip"
+  },
+  "square-solid": {
+    "tag": "_skip"
+  }
+}

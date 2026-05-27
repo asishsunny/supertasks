@@ -1,0 +1,17 @@
+{
+  "Progress Tabs Group": {
+    "key": "87af715456db963a10d40a236f0e3173de861d1c",
+    "id": "4662:10666",
+    "properties": {
+      "Quantity": {
+        "type": "VARIANT",
+        "defaultValue": "2",
+        "variantOptions": [
+          "2",
+          "3",
+          "4"
+        ]
+      }
+    }
+  }
+}

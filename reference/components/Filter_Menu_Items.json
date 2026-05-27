@@ -1,0 +1,50 @@
+{
+  "Filter Menu Items": {
+    "key": "f8c50cdb97a7677684496485b0a7b1514dae686a",
+    "id": "5959:7118",
+    "properties": {
+      "Show Sub Text#3613:21": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Badge#3613:42": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Label#13715:859": {
+        "type": "TEXT",
+        "defaultValue": "Select item"
+      },
+      "Count#13715:877": {
+        "type": "TEXT",
+        "defaultValue": "99"
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Divider",
+        "variantOptions": [
+          "Check",
+          "Radio",
+          "Divider",
+          "Skeleton",
+          "Title",
+          "Search",
+          "Date Picker Input",
+          "Text Input"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Selected",
+          "Selected Hover",
+          "Disabled",
+          "Filled"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "Combobox / Multi Combobox": {
+    "key": "660ea871bb010aee0f4e4cd5d1005e8ffe705f93",
+    "id": "5946:2690",
+    "properties": {
+      "Select#13715:1076": {
+        "type": "TEXT",
+        "defaultValue": "Select"
+      },
+      "Icon#13715:1093": {
+        "type": "INSTANCE_SWAP",
+        "defaultValue": "5946:2092",
+        "preferredValues": []
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Focus",
+          "Selected",
+          "Multiple Selected",
+          "Disabled",
+          "Error",
+          "Multiple Error"
+        ]
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "Base (32)",
+        "variantOptions": [
+          "Base (32)",
+          "Small (28)"
+        ]
+      }
+    }
+  }
+}

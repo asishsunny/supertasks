@@ -1,0 +1,99 @@
+{
+  "Table Cell": {
+    "variants": {
+      "Type=Header":       [{ "name": "Label", "type": "TEXT" }],
+      "Type=Base":         [{ "name": "Label", "type": "TEXT" }],
+      "Type=User":         [{ "name": "Label", "type": "TEXT" }, { "name": "L", "type": "TEXT" }, { "name": "Avatar", "type": "INSTANCE", "comp": "Avatar" }],
+      "Type=Badge":        [{ "name": "Badge", "type": "INSTANCE", "comp": "Badge" }],
+      "Type=Subtle":       [{ "name": "Label", "type": "TEXT" }],
+      "Type=Status Badge": [{ "name": "Label", "type": "TEXT" }, { "name": "square-grey-solid", "type": "INSTANCE" }],
+      "Type=Actions":      [{ "name": "icon", "type": "VECTOR" }],
+      "Type=Checkbox":     [{ "name": "Label", "type": "TEXT" }],
+      "Type=Image":        [{ "name": "Label", "type": "TEXT" }],
+      "Type=Link":         [{ "name": "Label", "type": "TEXT" }]
+    }
+  },
+  "Avatar": [
+    { "name": "Background", "type": "FRAME", "hasFills": true },
+    { "name": "Initial", "type": "TEXT" }
+  ],
+  "Badge": [
+    { "name": "Badge", "type": "TEXT" }
+  ],
+  "Status Badge": [
+    { "name": "Badge", "type": "TEXT" },
+    { "name": "Icon", "type": "INSTANCE" }
+  ],
+  "Button": [
+    { "name": "Label", "type": "TEXT" }
+  ],
+  "IconButton": [
+    { "name": "icon", "type": "VECTOR" }
+  ],
+  "Sidebar": [
+    { "name": "Sidebar", "type": "INSTANCE", "comp": "Sidebar" }
+  ],
+  "Sidebar Header": [
+    { "name": "Label", "type": "TEXT" }
+  ],
+  "Sidebar List Item": [
+    { "name": "Label", "type": "TEXT" },
+    { "name": "icon", "type": "VECTOR" }
+  ],
+  "Topbar": [
+    { "name": "Label", "type": "TEXT" }
+  ],
+  "Breadcrumbs Group": [
+    { "name": "Breadcrumb Items", "type": "INSTANCE" }
+  ],
+  "Breadcrumb Items": [
+    { "name": "Label", "type": "TEXT" }
+  ],
+  "User Badge": [
+    { "name": "Label", "type": "TEXT" },
+    { "name": "Avatar", "type": "INSTANCE", "comp": "Avatar" }
+  ],
+  "Segment Item": [
+    { "name": "Label", "type": "TEXT" }
+  ],
+  "Search Input": [
+    { "name": "Placeholder", "type": "TEXT" }
+  ],
+  "Switch": [],
+  "Label": [
+    { "name": "Label", "type": "TEXT" }
+  ],
+  "Switch Label": [
+    { "name": "Label", "type": "TEXT" },
+    { "name": "Switch", "type": "INSTANCE", "comp": "Switch" }
+  ],
+  "Text Input": [
+    { "name": "Placeholder", "type": "TEXT" },
+    { "name": "Label", "type": "TEXT" }
+  ],
+  "Text Area Input": [
+    { "name": "Placeholder", "type": "TEXT" },
+    { "name": "Label", "type": "TEXT" }
+  ],
+  "Single / Multi Select": [
+    { "name": "Label", "type": "TEXT" }
+  ],
+  "Kbd": [
+    { "name": "Label", "type": "TEXT" }
+  ],
+  "Table Filter": [
+    { "name": "Label", "type": "TEXT" }
+  ],
+  "Table Footer": [
+    { "name": "1", "type": "TEXT" },
+    { "name": "10 of 100 results", "type": "TEXT" },
+    { "name": "Button", "type": "INSTANCE", "comp": "Button" },
+    { "name": "Label", "type": "TEXT" }
+  ],
+  "Horizontal Divider": [],
+  "Vertical Divider": [],
+  "Modal": [
+    { "name": "Label", "type": "TEXT" }
+  ],
+  "square-solid": []
+}

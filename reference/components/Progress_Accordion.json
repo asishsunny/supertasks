@@ -1,0 +1,26 @@
+{
+  "Progress Accordion": {
+    "key": "3f86caa3c61b6c220987b5cd5b9d17f961acf3ae",
+    "id": "4902:10488",
+    "properties": {
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Active"
+        ]
+      },
+      "Progress": {
+        "type": "VARIANT",
+        "defaultValue": "Not Started",
+        "variantOptions": [
+          "Not Started",
+          "In Progress",
+          "Completed"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "Empty State Center Aligned": {
+    "key": "912e132d9b1cb7a15786a10cb4bfdf4bb4cc37d6",
+    "id": "5828:7588",
+    "properties": {
+      "Show LinkButton#5844:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Button#5844:3": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Icon#5844:6": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Actions#7059:10": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "The Quick Brown 2#13715:857": {
+        "type": "TEXT",
+        "defaultValue": "The quick brown fox jumps over a lazy dog."
+      },
+      "Title#13715:1213": {
+        "type": "TEXT",
+        "defaultValue": "Title"
+      },
+      "Description#13715:1215": {
+        "type": "TEXT",
+        "defaultValue": "Description"
+      },
+      "Alignment": {
+        "type": "VARIANT",
+        "defaultValue": "Center",
+        "variantOptions": [
+          "Center"
+        ]
+      }
+    }
+  }
+}

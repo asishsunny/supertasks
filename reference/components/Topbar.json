@@ -1,0 +1,20 @@
+{
+  "Topbar": {
+    "key": "17c7ad56e6ccfd57322890b5ed216073463a8a5a",
+    "id": "5996:5006",
+    "properties": {
+      "Show Breadcrumbs Group#5996:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Device": {
+        "type": "VARIANT",
+        "defaultValue": "Desktop",
+        "variantOptions": [
+          "Desktop",
+          "Mobile"
+        ]
+      }
+    }
+  }
+}

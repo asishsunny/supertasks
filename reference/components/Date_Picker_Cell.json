@@ -1,0 +1,30 @@
+{
+  "Date Picker Cell": {
+    "key": "5284e66c4b0c1e5f53b812db253053d354517b0f",
+    "id": "3922:11726",
+    "properties": {
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Selected",
+          "Disabled",
+          "Highlighted",
+          "Highlighted hover",
+          "Focus",
+          "Highlighted focus"
+        ]
+      },
+      "Today": {
+        "type": "VARIANT",
+        "defaultValue": "False",
+        "variantOptions": [
+          "False",
+          "True"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "Three Select Menu Items": {
+    "key": "1cab9f2c993986b85308f442947c03997905a665",
+    "id": "7051:29146",
+    "properties": {
+      "Show Sub Text#3613:21": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Badge#3613:42": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Parent#7051:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Check",
+        "variantOptions": [
+          "Check",
+          "Divider",
+          "Skeleton",
+          "Title",
+          "Scrollbar"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Selected",
+          "Selected Hover",
+          "Disabled"
+        ]
+      }
+    }
+  }
+}

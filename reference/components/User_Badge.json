@@ -1,0 +1,20 @@
+{
+  "User Badge": {
+    "key": "439dad89779f04a1aa61efde3aba0aef23fb2b89",
+    "id": "5958:3548",
+    "properties": {
+      "Name#13715:653": {
+        "type": "TEXT",
+        "defaultValue": "Ludvig Rask"
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "Breadcrumb Items": {
+    "key": "f01deafcc4c6d4c81de14af1c1d470c281aaf9cc",
+    "id": "5875:2953",
+    "properties": {
+      "Breadcrumb#13715:736": {
+        "type": "TEXT",
+        "defaultValue": "Breadcrumb"
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover"
+        ]
+      },
+      "Variant": {
+        "type": "VARIANT",
+        "defaultValue": "Text",
+        "variantOptions": [
+          "Text",
+          "Dots"
+        ]
+      },
+      "Theme": {
+        "type": "VARIANT",
+        "defaultValue": "Muted",
+        "variantOptions": [
+          "Muted",
+          "Subtle"
+        ]
+      }
+    }
+  }
+}

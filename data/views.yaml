@@ -1,0 +1,330 @@
+# views.yaml — generated from plan.md + data.yaml
+
+dashboard:
+  shell:
+    activeNav: Dashboard
+    breadcrumbs:
+      - Dashboard
+    pageTitle: Dashboard
+    headerActions: []
+  stats:
+    total_tasks: 18
+    in_progress: 5
+    completed: 3
+    overdue: 5
+  charts:
+    by_status:
+      todo: 6
+      in_progress: 5
+      in_review: 4
+      done: 3
+    by_priority:
+      low: 3
+      medium: 6
+      high: 5
+      critical: 4
+  recent_tasks:
+    - task_id: 15
+      assignee: 5
+    - task_id: 9
+      assignee: 6
+    - task_id: 10
+      assignee: 2
+    - task_id: 12
+      assignee: 6
+    - task_id: 18
+      assignee: 6
+  columns:
+    - header: Task
+      type: title
+      field: title
+    - header: Assignee
+      type: user
+      width: 160
+      field: assignee
+    - header: Priority
+      type: badge
+      width: 120
+      field: priority
+    - header: Due Date
+      type: subtle
+      width: 130
+      field: due
+    - header: Status
+      type: badge
+      width: 140
+      field: status
+    - type: actions
+tasks_list:
+  shell:
+    activeNav: Tasks
+    breadcrumbs:
+      - Tasks
+      - List
+    pageTitle: Tasks
+    headerActions:
+      - New task
+  controls:
+    tabs:
+      - Kanban
+      - List
+    activeTab: List
+    showSearch: true
+  columns:
+    - header: Task
+      type: title
+      field: title
+    - header: Assignee
+      type: user
+      width: 160
+      field: assignee
+    - header: Priority
+      type: badge
+      width: 120
+      field: priority
+    - header: Due Date
+      type: subtle
+      width: 130
+      field: due
+    - header: Status
+      type: badge
+      width: 140
+      field: status
+    - type: actions
+  rows:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 16
+    - 17
+    - 18
+tasks_kanban:
+  shell:
+    activeNav: Tasks
+    breadcrumbs:
+      - Tasks
+      - Kanban
+    pageTitle: Tasks
+    headerActions:
+      - New task
+  controls:
+    tabs:
+      - Kanban
+      - List
+    activeTab: Kanban
+    showSearch: true
+  columns:
+    todo:
+      - 3
+      - 6
+      - 9
+      - 11
+      - 15
+      - 18
+    in_progress:
+      - 1
+      - 4
+      - 7
+      - 10
+      - 14
+    in_review:
+      - 2
+      - 5
+      - 12
+      - 17
+    done:
+      - 8
+      - 13
+      - 16
+team:
+  shell:
+    activeNav: Team
+    breadcrumbs:
+      - Team
+    pageTitle: Team
+    headerActions:
+      - Invite member
+  columns:
+    - header: Member
+      type: user
+      width: FILL
+      field: name
+    - header: Email
+      type: subtle
+      width: 220
+      field: email
+    - header: Role
+      type: subtle
+      width: 160
+      field: role
+    - header: Active tasks
+      type: base
+      width: 100
+      field: active
+    - header: Overdue
+      type: base
+      width: 100
+      field: overdue
+    - type: actions
+  rows:
+    - member_id: 1
+      active: 3
+      overdue: 2
+    - member_id: 2
+      active: 2
+      overdue: 0
+    - member_id: 3
+      active: 2
+      overdue: 2
+    - member_id: 4
+      active: 2
+      overdue: 1
+    - member_id: 5
+      active: 3
+      overdue: 0
+    - member_id: 6
+      active: 3
+      overdue: 0
+reports:
+  shell:
+    activeNav: Reports
+    breadcrumbs:
+      - Reports
+      - 30 days
+    pageTitle: Reports
+    headerActions:
+      - Generate report
+  controls:
+    tabs:
+      - 90d
+      - 30d
+      - 7d
+    activeTab: 30d
+    showSearch: true
+  stats:
+    - label: Total completed
+      value: 3
+    - label: Avg completion rate
+      value: 17%
+    - label: Overdue
+      value: 5
+    - label: On track
+      value: 10
+  columns:
+    - header: Report name
+      type: base
+      width: FILL
+      field: report
+    - header: Member
+      type: user
+      width: 200
+      field: name
+    - header: Date range
+      type: subtle
+      width: 160
+      field: range
+    - header: Generated on
+      type: subtle
+      width: 140
+      field: generated
+    - type: actions
+  rows:
+    - report: Sprint velocity — Q2 week 5
+      member_id: 3
+      range: Apr 7 – May 7
+      generated: May 7, 2026
+    - report: Task completion by assignee
+      member_id: 1
+      range: Apr 7 – May 7
+      generated: May 7, 2026
+    - report: Overdue tasks — root cause analysis
+      member_id: 6
+      range: Apr 7 – May 7
+      generated: May 6, 2026
+    - report: Team workload distribution
+      member_id: 3
+      range: Apr 7 – May 7
+      generated: May 5, 2026
+    - report: Priority breakdown across sprints
+      member_id: 2
+      range: Apr 14 – May 7
+      generated: May 4, 2026
+    - report: Burndown chart — milestone alpha
+      member_id: 4
+      range: Apr 7 – May 7
+      generated: May 3, 2026
+settings:
+  shell:
+    activeNav: Settings
+    breadcrumbs:
+      - Settings
+    pageTitle: Settings
+    headerActions: []
+  tabs:
+    - Profile
+    - Notifications
+    - Security
+    - Billing
+  activeTab: Profile
+settings_notifications:
+  shell:
+    activeNav: Settings
+    breadcrumbs:
+      - Settings
+    pageTitle: Settings
+    headerActions: []
+  tabs:
+    - Profile
+    - Notifications
+    - Security
+    - Billing
+  activeTab: Notifications
+  notifications:
+    title: Notifications
+    subtitle: Manage how you receive alerts
+    action: Save changes
+settings_security:
+  shell:
+    activeNav: Settings
+    breadcrumbs:
+      - Settings
+    pageTitle: Settings
+    headerActions: []
+  tabs:
+    - Profile
+    - Notifications
+    - Security
+    - Billing
+  activeTab: Security
+  security:
+    title: Security
+    subtitle: Manage your security preferences
+    action: Save changes
+settings_billing:
+  shell:
+    activeNav: Settings
+    breadcrumbs:
+      - Settings
+    pageTitle: Settings
+    headerActions: []
+  tabs:
+    - Profile
+    - Notifications
+    - Security
+    - Billing
+  activeTab: Billing
+  billing:
+    title: Billing
+    subtitle: Manage your plan and payment

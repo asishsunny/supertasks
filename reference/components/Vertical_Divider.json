@@ -1,0 +1,16 @@
+{
+  "Vertical Divider": {
+    "key": "423b44d83564b6d96191b14aa7f1c98927552431",
+    "id": "5942:5689",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Line",
+        "variantOptions": [
+          "Dots",
+          "Line"
+        ]
+      }
+    }
+  }
+}

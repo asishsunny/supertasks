@@ -1,0 +1,56 @@
+{
+  "Search Modal Item": {
+    "key": "ea6a7713538ac22fae478810e4ff20252ab41270",
+    "id": "4667:15518",
+    "properties": {
+      "Show Shortcuts#5784:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Avatar#7445:17": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Badge#7445:25": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show icon#7445:33": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Image#7656:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Title#13715:1142": {
+        "type": "TEXT",
+        "defaultValue": "Title"
+      },
+      "Subtext#13715:1217": {
+        "type": "TEXT",
+        "defaultValue": "Subtext"
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Title",
+        "variantOptions": [
+          "Result Elaborated",
+          "Title",
+          "Result",
+          "Area",
+          "Show more"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Focus"
+        ]
+      }
+    }
+  }
+}

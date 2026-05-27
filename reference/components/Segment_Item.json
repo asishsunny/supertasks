@@ -1,0 +1,28 @@
+{
+  "Segment Item": {
+    "key": "5a851e76c4befda682e5943372c3caf908e25adf",
+    "id": "7773:161137",
+    "properties": {
+      "Label#7773:15": {
+        "type": "TEXT",
+        "defaultValue": "Label"
+      },
+      "Icon Left#7774:18": {
+        "type": "BOOLEAN",
+        "defaultValue": false
+      },
+      "Icon Right#7774:21": {
+        "type": "BOOLEAN",
+        "defaultValue": false
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Active"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "Toast": {
+    "key": "5eb9fd17d0685b7e5aafc484d3a8c37f6331a170",
+    "id": "3500:1702",
+    "properties": {
+      "Show Description#6908:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Action 1#6908:2": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Action 2#6908:4": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Actions#6912:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Title#13715:1194": {
+        "type": "TEXT",
+        "defaultValue": "Title"
+      },
+      "Description#13715:1201": {
+        "type": "TEXT",
+        "defaultValue": "Description"
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Info",
+        "variantOptions": [
+          "Info",
+          "Success",
+          "Warning",
+          "Error",
+          "Promise",
+          "Keyboard"
+        ]
+      }
+    }
+  }
+}

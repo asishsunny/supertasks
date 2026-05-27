@@ -1,0 +1,155 @@
+{
+  "__doc": "Screen registry — maps rendered Figma frames to code sections. nodeIds synced by sync-registry.mjs.",
+  "screens": {
+    "dashboard": {
+      "figmaFile": "SuperTasks-UI",
+      "pageNode": "4394:662425",
+      "output": "src/app/(app)/dashboard/page.tsx",
+      "sections": [
+        {
+          "name": "sidebar",
+          "dataName": "Sidebar",
+          "nodeId": "4394:662426"
+        },
+        {
+          "name": "topbar",
+          "dataName": "Topbar",
+          "nodeId": "4394:663311"
+        },
+        {
+          "name": "stat-cards",
+          "dataName": "Stat Cards",
+          "nodeId": "4394:663354"
+        },
+        {
+          "name": "chart-cards",
+          "dataName": "Chart Cards",
+          "nodeId": "4394:663367"
+        },
+        {
+          "name": "table",
+          "dataName": "Recent Tasks",
+          "nodeId": "4394:663422"
+        }
+      ]
+    },
+    "tasks": {
+      "figmaFile": "SuperTasks-UI",
+      "pageNode": "4394:666052",
+      "output": "src/app/(app)/tasks/page.tsx",
+      "sections": [
+        {
+          "name": "sidebar",
+          "dataName": "Sidebar",
+          "nodeId": "4394:666053"
+        },
+        {
+          "name": "topbar",
+          "dataName": "Topbar",
+          "nodeId": "4394:666944"
+        },
+        {
+          "name": "controls",
+          "dataName": "Controls",
+          "nodeId": "4394:666995"
+        },
+        {
+          "name": "table",
+          "dataName": "Tasks",
+          "nodeId": "4394:667085"
+        }
+      ],
+      "tabVariants": {
+        "kanban": {
+          "nodeId": "4394:454601",
+          "cache": "tasks-kanban.jsx"
+        }
+      }
+    },
+    "team": {
+      "figmaFile": "SuperTasks-UI",
+      "pageNode": "4394:674306",
+      "output": "src/app/(app)/team/page.tsx",
+      "sections": [
+        {
+          "name": "sidebar",
+          "dataName": "Sidebar",
+          "nodeId": "4394:674307"
+        },
+        {
+          "name": "topbar",
+          "dataName": "Topbar",
+          "nodeId": "4394:675198"
+        },
+        {
+          "name": "table",
+          "dataName": "Team",
+          "nodeId": "4394:675248"
+        }
+      ]
+    },
+    "reports": {
+      "figmaFile": "SuperTasks-UI",
+      "pageNode": "4394:677752",
+      "output": "src/app/(app)/reports/page.tsx",
+      "sections": [
+        {
+          "name": "sidebar",
+          "dataName": "Sidebar",
+          "nodeId": "4394:677753"
+        },
+        {
+          "name": "topbar",
+          "dataName": "Topbar",
+          "nodeId": "4394:678644"
+        },
+        {
+          "name": "controls",
+          "dataName": "Controls",
+          "nodeId": "4394:678695"
+        },
+        {
+          "name": "table",
+          "dataName": "Reports",
+          "nodeId": "4394:678785"
+        }
+      ]
+    },
+    "settings": {
+      "figmaFile": "SuperTasks-UI",
+      "pageNode": "4394:681385",
+      "output": "src/app/(app)/settings/page.tsx",
+      "sections": [
+        {
+          "name": "sidebar",
+          "dataName": "Sidebar",
+          "nodeId": "4394:681386"
+        },
+        {
+          "name": "topbar",
+          "dataName": "Topbar",
+          "nodeId": "4394:682277"
+        },
+        {
+          "name": "content",
+          "dataName": "Settings Content",
+          "nodeId": "4394:682320"
+        }
+      ],
+      "tabVariants": {
+        "notifications": {
+          "nodeId": "4394:685692",
+          "cache": "settings-notifications.jsx"
+        },
+        "security": {
+          "nodeId": "4394:689005",
+          "cache": "settings-security.jsx"
+        },
+        "billing": {
+          "nodeId": "4394:692314",
+          "cache": "settings-billing.jsx"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "Status Badge": {
+    "key": "0bdfd2254546d07f05b21a0aef8ebf3aa9ddf3a4",
+    "id": "4890:8333",
+    "properties": {
+      "Badge#13715:639": {
+        "type": "TEXT",
+        "defaultValue": "Badge"
+      },
+      "Icon#13715:646": {
+        "type": "INSTANCE_SWAP",
+        "defaultValue": "6166:956",
+        "preferredValues": []
+      },
+      "Status": {
+        "type": "VARIANT",
+        "defaultValue": "Neutral",
+        "variantOptions": [
+          "Neutral",
+          "Information",
+          "Feature",
+          "Success",
+          "Warning",
+          "Error"
+        ]
+      }
+    }
+  }
+}

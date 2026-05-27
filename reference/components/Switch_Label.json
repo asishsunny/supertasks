@@ -1,0 +1,28 @@
+{
+  "Switch Label": {
+    "key": "674e206363c1d1f47d9253b766da62821f7995ac",
+    "id": "7415:21423",
+    "properties": {
+      "Label#13715:1158": {
+        "type": "TEXT",
+        "defaultValue": "The quick brown fox jumps over a lazy dog."
+      },
+      "Background": {
+        "type": "VARIANT",
+        "defaultValue": "True",
+        "variantOptions": [
+          "False",
+          "True"
+        ]
+      },
+      "Hidden Content": {
+        "type": "VARIANT",
+        "defaultValue": "False",
+        "variantOptions": [
+          "False",
+          "True"
+        ]
+      }
+    }
+  }
+}

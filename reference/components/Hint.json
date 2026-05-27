@@ -1,0 +1,21 @@
+{
+  "Hint": {
+    "key": "50f68964d9e4d711f685819cde2545210eb6f918",
+    "id": "3503:3112",
+    "properties": {
+      "Label#13715:895": {
+        "type": "TEXT",
+        "defaultValue": "This is a hint text to help user."
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Normal",
+        "variantOptions": [
+          "Error",
+          "Normal",
+          "Disabled"
+        ]
+      }
+    }
+  }
+}

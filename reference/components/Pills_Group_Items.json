@@ -1,0 +1,22 @@
+{
+  "Pills Group Items": {
+    "key": "878c7871aa608d09ce3584f8446b9af09f70865e",
+    "id": "3688:4550",
+    "properties": {
+      "Label#13715:1163": {
+        "type": "TEXT",
+        "defaultValue": "Label"
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Selected",
+          "Hover",
+          "Focus"
+        ]
+      }
+    }
+  }
+}

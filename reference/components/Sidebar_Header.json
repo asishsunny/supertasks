@@ -1,0 +1,24 @@
+{
+  "Sidebar Header": {
+    "key": "fc758b2429436a4b42b4b155849bf52d8adcee14",
+    "id": "5996:5678",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Main",
+        "variantOptions": [
+          "Main",
+          "Settings"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover"
+        ]
+      }
+    }
+  }
+}

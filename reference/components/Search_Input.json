@@ -1,0 +1,49 @@
+{
+  "Search Input": {
+    "key": "6efa83430bf1bbb430dd55f4ada93fa815e2d3f4",
+    "id": "5943:7637",
+    "properties": {
+      "Show Kbd#5943:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Placeholder#13715:507": {
+        "type": "TEXT",
+        "defaultValue": "Search"
+      },
+      "Icon#13715:532": {
+        "type": "INSTANCE_SWAP",
+        "defaultValue": "593:1810",
+        "preferredValues": []
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "Base (32)",
+        "variantOptions": [
+          "Base (32)",
+          "Small (28)"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Focus",
+          "Filled",
+          "Disabled",
+          "Error"
+        ]
+      },
+      "Radius": {
+        "type": "VARIANT",
+        "defaultValue": "Squared",
+        "variantOptions": [
+          "Squared",
+          "Rounded"
+        ]
+      }
+    }
+  }
+}

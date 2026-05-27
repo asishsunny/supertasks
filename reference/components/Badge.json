@@ -1,0 +1,58 @@
+{
+  "Badge": {
+    "key": "ecf5b4088fb3d288c71c7b880da8768744f26184",
+    "id": "3503:2107",
+    "properties": {
+      "Badge#13715:663": {
+        "type": "TEXT",
+        "defaultValue": "Badge"
+      },
+      "Show Icon Left#13718:1416": {
+        "type": "BOOLEAN",
+        "defaultValue": false
+      },
+      "Show Icon Right#13718:1441": {
+        "type": "BOOLEAN",
+        "defaultValue": false
+      },
+      "Icon Left#13718:1466": {
+        "type": "INSTANCE_SWAP",
+        "defaultValue": "612:722",
+        "preferredValues": []
+      },
+      "Icon Right#13718:1491": {
+        "type": "INSTANCE_SWAP",
+        "defaultValue": "612:722",
+        "preferredValues": []
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "2xsmall (20)",
+        "variantOptions": [
+          "2xsmall (20)",
+          "Xsmall (24)"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Neutral",
+        "variantOptions": [
+          "Neutral",
+          "Information",
+          "Feature",
+          "Success",
+          "Warning",
+          "Error"
+        ]
+      },
+      "Radius": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Rounded"
+        ]
+      }
+    }
+  }
+}

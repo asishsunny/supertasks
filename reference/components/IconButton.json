@@ -1,0 +1,16 @@
+{
+  "IconButton": {
+    "key": "695d0e89dc004b0f45a0d6913a09d4f4247b61e4",
+    "id": "6057:647",
+    "properties": {
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover"
+        ]
+      }
+    }
+  }
+}

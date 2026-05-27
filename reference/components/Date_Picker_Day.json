@@ -1,0 +1,15 @@
+{
+  "Date Picker Day": {
+    "key": "308fa1a6ea50fa7c59a09dd024d46af28ecba90a",
+    "id": "3924:75",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "Pills Group": {
+    "key": "ee0e3e5d15c037e1ddaea310ef201f508a299dc0",
+    "id": "4395:8648",
+    "properties": {
+      "Amount": {
+        "type": "VARIANT",
+        "defaultValue": "Six",
+        "variantOptions": [
+          "Six"
+        ]
+      }
+    }
+  }
+}

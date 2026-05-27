@@ -1,0 +1,34 @@
+{
+  "Switch": {
+    "key": "d607a1677794cc6fac07f5c2554d3dc87ffac6ed",
+    "id": "984:865",
+    "properties": {
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "3xsmall (18)",
+        "variantOptions": [
+          "4xsmall (16)",
+          "3xsmall (18)"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Enabled",
+        "variantOptions": [
+          "Enabled",
+          "Hover",
+          "Focus",
+          "Disabled"
+        ]
+      },
+      "Checked": {
+        "type": "VARIANT",
+        "defaultValue": "False",
+        "variantOptions": [
+          "False",
+          "True"
+        ]
+      }
+    }
+  }
+}

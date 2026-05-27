@@ -1,0 +1,37 @@
+{
+  "File Upload Cards": {
+    "key": "f8ebfabd06e5b86a9a4fb0bdb51ccc3b31cbef68",
+    "id": "4921:13081",
+    "properties": {
+      "Show Image#5297:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Download#5304:7": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Close#5313:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show More Actions#7515:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Thumbnail Badge#7515:4": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Uploading",
+          "Error"
+        ]
+      }
+    }
+  }
+}

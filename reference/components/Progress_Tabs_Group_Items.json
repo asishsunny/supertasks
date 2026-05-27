@@ -1,0 +1,43 @@
+{
+  "Progress Tabs Group Items": {
+    "key": "8a494b50b5444e5780de371c551202c8b72ebf56",
+    "id": "4662:10287",
+    "properties": {
+      "Label#13715:1168": {
+        "type": "TEXT",
+        "defaultValue": "Label"
+      },
+      "Icon#13715:1181": {
+        "type": "INSTANCE_SWAP",
+        "defaultValue": "590:1252",
+        "preferredValues": []
+      },
+      "Contrast": {
+        "type": "VARIANT",
+        "defaultValue": "Light",
+        "variantOptions": [
+          "Light"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Selected",
+          "Focus"
+        ]
+      },
+      "Progress": {
+        "type": "VARIANT",
+        "defaultValue": "Not Started",
+        "variantOptions": [
+          "Not Started",
+          "In Progress",
+          "Completed"
+        ]
+      }
+    }
+  }
+}

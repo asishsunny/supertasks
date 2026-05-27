@@ -1,0 +1,32 @@
+{
+  "Date Picker": {
+    "key": "645a04f08cdb6e4d2139dbe972a106e378c8359a",
+    "id": "3928:1894",
+    "properties": {
+      "Dates": {
+        "type": "VARIANT",
+        "defaultValue": "Range",
+        "variantOptions": [
+          "Single",
+          "Range"
+        ]
+      },
+      "Time": {
+        "type": "VARIANT",
+        "defaultValue": "False",
+        "variantOptions": [
+          "False",
+          "True"
+        ]
+      },
+      "Presets": {
+        "type": "VARIANT",
+        "defaultValue": "True",
+        "variantOptions": [
+          "False",
+          "True"
+        ]
+      }
+    }
+  }
+}

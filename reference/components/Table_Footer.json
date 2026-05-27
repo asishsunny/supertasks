@@ -1,0 +1,15 @@
+{
+  "Table Footer": {
+    "key": "4eca012b49799916ee6403d60ba6a742f1ae12e1",
+    "id": "3651:4754",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default"
+        ]
+      }
+    }
+  }
+}

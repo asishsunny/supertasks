@@ -1,0 +1,25 @@
+{
+  "Item Block": {
+    "key": "ed16c202ec296fbf6a7b69e96c1e42a13f481382",
+    "id": "6539:8215",
+    "properties": {
+      "Show passive price#6539:8": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show stock & available#6684:0": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Inputs": {
+        "type": "VARIANT",
+        "defaultValue": "3",
+        "variantOptions": [
+          "1",
+          "2",
+          "3"
+        ]
+      }
+    }
+  }
+}

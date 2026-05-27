@@ -1,0 +1,15 @@
+{
+  "Notification Drawer": {
+    "key": "fa41d3da732183a97c561cd16c3bbd930ed40c97",
+    "id": "5785:628",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default"
+        ]
+      }
+    }
+  }
+}

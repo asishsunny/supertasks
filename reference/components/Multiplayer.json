@@ -1,0 +1,16 @@
+{
+  "Multiplayer": {
+    "key": "c3988c9404aa2d786973e9ff851e11ebcb1d511a",
+    "id": "5037:210",
+    "properties": {
+      "Alignment": {
+        "type": "VARIANT",
+        "defaultValue": "Left",
+        "variantOptions": [
+          "Left",
+          "Right"
+        ]
+      }
+    }
+  }
+}

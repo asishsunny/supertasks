@@ -1,0 +1,29 @@
+{
+  "Three Select Input": {
+    "key": "d4e0abcb70952aaa4b7a9c3a18c991e6b5ee119d",
+    "id": "7051:28827",
+    "properties": {
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Focus",
+          "Multiple Selected",
+          "Selected",
+          "Disabled",
+          "Error"
+        ]
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "Base (32)",
+        "variantOptions": [
+          "Base (32)",
+          "Small (28)"
+        ]
+      }
+    }
+  }
+}

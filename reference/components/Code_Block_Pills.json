@@ -1,0 +1,17 @@
+{
+  "Code Block Pills": {
+    "key": "46366e06f73931b4f6ea8bf10cf8d99fcf7e9152",
+    "id": "4970:505",
+    "properties": {
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Pressed",
+          "Hover",
+          "Default"
+        ]
+      }
+    }
+  }
+}

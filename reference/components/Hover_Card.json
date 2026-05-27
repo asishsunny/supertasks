@@ -1,0 +1,16 @@
+{
+  "Hover Card": {
+    "key": "d55643f53bde077d96ac0c988e696b2d19583453",
+    "id": "3606:2067",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "User",
+        "variantOptions": [
+          "User",
+          "Note"
+        ]
+      }
+    }
+  }
+}

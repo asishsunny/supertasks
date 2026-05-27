@@ -1,0 +1,39 @@
+{
+  "Single / Multi Select": {
+    "key": "3ac687f3e397c44c080db083ecc1b6d678369e7d",
+    "id": "5946:2506",
+    "properties": {
+      "Select#13715:1042": {
+        "type": "TEXT",
+        "defaultValue": "Select"
+      },
+      "Icon#13715:1059": {
+        "type": "INSTANCE_SWAP",
+        "defaultValue": "5946:2092",
+        "preferredValues": []
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Focus",
+          "Selected",
+          "Multiple Selected",
+          "Disabled",
+          "Error",
+          "Multiple Error"
+        ]
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "Base (32)",
+        "variantOptions": [
+          "Small (28)",
+          "Base (32)"
+        ]
+      }
+    }
+  }
+}

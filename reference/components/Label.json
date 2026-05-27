@@ -1,0 +1,37 @@
+{
+  "Label": {
+    "key": "5170e53b57e75f2278bab924cbba1fd482805196",
+    "id": "3503:3017",
+    "properties": {
+      "Show Tooltip#4662:962": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Optional#4662:965": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Label#13715:913": {
+        "type": "TEXT",
+        "defaultValue": "Label"
+      },
+      "Optional#13715:916": {
+        "type": "TEXT",
+        "defaultValue": "(Optional)"
+      },
+      "Icon#13715:919": {
+        "type": "INSTANCE_SWAP",
+        "defaultValue": "523:954",
+        "preferredValues": []
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Plus",
+        "variantOptions": [
+          "Plus",
+          "Subtle"
+        ]
+      }
+    }
+  }
+}

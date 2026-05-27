@@ -1,0 +1,27 @@
+{
+  "Checkbox": {
+    "key": "b498fea6438eaa976445c34a360699016465ee1f",
+    "id": "3465:3370",
+    "properties": {
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Focus",
+          "Disabled"
+        ]
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Unchecked",
+        "variantOptions": [
+          "Unchecked",
+          "Checked",
+          "Indeterminate"
+        ]
+      }
+    }
+  }
+}

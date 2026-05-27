@@ -1,0 +1,18 @@
+{
+  "Menu": {
+    "key": "c8477002b460f4a34cbbf664e060c9097c699c19",
+    "id": "5973:10193",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "User",
+        "variantOptions": [
+          "Theme",
+          "Standard",
+          "User",
+          "Grid"
+        ]
+      }
+    }
+  }
+}

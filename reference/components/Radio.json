@@ -1,0 +1,26 @@
+{
+  "Radio": {
+    "key": "a2944f0724b6a693bb9b25f6c53db350ab7791e9",
+    "id": "3487:1779",
+    "properties": {
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Enabled",
+        "variantOptions": [
+          "Disabled",
+          "Enabled",
+          "Focus",
+          "Hover"
+        ]
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Unchecked",
+        "variantOptions": [
+          "Unchecked",
+          "Checked"
+        ]
+      }
+    }
+  }
+}

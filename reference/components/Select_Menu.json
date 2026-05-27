@@ -1,0 +1,20 @@
+{
+  "Select Menu": {
+    "key": "5c25ce70c0093dc81623275b9119eb4e007a6735",
+    "id": "7051:34769",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Layer 1",
+        "variantOptions": [
+          "Layer 1",
+          "Layer 2",
+          "Layer 1 Loader",
+          "Layer 2 Loader",
+          "Layer 1 Empty",
+          "Type6"
+        ]
+      }
+    }
+  }
+}

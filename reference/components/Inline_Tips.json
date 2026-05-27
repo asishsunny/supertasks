@@ -1,0 +1,16 @@
+{
+  "Inline Tips": {
+    "key": "f34490717254a879fd880029e6a008e7d22fd48d",
+    "id": "6913:5448",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Tip",
+        "variantOptions": [
+          "Warning",
+          "Tip"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "Mobile Bottom Nav": {
+    "key": "e71f9e606fd79b698114cff39250305ebdf745ad",
+    "id": "11733:158826",
+    "properties": {
+      "Active": {
+        "type": "VARIANT",
+        "defaultValue": "Dashboard",
+        "variantOptions": [
+          "Dashboard",
+          "Tasks",
+          "Inbox",
+          "Scheduler",
+          "More"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "CommandButton": {
+    "key": "dfec3206a9b547aebf8deb0c1f92f16126b09a1b",
+    "id": "4884:487",
+    "properties": {
+      "Variant": {
+        "type": "VARIANT",
+        "defaultValue": "Center",
+        "variantOptions": [
+          "Center",
+          "Right"
+        ]
+      },
+      "Status": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Pressed",
+          "Focus"
+        ]
+      }
+    }
+  }
+}

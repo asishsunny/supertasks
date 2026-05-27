@@ -1,0 +1,36 @@
+{
+  "Text Area Input": {
+    "key": "56c7bdd2e7ded7f386f21e2ceb147ed24f6298ed",
+    "id": "3609:3538",
+    "properties": {
+      "Placeholder#13715:899": {
+        "type": "TEXT",
+        "defaultValue": "Placeholder"
+      },
+      "Icon#13715:906": {
+        "type": "INSTANCE_SWAP",
+        "defaultValue": "3609:3665",
+        "preferredValues": []
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "Base (32)",
+        "variantOptions": [
+          "Base (32)"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Focus",
+          "Filled",
+          "Disabled",
+          "Error"
+        ]
+      }
+    }
+  }
+}

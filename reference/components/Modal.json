@@ -1,0 +1,23 @@
+{
+  "Modal": {
+    "key": "03b5af942932a385b1cb9a53cce4b81e1b71edc3",
+    "id": "6064:5775",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Drawer",
+        "variantOptions": [
+          "Drawer",
+          "Focus",
+          "Gallery",
+          "Edit Media",
+          "JSON",
+          "Table",
+          "Profile Settings",
+          "Metadata",
+          "Shortcuts"
+        ]
+      }
+    }
+  }
+}

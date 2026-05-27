@@ -1,0 +1,57 @@
+{
+  "ea005a34a6c9afff258391b28e8bbec799b41d90": { "component": "Table Cell", "variant": { "Type": "Header" } },
+  "779ff8da1cc85c047ae029261428f7bacfac1315": { "component": "Table Cell", "variant": { "Type": "Base" } },
+  "da35acd2972e192163dac6b6514f00853cb8396b": { "component": "Table Cell", "variant": { "Type": "User" } },
+  "4633a6e5ea37f89117b8ce53a490adebfb1b7233": { "component": "Table Cell", "variant": { "Type": "Badge" } },
+  "59549d2b30c127ec5a228a101460c6a36be64339": { "component": "Table Cell", "variant": { "Type": "Subtle" } },
+  "e9125f0bc919a81f95bb83896249a4482d901b36": { "component": "Table Cell", "variant": { "Type": "Status Badge" } },
+  "020bf065f11cd042619d80837009d21a6234bf49": { "component": "Table Cell", "variant": { "Type": "Actions" } },
+
+  "2708147d47326c65f87268de856bcf636e5c5ca6": { "component": "Badge", "variant": { "State": "Neutral" } },
+  "6db9196e9d45985395c9340e812efc98fed9c2db": { "component": "Badge", "variant": { "State": "Warning" } },
+  "dae9711e0bddaff23d41f8374d768a4334f9a69b": { "component": "Badge", "variant": { "State": "Error" } },
+  "5a4639df6967dab525814cc4ee2ccf225882938b": { "component": "Badge", "variant": { "State": "Feature" } },
+  "4ded201519cef4b0a9f96d037b659b9ba7ba82f5": { "component": "Badge", "variant": { "State": "Neutral" } },
+
+  "1950f75d5eaa7f748541b97ed485c49dad92cf86": { "component": "square-solid", "variant": { "Color": "grey" } },
+  "9fdba03ef454885f29b4468ee58a79850dc36a92": { "component": "square-solid", "variant": { "Color": "blue" } },
+  "f691fe7606441b1bd8907119b0c525c088b20eaa": { "component": "square-solid", "variant": { "Color": "orange" } },
+  "8f8efa94eba0d943ebaeecfe6946ec9062d2ca7d": { "component": "square-solid", "variant": { "Color": "green" } },
+  "151034795ab92850dbdff272c6c3752c4640d629": { "component": "square-solid", "variant": { "Color": "red" } },
+
+  "5b0928ffff3b77cdb0a9de765092cb23d1e04657": { "component": "Horizontal Divider", "variant": { "Type": "Line" } },
+
+  "be87429c2843c2cda4214f20550629b70cfaf110": { "component": "Table Filter", "variant": { "State": "Disabled" } },
+  "62e4a0d55bebd5da707c9ec525e68bcca1561562": { "component": "Table Filter", "variant": { "State": "Enabled" } },
+  "97904dd459a0d78f6dde94a4911925472fc7942d": { "component": "Table Footer", "variant": {} },
+
+  "2fc301fa1dbc38be81bda2ddad2df31460967d89": { "component": "Segment Item", "variant": {} },
+  "c877e7c87703ab5245c9fb582becdfca29f2c99e": { "component": "Button", "variant": { "Style": "Secondary", "Size": "Small (28)" } },
+  "576fe1cbf94e7d7101e6dd2aa718e6162cb8eaf4": { "component": "Button", "variant": { "Style": "Primary", "Size": "Small (28)" } },
+  "e44a1b0aad5e286f117c931a008d95df68f9c10d": { "component": "IconButton", "variant": {} },
+  "d039b9372469dc09792f9abdf0bfbe95952a1b9a": { "component": "Search Input", "variant": {} },
+
+  "841e9ed068f6479e054d61b80872a848cde779c6": { "component": "Avatar", "variant": { "Content": "Letters", "Type": "Rounded", "Size": "2xsmall (20)" } },
+  "900150d5b46c1301cffd22da2810bc80d5f41fee": { "component": "Avatar", "variant": { "Content": "Image", "Type": "Squared", "Size": "Xlarge (48)" } },
+  "572b8073571d998a9579f9107c1e5ada91263f26": { "component": "Avatar", "variant": { "Content": "Image", "Type": "Rounded", "Size": "2xsmall (20)" } },
+  "d465fdd0d1a0b364ae609b8ba5c1d4fbddf47ec2": { "component": "Avatar", "variant": { "Content": "Image", "Type": "Squared", "Size": "Xsmall (24)" } },
+
+  "e7c9b8a059736b0790d8fc980ded5173546941e7": { "component": "Text Input", "variant": {} },
+  "bd1f5406d356ddd230c8f16d424fb22f9886c325": { "component": "Text Area Input", "variant": {} },
+  "5415d9807f4608f2623c8079c4939722ea5deaac": { "component": "Single / Multi Select", "variant": {} },
+  "9855219e4e5c7dd4834dacff3c39d8cc09565cdd": { "component": "Label", "variant": {} },
+  "2698f7b89fc5474ed0033b6c33da647a88a7a58b": { "component": "Kbd", "variant": {} },
+  "8a3f273f9bd3c8ea97ec9fd0e4268e67e8d2b041": { "component": "Switch", "variant": {} },
+
+  "269e4e534eeb952a4d7308b3fc9f75e3e79e01ee": { "component": "Sidebar", "variant": { "Type": "Main" } },
+  "c27955f90e872b2b79e6ee7f8c7b4aed7372a4e5": { "component": "Topbar", "variant": { "Device": "Desktop" } },
+  "afdcda3bcfb54d765fccee20feead291324c1c20": { "component": "Sidebar Header", "variant": { "Type": "Main", "State": "Default" } },
+  "8a055a283aa3f83271b2c75a8b37528a3d1e70fd": { "component": "Sidebar List Item", "variant": { "State": "Selected" } },
+  "69801c50663dfb9f8c21908f7b080d13665d1480": { "component": "Sidebar List Item", "variant": { "State": "Default" } },
+  "ac8568e481d6d7efd278bda37b8fa9cd1ecbf44f": { "component": "Horizontal Divider", "variant": { "Type": "Line" } },
+  "31588456aa1bd491061c5fcdeb04d0d7c87bcdf7": { "component": "IconButton", "variant": { "Style": "Transparent Muted", "Size": "Small (28)" } },
+  "22db401f1503f15cf431c088fcdfe24e1c710768": { "component": "Breadcrumbs Group", "variant": { "Theme": "Muted" } },
+  "77bf0447ee0c336a8c18f16353640b2cbb99034c": { "component": "Breadcrumb Items", "variant": {} },
+  "cebc64f03e30adccdc0a57c6b4511646249bdb91": { "component": "User Badge", "variant": { "State": "Default" } },
+  "a7c39fcade77d5687ed8e7cf13245689e8304cc7": { "component": "Horizontal Divider", "variant": { "Type": "Dots" } }
+}

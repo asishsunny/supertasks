@@ -1,0 +1,29 @@
+{
+  "Prompt": {
+    "key": "852d38d96e5125929f623a675faadbffd7a50a12",
+    "id": "1196:1887",
+    "properties": {
+      "Title#13715:1228": {
+        "type": "TEXT",
+        "defaultValue": "Delete something"
+      },
+      "Description#13715:1232": {
+        "type": "TEXT",
+        "defaultValue": "Are you sure? This cannot be undone."
+      },
+      "Confirm Key#13715:1236": {
+        "type": "TEXT",
+        "defaultValue": "medusa-ui"
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Extra Dangerous",
+        "variantOptions": [
+          "Dangerous",
+          "Extra Dangerous",
+          "Confirmative"
+        ]
+      }
+    }
+  }
+}

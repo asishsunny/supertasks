@@ -1,0 +1,48 @@
+{
+  "Menu Items": {
+    "key": "9d4680e665ebb6c95895acdbfc7ebcb75c526d84",
+    "id": "5973:10431",
+    "properties": {
+      "Show Sub Text#3613:21": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Badge#3613:42": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Label#13715:961": {
+        "type": "TEXT",
+        "defaultValue": "Select item"
+      },
+      "Count#13715:979": {
+        "type": "TEXT",
+        "defaultValue": "99"
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Check",
+        "variantOptions": [
+          "Check",
+          "Radio",
+          "Icon",
+          "Divider",
+          "Title",
+          "Caption",
+          "Avatar"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Selected",
+          "Selected Hover",
+          "Disabled"
+        ]
+      }
+    }
+  }
+}

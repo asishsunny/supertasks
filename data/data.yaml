@@ -1,0 +1,188 @@
+app:
+  name: SuperTasks
+
+# Logged-in user — the manager viewing the app
+user:
+  name: Ludvig Rask
+  initials: L
+  email: ludvig@taskflow.io
+  role: Head of Product
+  avatar: photo
+
+nav:
+  menu:
+    - { title: Dashboard, icon: "4071:4623", codeName: ChartBar,     iconFill: fgSubtle }
+    - { title: Tasks,     icon: "4071:2407", codeName: ListCheckbox, iconFill: fgSubtle }
+    - { title: Team,      icon: "4071:2411", codeName: Users,        iconFill: fgSubtle }
+    - { title: Reports,   icon: "4071:2413", codeName: ChartPie,     iconFill: fgSubtle }
+  hidden:
+    - { title: Users,     icon: "4071:2411", codeName: Users,       iconFill: fgSubtle }
+    - { title: Reports,   icon: "4071:2413", codeName: ChartBar,    iconFill: fgSubtle }
+    - { title: Drafts,    icon: "4071:2358", codeName: DocumentText, iconFill: null }
+  extensions:
+    - { title: Settings,  icon: "4071:2415", codeName: CogSixTooth, iconFill: fgSubtle }
+  hidden_extensions:
+    - { title: Reports,      icon: "4071:2413", codeName: ChartBar,      iconFill: fgSubtle }
+    - { title: Reports,      icon: "4071:2413", codeName: ChartBar,      iconFill: fgSubtle }
+    - { title: Settings,     icon: "4071:2415", codeName: CogSixTooth,   iconFill: fgSubtle }
+    - { title: Integrations, icon: "4071:2417", codeName: PuzzlePiece,   iconFill: fgSubtle }
+    - { title: Settings,     icon: "4071:2415", codeName: CogSixTooth,   iconFill: fgSubtle }
+
+members:
+  - { id: 1, name: Sara Nelson, initials: S, email: sara@taskflow.io, role: Senior Designer, avatar_bg: tag/blue/tag-blue-bg, avatar_text: tag/blue/tag-blue-text }
+  - { id: 2, name: Mark Tan, initials: M, email: mark@taskflow.io, role: Frontend Engineer, avatar_bg: tag/purple/tag-purple-bg, avatar_text: tag/purple/tag-purple-text }
+  - { id: 3, name: Priya Rao, initials: P, email: priya@taskflow.io, role: Product Manager, avatar_bg: tag/warning/tag-orange-bg, avatar_text: tag/warning/tag-orange-text }
+  - { id: 4, name: Ben Walsh, initials: B, email: ben@taskflow.io, role: Backend Engineer, avatar_bg: tag/error/tag-red-bg, avatar_text: tag/error/tag-red-text }
+  - { id: 5, name: Lara Sato, initials: L, email: lara@taskflow.io, role: UX Researcher, avatar_bg: tag/success/tag-green-bg, avatar_text: tag/success/tag-green-text }
+  - { id: 6, name: Owen King, initials: O, email: owen@taskflow.io, role: QA Engineer, avatar_bg: tag/neutral/tag-neutral-bg, avatar_text: tag/neutral/tag-neutral-text }
+
+# due: offset from today (negative = past, positive = future)
+tasks:
+  - { id: 1,  title: Update onboarding flow,    desc: Revamp first-run experience for new users,          assignee: 1, status: in_progress, priority: high,     due: -6 }
+  - { id: 2,  title: Q2 roadmap review,         desc: Align team on priorities for next quarter,          assignee: 3, status: in_review,   priority: medium,   due: -1 }
+  - { id: 3,  title: Customer interviews,        desc: Schedule and run five user feedback sessions,       assignee: 5, status: todo,        priority: medium,   due: 7 }
+  - { id: 4,  title: "Fix billing bug #482",     desc: Null ref in payment callback causing failed charges, assignee: 4, status: in_progress, priority: critical, due: -8 }
+  - { id: 5,  title: "Design QA — Settings",     desc: Verify settings page matches latest design specs,   assignee: 1, status: in_review,   priority: high,     due: 3 }
+  - { id: 6,  title: Migrate analytics SDK,      desc: Switch from legacy tracker to new events API,       assignee: 2, status: todo,        priority: high,     due: 5 }
+  - { id: 7,  title: Redesign landing page,      desc: New hero section and updated feature grid,          assignee: 5, status: in_progress, priority: medium,   due: 1 }
+  - { id: 8,  title: Fix login bug,              desc: Session token not refreshing on mobile browsers,    assignee: 4, status: done,        priority: critical, due: -10 }
+  - { id: 9,  title: Write API documentation,    desc: Document all public endpoints with examples,        assignee: 6, status: todo,        priority: low,      due: 15 }
+  - { id: 10, title: Setup CI/CD pipeline,       desc: Configure GitHub Actions for staging deploys,       assignee: 2, status: in_progress, priority: high,     due: 12 }
+  - { id: 11, title: User research interviews,   desc: Recruit participants and prepare script,            assignee: 3, status: todo,        priority: medium,   due: -3 }
+  - { id: 12, title: Performance audit,          desc: Profile render times and bundle size,               assignee: 6, status: in_review,   priority: high,     due: 10 }
+  - { id: 13, title: Auth token refresh,         desc: Implement silent refresh with retry logic,          assignee: 2, status: done,        priority: critical, due: -5 }
+  - { id: 14, title: Mobile nav refactor,        desc: Replace drawer with bottom tab navigation,          assignee: 1, status: in_progress, priority: medium,   due: -2 }
+  - { id: 15, title: Icon system audit,          desc: Catalog all icons and remove unused SVGs,           assignee: 5, status: todo,        priority: low,      due: 20 }
+  - { id: 16, title: Sprint retrospective,       desc: Review velocity and action items from last sprint,  assignee: 3, status: done,        priority: low,      due: -5 }
+  - { id: 17, title: DB schema migration,        desc: Add indexes and normalize user preferences table,   assignee: 4, status: in_review,   priority: critical, due: 4 }
+  - { id: 18, title: Accessibility pass,         desc: Fix contrast ratios and add ARIA labels,            assignee: 6, status: todo,        priority: medium,   due: 8 }
+
+priority_colors:
+  low:      { tag_bg: tag/neutral/tag-neutral-bg, tag_text: tag/neutral/tag-neutral-text, tag_border: tag/neutral/tag-neutral-border, chart: tag/neutral/tag-neutral-icon }
+  medium:   { tag_bg: tag/warning/tag-orange-bg, tag_text: tag/warning/tag-orange-text, tag_border: tag/warning/tag-orange-border, chart: tag/warning/tag-orange-icon }
+  high:     { tag_bg: tag/error/tag-red-bg, tag_text: tag/error/tag-red-text, tag_border: tag/error/tag-red-border, chart: tag/error/tag-red-icon }
+  critical: { tag_bg: tag/purple/tag-purple-bg, tag_text: tag/purple/tag-purple-text, tag_border: tag/purple/tag-purple-border, chart: tag/purple/tag-purple-icon }
+
+status_colors:
+  todo:        { tag_bg: tag/neutral/tag-neutral-bg, tag_text: tag/neutral/tag-neutral-text, dot: tag/neutral/tag-neutral-icon }
+  in_progress: { tag_bg: tag/blue/tag-blue-bg, tag_text: tag/blue/tag-blue-text, dot: tag/blue/tag-blue-icon }
+  in_review:   { tag_bg: tag/warning/tag-orange-bg, tag_text: tag/warning/tag-orange-text, dot: tag/warning/tag-orange-icon }
+  done:        { tag_bg: tag/success/tag-green-bg, tag_text: tag/success/tag-green-text, dot: tag/success/tag-green-icon }
+
+status_dot_icons:
+  todo: square-grey-solid
+  in_progress: square-blue-solid
+  in_review: square-orange-solid
+  done: square-green-solid
+
+activity:
+  - { task_id: 4, member_id: 4, time: "1h ago",     text: "Found the root cause — null ref in payment callback." }
+  - { task_id: 1, member_id: 3, time: "2h ago",     text: "Moving this to in progress — starting the research phase today." }
+  - { task_id: 2, member_id: 3, time: "3h ago",     text: "Shared the draft roadmap doc for review." }
+  - { task_id: 10, member_id: 2, time: "4h ago",    text: "GitHub Actions config pushed to staging branch." }
+  - { task_id: 7, member_id: 5, time: "5h ago",     text: "New hero mockup ready for review." }
+  - { task_id: 17, member_id: 4, time: "6h ago",    text: "Migration script drafted, need review before running." }
+  - { task_id: 1, member_id: 1, time: "Yesterday",  text: "Added initial wireframes to the shared drive. Let me know if you have feedback." }
+  - { task_id: 12, member_id: 6, time: "Yesterday",  text: "Bundle size down 18% after tree-shaking unused deps." }
+
+settings:
+  profile:
+    title: Profile
+    subtitle: Update your personal information
+    action: Save changes
+    user:
+      name: Ludvig Rask
+      initials: L
+      avatar_bg: tag/warning/tag-orange-bg
+      avatar_text: tag/warning/tag-orange-text
+    fields:
+      - { label: Full name, value: Ludvig Rask, row: 1 }
+      - { label: Email, value: "ludvig@taskflow.io", row: 1 }
+      - { label: Job title, value: Head of Product, row: 2 }
+      - { label: Phone, value: "+1 (555) 000-0000", row: 2 }
+      - { label: Location, value: "San Francisco, CA", row: 3 }
+      - { label: Time zone, value: "Pacific Time (UTC-8)", row: 3 }
+    photoHint: Click to change photo
+    bio: ""
+  notifications:
+    toggles:
+      - { label: Email notifications, desc: Receive email for task assignments, on: true }
+      - { label: Push notifications, desc: Get push alerts for due dates, on: true }
+      - { label: Weekly digest, desc: "Summary of your team's progress", on: false }
+      - { label: Mentions, desc: Notify when someone mentions you, on: true }
+      - { label: Overdue alerts, desc: Alert when tasks pass their due date, on: true }
+  security:
+    toggles:
+      - { label: Two-factor authentication, desc: Add an extra layer of security to your account, on: false }
+      - { label: Login alerts, desc: Get notified when a new device signs in, on: true }
+      - { label: Session timeout, desc: Automatically sign out after 30 minutes of inactivity, on: false }
+      - { label: Require password change, desc: Force password update every 90 days, on: true }
+      - { label: SSO enforcement, desc: Require single sign-on for all team members, on: false }
+  billing:
+    historyTitle: Billing history
+    plan:
+      name: Pro plan
+      price: "$12/month"
+      renews: "Renews on Apr 15, 2026"
+      action: Change plan
+    payment:
+      label: Payment method
+      value: Visa ending in 4242
+      action: Update
+    history:
+      - { date: "Mar 1, 2026", desc: "Pro Plan — Monthly", amount: "$12.00" }
+      - { date: "Feb 1, 2026", desc: "Pro Plan — Monthly", amount: "$12.00" }
+      - { date: "Jan 1, 2026", desc: "Pro Plan — Monthly", amount: "$12.00" }
+
+reports:
+  - { report: "Sprint velocity — Q2 week 5",         member_id: 3, range: "Apr 7 – May 7",  generated: "May 7, 2026" }
+  - { report: "Task completion by assignee",         member_id: 1, range: "Apr 7 – May 7",  generated: "May 7, 2026" }
+  - { report: "Overdue tasks — root cause analysis", member_id: 6, range: "Apr 7 – May 7",  generated: "May 6, 2026" }
+  - { report: "Team workload distribution",          member_id: 3, range: "Apr 7 – May 7",  generated: "May 5, 2026" }
+  - { report: "Priority breakdown across sprints",   member_id: 2, range: "Apr 14 – May 7", generated: "May 4, 2026" }
+  - { report: "Burndown chart — milestone alpha",    member_id: 4, range: "Apr 7 – May 7",  generated: "May 3, 2026" }
+
+modal_invite:
+  title: Invite team member
+  fields:
+    - { label: Full name, placeholder: "Enter name..." }
+    - { label: Email, placeholder: "Enter email..." }
+    - { label: Role, placeholder: "Select role..." }
+  actions:
+    primary: Send invite
+    secondary: Cancel
+
+modal_detail:
+  task_id: 1
+  created: "Jan 5, 2026"
+
+modals:
+  create_task:
+    name: Create Task Modal
+    title: Create new task
+    fields:
+      - { label: Task name,   type: input,    placeholder: "Enter task name..." }
+      - { label: Description, type: textarea,  placeholder: "Add a description..." }
+      - { label: Priority,    type: select,   value: Select, row: 1 }
+      - { label: Status,      type: select,   value: Select, row: 1 }
+      - { label: Assignee,    type: select,   value: Select, row: 2 }
+      - { label: Due date,    type: select,   value: Select, row: 2 }
+    actions: { primary: Create task, secondary: Cancel }
+
+  invite_member:
+    name: Invite Team Member
+    title: Invite team member
+    fields:
+      - { label: Full name, type: input, placeholder: "Enter name..." }
+      - { label: Email,     type: input, placeholder: "Enter email..." }
+      - { label: Role,      type: select, value: "Select role..." }
+    actions: { primary: Send invite, secondary: Cancel }
+
+  generate_report:
+    name: Generate Report
+    title: Generate report
+    fields:
+      - { label: Report name, type: input, placeholder: "Enter report name..." }
+      - { label: Member,      type: select, value: "Select member..." }
+      - { label: Date range,  type: select, value: "Select range..." }
+    actions: { primary: Generate report, secondary: Cancel }

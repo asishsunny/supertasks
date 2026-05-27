@@ -1,0 +1,62 @@
+{
+  "Button": {
+    "key": "a0bf8d079cfff57fc4f2b49b2c95307592f95104",
+    "id": "3464:3904",
+    "properties": {
+      "Show Icon Right#4633:0": {
+        "type": "BOOLEAN",
+        "defaultValue": false
+      },
+      "Show Icon Left#4633:481": {
+        "type": "BOOLEAN",
+        "defaultValue": false
+      },
+      "Label#13715:0": {
+        "type": "TEXT",
+        "defaultValue": "Label"
+      },
+      "Icon Left#13715:101": {
+        "type": "INSTANCE_SWAP",
+        "defaultValue": "612:722",
+        "preferredValues": []
+      },
+      "Icon Right#13715:202": {
+        "type": "INSTANCE_SWAP",
+        "defaultValue": "612:722",
+        "preferredValues": []
+      },
+      "Style": {
+        "type": "VARIANT",
+        "defaultValue": "Primary",
+        "variantOptions": [
+          "Primary",
+          "Secondary",
+          "Danger",
+          "Transparent",
+          "Transparent Muted"
+        ]
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "Small (28)",
+        "variantOptions": [
+          "Small (28)",
+          "Base (32)",
+          "Large (40)",
+          "Xlarge (48)"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Pressed",
+          "Focus",
+          "Disabled"
+        ]
+      }
+    }
+  }
+}

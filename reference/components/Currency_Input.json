@@ -1,0 +1,40 @@
+{
+  "Currency Input": {
+    "key": "f523ab476a8eed18276ae66669da6dc735fcf30a",
+    "id": "3609:3251",
+    "properties": {
+      "Amount#13715:482": {
+        "type": "TEXT",
+        "defaultValue": "0.00"
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "Base (32)",
+        "variantOptions": [
+          "Small (28)",
+          "Base (32)"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Focus",
+          "Filled",
+          "Disabled",
+          "Error"
+        ]
+      },
+      "Color": {
+        "type": "VARIANT",
+        "defaultValue": "bg-field",
+        "variantOptions": [
+          "bg-field",
+          "bg-field-component"
+        ]
+      }
+    }
+  }
+}

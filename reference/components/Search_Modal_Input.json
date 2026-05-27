@@ -1,0 +1,32 @@
+{
+  "Search Modal Input": {
+    "key": "dfad7a2dbb96823bee9c92cb280b341921205830",
+    "id": "4667:17928",
+    "properties": {
+      "Show Spinner#7656:9": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Label#13715:1153": {
+        "type": "TEXT",
+        "defaultValue": "Jump to or find something..."
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Filled"
+        ]
+      },
+      "Depth": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "One down"
+        ]
+      }
+    }
+  }
+}

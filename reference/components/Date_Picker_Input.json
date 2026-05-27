@@ -1,0 +1,56 @@
+{
+  "Date Picker Input": {
+    "key": "538f330ae7886903eb1f6ee50434673d8e41f4c3",
+    "id": "4068:2457",
+    "properties": {
+      "Date#13715:758": {
+        "type": "TEXT",
+        "defaultValue": "DD/MM/YYYY"
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Focus",
+          "Filled",
+          "Disabled",
+          "Error"
+        ]
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "Base (32)",
+        "variantOptions": [
+          "Small (28)",
+          "Base (32)"
+        ]
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Single",
+        "variantOptions": [
+          "Single",
+          "Range"
+        ]
+      },
+      "Time": {
+        "type": "VARIANT",
+        "defaultValue": "False",
+        "variantOptions": [
+          "False",
+          "True"
+        ]
+      },
+      "Color": {
+        "type": "VARIANT",
+        "defaultValue": "bg-field",
+        "variantOptions": [
+          "bg-field",
+          "bg-field-component"
+        ]
+      }
+    }
+  }
+}

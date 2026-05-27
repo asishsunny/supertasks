@@ -1,0 +1,22 @@
+{
+  "Tooltip": {
+    "key": "1a12e158a0fb053296a10043f11823d4ab9340d6",
+    "id": "938:833",
+    "properties": {
+      "Label#13715:1208": {
+        "type": "TEXT",
+        "defaultValue": "Tooltip Text"
+      },
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Text",
+        "variantOptions": [
+          "Text",
+          "Shortcut",
+          "Breadcrumbs",
+          "Return"
+        ]
+      }
+    }
+  }
+}

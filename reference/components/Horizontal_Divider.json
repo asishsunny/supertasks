@@ -1,0 +1,16 @@
+{
+  "Horizontal Divider": {
+    "key": "bc54c12758a0715a42f1766cdb6f8cc04824aa26",
+    "id": "5932:11179",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Line",
+        "variantOptions": [
+          "Dots",
+          "Line"
+        ]
+      }
+    }
+  }
+}

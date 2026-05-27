@@ -1,0 +1,158 @@
+# screens.yaml — generated from plan.md
+# Layout: one nav item per row, 80px between frames, 200px between rows
+# Each light+dark pair: 1440 + 80 + 1440 = 2960px wide
+
+dashboard:
+  snippets:
+    - shell
+    - statcards
+    - chartcards
+    - table
+  page: Final render
+  frame: Dashboard
+  pageTitle: Dashboard
+  selectedNav: Dashboard
+  dataView: dashboard
+  x: 0
+  y: 0
+tasks_list:
+  snippets:
+    - shell
+    - controls
+    - table
+  page: Final render
+  frame: Tasks — List
+  pageTitle: Tasks
+  selectedNav: Tasks
+  dataView: tasks_list
+  x: 0
+  y: 1100
+tasks_kanban:
+  snippets:
+    - shell
+    - controls
+    - kanban
+  page: Final render
+  frame: Tasks — Kanban
+  pageTitle: Tasks
+  selectedNav: Tasks
+  dataView: tasks_kanban
+  x: 3040
+  y: 1100
+tasks_drawer:
+  type: comp
+  compStyle: drawer
+  base: Tasks — Kanban
+  overlay: Task Details Modal
+  drawerW: 480
+  inset: 8
+  page: Final render
+  frame: Tasks — Drawer
+  x: 6080
+  y: 1100
+tasks_modal_create:
+  type: comp
+  compStyle: modal
+  base: Tasks — Kanban
+  overlay: Create Task Modal
+  page: Final render
+  frame: Tasks — New Task
+  x: 9120
+  y: 1100
+team:
+  snippets:
+    - shell
+    - table
+  page: Final render
+  frame: Team
+  pageTitle: Team
+  selectedNav: Team
+  dataView: team
+  x: 0
+  y: 2200
+team_invite:
+  type: comp
+  compStyle: modal
+  base: Team
+  overlay: Invite Team Member
+  page: Final render
+  frame: Team — Invite
+  x: 3040
+  y: 2200
+reports:
+  snippets:
+    - shell
+    - controls
+    - table
+  page: Final render
+  frame: Reports
+  pageTitle: Reports
+  selectedNav: Reports
+  dataView: reports
+  x: 0
+  y: 3300
+reports_generate:
+  type: comp
+  compStyle: modal
+  base: Reports
+  overlay: Generate Report
+  page: Final render
+  frame: Reports — Generate
+  x: 3040
+  y: 3300
+settings:
+  snippets:
+    - shell
+    - settings
+  page: Final render
+  frame: Settings
+  pageTitle: Settings
+  selectedNav: Settings
+  dataView: settings
+  x: 0
+  y: 4400
+settings_notifications:
+  snippets:
+    - shell
+    - settings
+  page: Final render
+  frame: Settings — Notifications
+  pageTitle: Settings
+  selectedNav: Settings
+  dataView: settings_notifications
+  x: 3040
+  y: 4400
+settings_security:
+  snippets:
+    - shell
+    - settings
+  page: Final render
+  frame: Settings — Security
+  pageTitle: Settings
+  selectedNav: Settings
+  dataView: settings_security
+  x: 6080
+  y: 4400
+settings_billing:
+  snippets:
+    - shell
+    - settings
+  page: Final render
+  frame: Settings — Billing
+  pageTitle: Settings
+  selectedNav: Settings
+  dataView: settings_billing
+  x: 9120
+  y: 4400
+_modal_create_task:
+  type: modal
+  modalKey: create_task
+_modal_invite_member:
+  type: modal
+  modalKey: invite_member
+_modal_generate_report:
+  type: modal
+  modalKey: generate_report
+_modal_details:
+  type: snippet
+  snippet: modal-details-snippet.js

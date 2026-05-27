@@ -1,0 +1,42 @@
+{
+  "Button Group Items": {
+    "key": "055e71adc5e0d1080cff770055452ecaa58a7e9c",
+    "id": "5934:1321",
+    "properties": {
+      "Type": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Muted",
+          "Icon"
+        ]
+      },
+      "Size": {
+        "type": "VARIANT",
+        "defaultValue": "Small (28)",
+        "variantOptions": [
+          "Small (28)"
+        ]
+      },
+      "Color": {
+        "type": "VARIANT",
+        "defaultValue": "bg-component",
+        "variantOptions": [
+          "bg-component",
+          "bg-base"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Active",
+          "Disabled"
+        ]
+      }
+    }
+  }
+}

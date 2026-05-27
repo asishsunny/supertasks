@@ -1,0 +1,18 @@
+{
+  "Date Picker Presets": {
+    "key": "bbbe64614cea13a45ca822a025a476fb5710c44e",
+    "id": "3923:74",
+    "properties": {
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Hover",
+          "Selected",
+          "Focus"
+        ]
+      }
+    }
+  }
+}

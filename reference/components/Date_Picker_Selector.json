@@ -1,0 +1,30 @@
+{
+  "Date Picker Selector": {
+    "key": "16840e5a2009aa87385282177a3e4eee975ab914",
+    "id": "3922:11814",
+    "properties": {
+      "Show Left IconButton#5968:27": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Show Right IconButton#5968:33": {
+        "type": "BOOLEAN",
+        "defaultValue": true
+      },
+      "Contrast": {
+        "type": "VARIANT",
+        "defaultValue": "Light",
+        "variantOptions": [
+          "Light"
+        ]
+      },
+      "Navigation": {
+        "type": "VARIANT",
+        "defaultValue": "Left + Right",
+        "variantOptions": [
+          "Left + Right"
+        ]
+      }
+    }
+  }
+}

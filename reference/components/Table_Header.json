@@ -1,0 +1,24 @@
+{
+  "Table Header": {
+    "key": "97d78bad57ced54b74b5053ae1de170f6e15be89",
+    "id": "3651:3758",
+    "properties": {
+      "Selectable": {
+        "type": "VARIANT",
+        "defaultValue": "True",
+        "variantOptions": [
+          "True",
+          "False"
+        ]
+      },
+      "State": {
+        "type": "VARIANT",
+        "defaultValue": "Default",
+        "variantOptions": [
+          "Default",
+          "Pressed"
+        ]
+      }
+    }
+  }
+}
