@@ -213,15 +213,7 @@ reports:
       - 7d
     activeTab: 30d
     showSearch: true
-  stats:
-    - label: Total completed
-      value: 3
-    - label: Avg completion rate
-      value: 17%
-    - label: Overdue
-      value: 5
-    - label: On track
-      value: 10
+  stats: from-reports
   columns:
     - header: Report name
       type: base

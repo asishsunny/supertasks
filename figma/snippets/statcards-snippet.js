@@ -128,7 +128,7 @@ for (const card of DATA.cards) {
   valueTxt.name = 'Value';
   valueTxt.characters = card.value;
   await valueTxt.setTextStyleIdAsync(sty.H2);
-  valueTxt.fills = [await SOLID(card.label === 'Overdue' ? T.fgError : T.fgBase)];
+  valueTxt.fills = [await SOLID(card.error ? T.fgError : T.fgBase)];
   frame.appendChild(valueTxt);
 }
 

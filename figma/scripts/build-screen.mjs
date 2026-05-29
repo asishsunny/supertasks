@@ -228,13 +228,36 @@ function mkShellData(scr, vd) {
   };
 }
 
-function mkStats(stats) {
+function mkStats(stats, rawData, viewData) {
+  if (stats === 'from-reports') {
+    const rows = viewData.rows || [];
+    const tasks = rawData.tasks;
+    const total = rows.length;
+    const memberOverdue = new Set(
+      tasks.filter(t => t.due < 0 && t.status !== 'done').map(t => t.assignee)
+    );
+    const flagged = rows.filter(r => memberOverdue.has(r.member_id)).length;
+    const dates = rows.map(r => r.generated).sort();
+    const latest = dates[dates.length - 1] || '—';
+    const avgPerMonth = total > 0 ? Math.round((total / 3) * 10) / 10 : 0;
+    return {
+      cards: [
+        { label: 'Total reports', value: String(total) },
+        { label: 'Flagged overdue', value: String(flagged), error: true },
+        { label: 'Avg per month', value: String(avgPerMonth) },
+        { label: 'Last generated', value: latest.replace(/, \d{4}$/, '') },
+      ],
+    };
+  }
+  if (Array.isArray(stats)) {
+    return { cards: stats.map(s => ({ label: s.label, value: String(s.value) })) };
+  }
   return {
     cards: [
       { label: 'Total Tasks', value: String(stats.total_tasks) },
       { label: 'In Progress', value: String(stats.in_progress) },
       { label: 'Completed',   value: String(stats.completed) },
-      { label: 'Overdue',     value: String(stats.overdue) },
+      { label: 'Overdue',     value: String(stats.overdue), error: true },
     ],
   };
 }
@@ -433,7 +456,7 @@ function mkMemberTableData(viewData, rawData) {
     field: c.field,
     width: c.width === 'FILL' ? 'FILL' : Number(c.width),
   }));
-  columns.push({ type: 'actions' });
+  if (!columns.some(c => c.type === 'actions')) columns.push({ type: 'actions' });
   return {
     title: viewData.shell?.pageTitle || 'Table',
     showTitle: false,
@@ -577,7 +600,7 @@ const snippetDataMap = {
   shell: mkShellData(screen, viewData),
 };
 if (viewData.controls)     snippetDataMap.controls   = mkControls(viewData.controls);
-if (viewData.stats)        snippetDataMap.statcards  = mkStats(viewData.stats);
+if (viewData.stats)        snippetDataMap.statcards  = mkStats(viewData.stats, data, viewData);
 if (viewData.charts)       snippetDataMap.chartcards = mkCharts(viewData.charts, viewData.stats.total_tasks);
 if (viewData.recent_tasks) snippetDataMap.table      = mkTableData(viewData.recent_tasks, data);
 if (viewData.rows && Array.isArray(viewData.rows) && typeof viewData.rows[0] === 'number')

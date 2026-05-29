@@ -83,10 +83,11 @@ Modal: invite_member
 ## reports
 
 Shell: nav=Reports, breadcrumbs=[Reports, 30 days], actions=[Generate report]
-Snippets: shell, controls, table
+Snippets: shell, statcards, controls, table
 Controls: tabs=[90d, 30d, 7d], active=30d, buttons=[Filter (Funnel)], search=true
 
 **Stats** — Total completed (3), Avg completion rate (17%), Overdue (5), On track (10)
+Stats render between header and controls bar, same grid as dashboard statcards.
 
 **Table** — 6 rows, no pagination
 Columns: Report name (base, FILL), Member (user, 200), Date range (subtle, 160), Generated on (subtle, 140)

@@ -1,0 +1,16 @@
+Pattern,Us,Medusa Admin,Plane,Linear,Notion,Asana,Attio,Shadcn,Cal.com
+Thin page shells,✅,✅,✅,✅,✅,✅,✅,✅,⚠️ fat pages
+Sections own store,✅,✅,✅,✅,✅,✅,✅,✅,⚠️ mixed
+Headless table,✅ TanStack,✅ TanStack,✅ custom,✅ custom,✅ custom,✅ custom,✅ custom,✅ TanStack,✅ TanStack
+Multi-view same data,✅ 2 views,❌ single view,✅ 5 views,✅ 3 views,✅ 6 views,✅ 5 views,✅ 4 views,❌ table only,❌
+Filter persistence,✅ URL (nuqs),✅ URL params,✅ store,✅ store,✅ URL,✅ URL,✅ URL,✅ URL (nuqs),✅ URL
+Shared cells,✅,✅,✅,✅,✅,✅,✅,✅,✅
+State split,✅ Zustand→RQ,✅ RQ only,✅ SWR+MobX,✅ Sync+MobX,✅ custom,✅ custom,✅ RQ+custom,✅ RQ+Zustand,✅ RQ+Zustand
+Drag-and-drop,✅ dnd-kit,❌ none,✅ dnd-kit,✅ custom,✅ custom,✅ custom,✅ custom,❌ none,❌ none
+Modal pattern,✅ store,✅ route-based,✅ store,✅ store,✅ route,✅ route,✅ store,✅ route-based,✅ route
+Domain folders,✅,✅,✅,✅,✅,✅,✅,❌ flat,⚠️ mixed
+Virtualization,✅ planned,✅,✅,✅,✅,✅,✅,❌,❌
+Error boundaries,✅ view-level,✅ content-level,✅,✅,✅,✅,✅,❌,⚠️
+Optimistic updates,✅ planned,✅ RQ mutations,✅ MobX,✅ sync engine,✅,✅,✅,❌,✅
+Accessibility,✅ Medusa UI + manual,✅ built-in,✅,✅,✅,✅,✅,✅ primitives,⚠️
+Total,14/14,13/14,14/14,14/14,14/14,14/14,14/14,10/14,10/14

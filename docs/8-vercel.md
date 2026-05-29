@@ -1,4 +1,4 @@
-# Video 7 — Vercel
+# Video 8 — Vercel
 
 ## What This Step Does
 

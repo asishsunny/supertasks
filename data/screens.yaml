@@ -82,6 +82,7 @@ team_invite:
 reports:
   snippets:
     - shell
+    - statcards
     - controls
     - table
   page: Final render

@@ -1,8 +1,8 @@
-# Video 4 — Compose
+# Video 5 — Compose
 
-## What This Step Does
+## The Story
 
-Sections are built. Now wire them together — connect modals to layout header buttons, compose pages from sections, add missing routes.
+Sections are built. Now wire them together — connect modals to layout header buttons, compose pages from sections, verify the full interactive flow.
 
 ---
 
@@ -26,12 +26,11 @@ const PAGE_HEADERS = {
 };
 ```
 
-**Select options for modals:**
-- Priority: from select-options.ts
-- Status: from select-options.ts
-- Assignee: derived from MEMBERS
-- Role: from select-options.ts
-- Date range: static options
+**Select options for modals** (from `lib/select-options.ts` per architecture):
+- Priority: `PRIORITY_OPTIONS`
+- Status: `STATUS_OPTIONS`
+- Assignee: derived from store members
+- Role: `ROLE_OPTIONS`
 
 ---
 
@@ -41,44 +40,35 @@ Each page imports its section(s) and renders them. Zero logic in pages.
 
 | Page | Sections |
 |------|----------|
-| `dashboard/page.tsx` | `<StatCards />` `<ChartCards />` `<RecentTasksTable />` |
-| `tasks/page.tsx` | `<TasksTable />` |
-| `tasks/kanban/page.tsx` | `<KanbanBoard />` |
+| `dashboard/page.tsx` | `<StatCards />` `<ChartCards />` `<RecentTasks />` |
+| `tasks/page.tsx` | `<TasksSection />` (owns list/kanban toggle internally) |
 | `team/page.tsx` | `<TeamTable />` |
-| `reports/page.tsx` | `<ReportsTable />` |
-| `settings/page.tsx` | `<SettingsPage />` |
+| `reports/page.tsx` | `<ReportsStatCards />` `<ReportsTable />` |
+| `settings/page.tsx` | `<SettingsSection />` |
 
 ```tsx
 // Example — dashboard
 export default function DashboardPage() {
   return (
-    <div className="flex flex-col gap-4">
+    <>
       <StatCards />
       <ChartCards />
-      <RecentTasksTable />
-    </div>
+      <RecentTasks />
+    </>
   );
 }
 ```
 
----
-
-## Step 3: Add Missing Routes
-
-Create `tasks/kanban/page.tsx` if it doesn't exist — KanbanBoard needs its own route for tab switching.
-
-ControlsBar tab change navigates between:
-- `/tasks` → List view
-- `/tasks/kanban` → Kanban view
+Tasks is ONE section with two render modes. List ↔ kanban is a display toggle inside TasksSection, not separate routes. Filters persist across both views.
 
 ---
 
-## Step 4: Install Interactivity Dependencies
+## Step 3: Install Interactivity Dependencies
 
-If not done in Step 1 of smart sections:
+If not done during section builds:
 
 ```bash
-npm install react-hook-form @hookform/resolvers zod @hello-pangea/dnd --legacy-peer-deps
+npm install react-hook-form @hookform/resolvers zod @dnd-kit/core @dnd-kit/sortable --legacy-peer-deps
 ```
 
 Also add `predev` script to regenerate data on start:
@@ -92,7 +82,7 @@ Also add `predev` script to regenerate data on start:
 
 ---
 
-## Step 5: Verify Full Flow
+## Step 4: Verify Full Flow
 
 Test every interaction end-to-end:
 
@@ -106,10 +96,21 @@ Test every interaction end-to-end:
 | Search | Table filters by title |
 | Filter by status/priority | Table shows subset |
 | Sort | Table reorders |
-| Date filter (preset + custom) | Table filters by due date |
+| Date filter | Table filters by due date |
 | Column toggle | Columns hide/show |
+| List ↔ Kanban toggle | View switches, filters persist |
 | Settings save | Toast confirms |
 | Dark mode | All sections render correctly |
+
+---
+
+## Video Flow
+
+1. **Show the pieces** — sections work in isolation
+2. **Wire modals** — connect header buttons to FormModal
+3. **Compose pages** — import sections, one-liner shells
+4. **Demo the flow** — add task → see it everywhere → delete → gone everywhere
+5. **End with** — "One store, zero wiring. Sections react, views repaint."
 
 ---
 
