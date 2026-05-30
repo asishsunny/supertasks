@@ -82,7 +82,7 @@ Rule: smart shell passes data down. Views are interchangeable. Anti-pattern: one
 
 ### Error boundaries wrap views
 
-Rule: error boundaries wrap views inside sections. Section owns boundary placement, blocks stay dumb. Controls and overlays remain functional if a view errors.
+Rule: error boundaries wrap views inside sections via `ViewBoundary` (thin wrapper over `react-error-boundary`). Section owns boundary placement, blocks stay dumb. Controls and overlays remain functional if a view errors.
 
 Verify: if a table throws, does the sidebar still work? Do the controls still render?
 
@@ -119,11 +119,11 @@ export default function TasksSection() {
   return (
     <>
       <ControlsBar view={view} onView={setView} ... />
-      <ErrorBoundary fallback={<ViewError />}>
+      <ViewBoundary fallback={<ViewError />}>
         {view === 'kanban'
           ? <KanbanView data={filtered} ... />
           : <TableView data={filtered} columns={columns} ... />}
-      </ErrorBoundary>
+      </ViewBoundary>
       <TaskDetailDrawer ... />
     </>
   );
@@ -177,14 +177,19 @@ const columns = [
 
 ### Views
 
-Rule: TableView and KanbanView virtualize via @tanstack/react-virtual when row count exceeds threshold. 18 rows renders normally, scales to thousands.
+Rule: both views render plain now. Scale handling splits by view — they're separate, so they don't share a strategy:
 
-Verify: add 500 dummy tasks. Does scroll stay smooth? If it stutters, virtualization isn't wired.
+- **TableView** → virtualizes (`@tanstack/react-virtual`, threshold-gated). 🔵 **Phase 2**. Additive, slots into the render path with zero restructure. No drag, so no conflict.
+- **KanbanView** → does **not** virtualize. Virtual + dnd-kit fight (drag targets off-screen, collision math breaks on mount/unmount). Instead, cap per column — "show N, load more" — if a column ever gets huge. Linear/Plane do this. 🔵 **Phase 2**, only if needed.
+
+Don't build either for 18 rows.
+
+Verify (Phase 2): add 500 dummy tasks. Does table scroll stay smooth? If it stutters, virtualization isn't wired.
 
 | View | What |
 |------|------|
-| `TableView` | TanStack Table — headers, rows, cells via column defs. Empty state. Virtualizes when rows exceed threshold. |
-| `KanbanView` | dnd-kit — drag-drop status columns + card rendering. Virtualizes long columns. |
+| `TableView` | TanStack Table — headers, rows, cells via column defs. Empty state. _(Virtualizes — Phase 2.)_ |
+| `KanbanView` | dnd-kit — drag-drop status columns + card rendering. _(No virtual — paginate per column if huge, Phase 2.)_ |
 
 ### Overlays
 
@@ -217,12 +222,12 @@ Verify: tab through the app with keyboard only. Can you reach every interactive 
 | Concern | Tool | Rule |
 |---------|------|------|
 | Client state | Zustand | One store, one import. Never useState for shared state. |
-| Server data (post-Supabase) | React Query | Entity data migrates from Zustand. Zustand keeps UI state only. |
+| Server data | React Query | 🔵 **Phase 2.** Entity data migrates from Zustand. Zustand keeps UI state only. Build the UI-vs-entity boundary now so this drops in clean. |
 | Tables | TanStack Table + Medusa `Table.*` | Columns defined per domain in `features/`. Never build custom table. |
 | Drag-and-drop | @dnd-kit | Kanban only. No other DnD library. |
 | Filter state | nuqs | URL params via `useQueryState()`. |
 | Forms | react-hook-form + zod | Validation on modals. |
-| Virtualization | @tanstack/react-virtual | TableView and KanbanView when rows exceed threshold. |
+| Virtualization | @tanstack/react-virtual | 🔵 **Phase 2.** TableView only, when rows exceed threshold. KanbanView paginates per column instead (virtual + dnd conflict). Inert at demo scale. |
 
 Verify (state): search for `useState` in sections. If it holds data that another section also needs, it should be in the store.
 
@@ -240,23 +245,26 @@ app/src/
 │   └── index.ts                  ← Zustand (tasks, members, reports)
 │
 ├── components/                   ← shared across domains
-│   ├── data-table/
-│   │   └── DataTable.tsx         ← TanStack Table + Medusa Table wrapper
+│   ├── views/
+│   │   ├── TableView.tsx         ← TanStack Table + Medusa Table wrapper
+│   │   └── KanbanView.tsx        ← dnd-kit drag-drop columns
 │   ├── cells/
-│   │   ├── TitleCell.tsx
-│   │   ├── UserCell.tsx
+│   │   ├── AvatarCell.tsx
 │   │   ├── BadgeCell.tsx
-│   │   ├── SubtleCell.tsx
-│   │   └── ActionsCell.tsx
+│   │   ├── StatusDotCell.tsx
+│   │   ├── DateCell.tsx
+│   │   └── TextCell.tsx
 │   ├── controls/
-│   │   └── Controls.tsx
-│   ├── modal/
-│   │   └── FormModal.tsx
-│   ├── drawer/
-│   │   └── TaskDrawer.tsx        ← shared (dashboard + tasks)
+│   │   ├── ControlsBar.tsx
+│   │   ├── Pagination.tsx
+│   │   └── RowActionMenu.tsx     ← three-dot menu, passed as last column
+│   ├── overlays/
+│   │   ├── FormModal.tsx
+│   │   └── TaskDetailDrawer.tsx  ← shared (dashboard + tasks)
 │   └── shared/
-│       ├── ColorAvatar.tsx
-│       └── StatusDot.tsx
+│       ├── ColorAvatar.tsx       ← primitive; AvatarCell wraps it
+│       ├── StatusDot.tsx         ← primitive; StatusDotCell wraps it
+│       └── ViewBoundary.tsx      ← react-error-boundary wrapper for views
 │
 ├── features/
 │   ├── dashboard/
@@ -266,8 +274,7 @@ app/src/
 │   │   ├── columns.tsx
 │   │   └── hooks.ts
 │   ├── tasks/
-│   │   ├── TasksSection.tsx
-│   │   ├── TasksKanban.tsx
+│   │   ├── TasksSection.tsx       ← smart shell, switches TableView/KanbanView
 │   │   ├── columns.tsx
 │   │   └── hooks.ts
 │   ├── team/
@@ -307,7 +314,7 @@ Same data, two outputs. Change data.yaml → both update.
 
 ## Store (Zustand)
 
-Rule: optimistic updates baked into store. Zustand updates immediately. When Supabase arrives, React Query `onMutate`/`onError` handles rollback. Sections call the same methods either way.
+Rule: Zustand updates immediately — synchronous, so the UI already feels instant with no rollback machinery needed. Optimistic-update rollback (`onMutate`/`onError`) is 🔵 **Phase 2**: nothing to roll back until a server can reject a write. Sections call the same methods either way, so the rollback wiring drops into the store later without touching them.
 
 Verify: delete a task. Does the table update instantly? Do stat cards update too? If anything lags or waits for a spinner, the store isn't wired right.
 
@@ -383,7 +390,7 @@ Each step: build → see in gallery → typecheck → commit.
 ## Dependencies
 
 ```bash
-npm install @tanstack/react-table @tanstack/react-virtual zustand nuqs @dnd-kit/core @dnd-kit/sortable react-hook-form @hookform/resolvers zod
+npm install @tanstack/react-table @tanstack/react-virtual zustand nuqs @dnd-kit/core @dnd-kit/sortable react-hook-form @hookform/resolvers zod react-error-boundary
 ```
 
 ---
@@ -405,3 +412,17 @@ npm install @tanstack/react-table @tanstack/react-virtual zustand nuqs @dnd-kit/
 | 1 | Empty states | Blank table looks broken |
 | 2 | Zero-division guards | NaN% in charts when no tasks |
 | 3 | Loading states | Matters more after Supabase |
+
+---
+
+## 🔵 Phase 2
+
+Deferred on purpose. Each is **additive** — the structure built now (layering, thin views, UI-vs-entity store split) already leaves room, so these drop in later with zero rebuild. Building them at demo scale buys nothing.
+
+| What | Trigger | Why deferred |
+|------|---------|--------------|
+| Virtualization (`@tanstack/react-virtual`) | TableView rows cross ~hundreds | TableView only — no drag, clean slot-in. KanbanView never virtualizes (virtual + dnd fight); paginate per column if a column gets huge. |
+| React Query (server data) | Supabase wired up | No server to fetch from yet. Sections call same store methods; RQ replaces the data source underneath. |
+| Optimistic rollback (`onMutate`/`onError`) | A server that can reject writes | Zustand is synchronous — UI already instant, nothing to roll back without a backend. |
+
+Build now: keep the **boundaries** that make these droppable-in (thin views, store UI/entity split). Skip the **machinery**.

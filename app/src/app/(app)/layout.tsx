@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { IconButton, Button, Toaster } from "@medusajs/ui";
+import { Avatar, IconButton, Button, Toaster } from "@medusajs/ui";
 import {
   ChartBar,
   ListCheckbox,
@@ -17,6 +17,13 @@ import {
   Moon,
   PlusMini,
   EllipsisHorizontal,
+  QueueList,
+  GridList,
+  AdjustmentsDone,
+  MinusMini,
+  Window,
+  DocumentText,
+  Component,
 } from "@medusajs/icons";
 import { CURRENT_USER } from "@/lib/data";
 import { StoreProvider } from "./store";
@@ -38,6 +45,50 @@ const NAV_ITEMS: NavItem[] = [
 
 const NAV_EXTENSIONS: NavItem[] = [
   { title: "Settings", icon: CogSixTooth, href: "/settings" },
+];
+
+// ── Dev Gallery (delete before ship) ──
+
+interface GalleryGroup {
+  title: string;
+  items: NavItem[];
+}
+
+const GALLERY: GalleryGroup[] = [
+  {
+    title: "Views",
+    items: [
+      { title: "Table", icon: QueueList, href: "/gallery/views/table" },
+      { title: "Kanban", icon: GridList, href: "/gallery/views/kanban" },
+    ],
+  },
+  {
+    title: "Controls",
+    items: [
+      { title: "ControlsBar", icon: AdjustmentsDone, href: "/gallery/controls/controls-bar" },
+      { title: "Pagination", icon: MinusMini, href: "/gallery/controls/pagination" },
+    ],
+  },
+  {
+    title: "Overlays",
+    items: [
+      { title: "FormModal", icon: Window, href: "/gallery/overlays/form-modal" },
+      { title: "TaskDrawer", icon: DocumentText, href: "/gallery/overlays/task-drawer" },
+    ],
+  },
+  {
+    title: "Sections",
+    items: [
+      { title: "StatCards", icon: Component, href: "/gallery/sections/stat-cards" },
+      { title: "ChartCards", icon: ChartBar, href: "/gallery/sections/chart-cards" },
+      { title: "RecentTasks", icon: QueueList, href: "/gallery/sections/recent-tasks" },
+      { title: "TasksSection", icon: ListCheckbox, href: "/gallery/sections/tasks-section" },
+      { title: "TeamTable", icon: Users, href: "/gallery/sections/team-table" },
+      { title: "ReportsStatCards", icon: ChartPie, href: "/gallery/sections/reports-stat-cards" },
+      { title: "ReportsTable", icon: ChartPie, href: "/gallery/sections/reports-table" },
+      { title: "Settings", icon: CogSixTooth, href: "/gallery/sections/settings" },
+    ],
+  },
 ];
 
 interface PageHeaderConfig {
@@ -138,6 +189,38 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
           })}
         </nav>
 
+        {/* Gallery (dev — delete before ship) */}
+        {!collapsed && (
+          <div className="flex flex-col shrink-0 px-3 pt-2">
+            <DotDivider />
+            <div className="overflow-y-auto max-h-[50vh] pt-4">
+              {GALLERY.map((group) => (
+                <div key={group.title} className="mb-3">
+                  <p className="txt-compact-xsmall-plus text-ui-fg-muted px-2 pb-1">{group.title}</p>
+                  {group.items.map((item) => {
+                    const active = pathname.startsWith(item.href);
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`flex items-center gap-3 h-8 px-2 py-1 rounded-md txt-compact-small transition-colors outline-none focus-visible:shadow-borders-focus ${
+                          active
+                            ? "bg-ui-bg-subtle-pressed text-ui-fg-base"
+                            : "text-ui-fg-subtle hover:bg-ui-bg-subtle-hover"
+                        }`}
+                      >
+                        <Icon className="w-[15px] h-[15px] shrink-0" />
+                        <span className="flex-1 min-w-0 whitespace-nowrap">{item.title}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Spacer */}
         <div className="flex-1" />
 
@@ -210,15 +293,7 @@ function Topbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
           </div>
 
           <div className="flex items-center gap-2 h-7 bg-ui-bg-field pl-1 pr-2.5 rounded-full shadow-elevation-card-rest">
-            <div className="w-5 h-5 rounded-full overflow-hidden bg-ui-bg-base shadow-elevation-card-rest">
-              <Image
-                src={CURRENT_USER.avatar}
-                alt={CURRENT_USER.name}
-                width={20}
-                height={20}
-                className="rounded-full object-cover"
-              />
-            </div>
+            <Avatar src={CURRENT_USER.avatar} fallback={CURRENT_USER.initials} size="2xsmall" />
             <span className="txt-compact-xsmall-plus text-ui-fg-subtle whitespace-nowrap">
               {CURRENT_USER.name}
             </span>
@@ -237,7 +312,7 @@ function PageHeader() {
   const pathname = usePathname();
   const config = PAGE_HEADERS[pathname];
 
-  if (!config) return null;
+  if (!config) return <div className="pt-6" />;
 
   return (
     <div className="flex items-center justify-between pt-8 px-8 pb-4">

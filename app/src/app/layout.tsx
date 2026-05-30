@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import "./theme-overrides.css";
@@ -21,9 +22,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geist.className} ${geist.variable} h-full antialiased`} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col">
-        <ThemeProvider attribute="class" defaultTheme="light">
-          {children}
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
+          <NuqsAdapter>
+            {children}
+          </NuqsAdapter>
         </ThemeProvider>
       </body>
     </html>
