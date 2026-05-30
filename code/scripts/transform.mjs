@@ -37,11 +37,11 @@ const { transformClassList } = createTokenResolver(MAPS);
 const { detectAndSwap, patternDetectAndSwap, getWarnings } = createDetector(MAPS.components, data);
 
 // ── AST transform pipeline ──
-function transformAST(code, { table = true } = {}) {
+function transformAST(code) {
   const wrapped = code.trim().startsWith("<") ? `<>${code}</>` : code;
   const ast = parse(wrapped, { sourceType: "module", plugins: ["jsx", "typescript"] });
 
-  // Pass 0: Strip Figma-generated component defs + asset URLs
+  // ── Pass 1: Strip Figma scaffolding (component defs, asset URLs, decorative elements) ──
   const exportedFnNames = new Set();
   traverse(ast, { ExportDefaultDeclaration(path) { if (t.isFunctionDeclaration(path.node.declaration)) exportedFnNames.add(path.node.declaration.id?.name); } });
   traverse(ast, {
@@ -50,17 +50,15 @@ function transformAST(code, { table = true } = {}) {
     VariableDeclaration(path) { for (const decl of path.node.declarations) { if (t.isStringLiteral(decl.init) && decl.init.value.includes("figma.com/api/mcp/asset")) { path.remove(); return; } } },
   });
 
-  // Pass 0.5: Structural pattern detection (on raw Figma classes)
+  // ── Pass 2: Component detection (structural patterns first, then config rules) ──
   traverse(ast, {
     JSXElement(path) {
       try { if (patternDetectAndSwap(path)) path.skip(); } catch {}
     }
   });
-
-  // Pass 1: Config-driven component detection
   traverse(ast, { JSXElement(path) { try { detectAndSwap(path); } catch {} } });
 
-  // Pass 2: Token resolution + noise strip
+  // ── Pass 3: Token resolution + attribute cleanup ──
   traverse(ast, {
     JSXAttribute(path) {
       const name = path.node.name?.name;
@@ -97,23 +95,8 @@ function transformAST(code, { table = true } = {}) {
     },
   });
 
-  // Pass 2.2: Strip page-level title rows (shell owns headers)
-  traverse(ast, {
-    JSXElement(path) {
-      const attrs = path.node.openingElement.attributes;
-      const cls = getAttr(attrs, "className");
-      if (!cls || !cls.includes("flex") || !cls.includes("items-center")) return;
-      const children = path.node.children.filter(c => t.isJSXElement(c) || (t.isJSXText(c) && c.value.trim()));
-      const has24pxTitle = children.some(c => t.isJSXElement(c) && (() => {
-        const cc = getAttr(c.openingElement.attributes, "className");
-        return cc && cc.includes("text-[24px]");
-      })());
-      if (has24pxTitle && children.length <= 3) { path.remove(); return; }
-    },
-    noScope: true,
-  });
-
-  // Pass 2.3: flex-col + items-start → strip items-start
+  // ── Pass 4: Class cleanup (Figma defaults that don't affect output) ──
+  // flex-col + items-start → strip items-start (Figma default, not needed)
   traverse(ast, {
     JSXAttribute(path) {
       if (path.node.name?.name !== "className" || !t.isStringLiteral(path.node.value)) return;
@@ -122,99 +105,6 @@ function transformAST(code, { table = true } = {}) {
         const classes = cls.split(" ").filter(c => c !== "items-start");
         path.node.value = t.stringLiteral(classes.join(" "));
       }
-    },
-    noScope: true,
-  });
-
-  // Pass 2.5: Asymmetric Padding → Spacer Cell
-  traverse(ast, {
-    JSXElement(path) {
-      const opening = path.node.openingElement;
-      const classAttr = opening.attributes.find(a => t.isJSXAttribute(a) && a.name?.name === "className" && t.isStringLiteral(a.value));
-      if (!classAttr) return;
-      const classes = classAttr.value.value.split(" ");
-      if (!classes.includes("flex") && !classes.some(c => c.startsWith("flex"))) return;
-      if (!classes.includes("items-center")) return;
-      const plCls = classes.find(c => c.startsWith("pl-") && !c.includes("["));
-      const prCls = classes.find(c => c.startsWith("pr-") && !c.includes("["));
-      if (!plCls || !prCls) return;
-      const pl = parseInt(plCls.slice(3));
-      const pr = parseInt(prCls.slice(3));
-      if (isNaN(pl) || isNaN(pr) || pr <= pl) return;
-      const diffPx = (pr - pl) * 4;
-      const gapCls = classes.find(c => c.startsWith("gap-") && !c.includes("["));
-      const gapPx = gapCls ? parseInt(gapCls.slice(4)) * 4 : 0;
-      const spacerPx = diffPx - gapPx;
-      if (spacerPx <= 0) return;
-      const newClasses = classes.filter(c => c !== plCls && c !== prCls).concat(`px-${pl}`);
-      classAttr.value = t.stringLiteral(newClasses.join(" "));
-      const spacer = makeJSXElement("div", { className: `shrink-0 w-[${spacerPx}px]` }, [], true);
-      path.node.children.push(spacer);
-      if (path.node.closingElement === null) {
-        path.node.openingElement.selfClosing = false;
-        path.node.closingElement = t.jsxClosingElement(t.jsxIdentifier(opening.name.name));
-      }
-    },
-    noScope: true
-  });
-
-  // Pass 2.7: Div-table → Medusa Table conversion
-  if (table) traverse(ast, {
-    JSXElement(path) {
-      const el = path.node;
-      const children = el.children.filter(c => t.isJSXElement(c));
-      const getClsVal = (node) => {
-        const a = node.openingElement.attributes.find(a => t.isJSXAttribute(a) && a.name?.name === "className" && t.isStringLiteral(a.value));
-        return a ? a.value.value : "";
-      };
-      const isRowLike = (cls) => cls.includes("h-12") && cls.includes("items-center") && cls.includes("px-6");
-      const headerChild = children.find(c => { const cls = getClsVal(c); return cls.includes("bg-ui-bg-subtle") && isRowLike(cls); });
-      const dataChildren = children.filter(c => { const cls = getClsVal(c); return !cls.includes("bg-ui-bg-subtle") && isRowLike(cls); });
-      if (!headerChild || dataChildren.length === 0) return;
-
-      const extractWidth = (cls) => {
-        const m = cls.match(/(?<!\bmin-)w-\[(\d+)px\]/);
-        return m ? `w-[${m[1]}px]` : null;
-      };
-
-      const headerCells = headerChild.children.filter(c => t.isJSXElement(c)).map(cell => {
-        const cls = getClsVal(cell);
-        const width = extractWidth(cls);
-        const texts = [];
-        const walk = (n) => { if (t.isJSXText(n) && n.value.trim()) texts.push(n.value.trim()); if (t.isJSXElement(n)) for (const c of n.children || []) walk(c); };
-        walk(cell);
-        if (texts.length > 0) {
-          const props = {};
-          if (width) props.className = width;
-          return makeJSXElement("Table.HeaderCell", props, [t.jsxText(texts[0])], false);
-        }
-        return makeJSXElement("Table.HeaderCell", { className: "w-7" }, [], true);
-      });
-
-      const templateRow = dataChildren[0];
-      const dataCells = templateRow.children.filter(c => t.isJSXElement(c)).map(cell => {
-        const cls = getClsVal(cell);
-        const width = extractWidth(cls);
-        const innerChildren = cell.children.filter(c => !t.isJSXText(c) || c.value.trim());
-        const props = {};
-        if (width) props.className = width;
-        else if (cls.includes("shrink-0") && !cls.includes("flex-1")) props.className = "w-7";
-        return makeJSXElement("Table.Cell", props, innerChildren, innerChildren.length === 0);
-      });
-
-      const headerRow = makeJSXElement("Table.Row", {}, headerCells, false);
-      const header = makeJSXElement("Table.Header", { className: "border-t-0" }, [headerRow], false);
-      const dataRow = makeJSXElement("Table.Row", {}, dataCells, false);
-      const body = makeJSXElement("Table.Body", {}, [dataRow], false);
-      const table = makeJSXElement("Table", {}, [header, body], false);
-
-      el.children = [table];
-      if (el.openingElement.selfClosing) {
-        el.openingElement.selfClosing = false;
-        const tagName = t.isJSXIdentifier(el.openingElement.name) ? el.openingElement.name.name : "div";
-        el.closingElement = t.jsxClosingElement(t.jsxIdentifier(tagName));
-      }
-      path.skip();
     },
     noScope: true,
   });

@@ -8,7 +8,7 @@ export default function Controls() {
           <Button variant="secondary" size="small"><CalendarMini className="w-[15px] h-[15px]" />Date</Button>
           <Button variant="secondary" size="small"><Adjustments className="w-[15px] h-[15px]" />Columns</Button>
         </div>
-        <IconButton size="small" variant="transparent"><DescendingSorting /></IconButton>
+        <IconButton size="small" variant="primary"><DescendingSorting /></IconButton>
         <div className="relative"><Input type="search" size="small" placeholder="Search" /><Kbd>⌘K</Kbd></div>
       </div>
     </div>;

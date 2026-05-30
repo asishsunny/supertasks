@@ -18,6 +18,13 @@ export function createDetector(componentMap, data) {
   const KNOWN_ICONS = new Set(Object.values(ICON_NAME_MAP));
   const _handledDataNames = new Set();
   const _unseenDataNames = new Map();
+
+  function detectSize(cls) {
+    if (cls.includes("size-[44px]") || cls.includes("h-[44px]")) return "large";
+    if (cls.includes("size-[36px]") || cls.includes("h-[36px]")) return "base";
+    if (cls.includes("size-[32px]") || cls.includes("h-[32px]")) return "base";
+    return "small";
+  }
   const KNOWN_STRUCTURAL = new Set(["_", "Spacer", "Header", "Meta", "Actions", "Filters", "Rows", "Content Card", "Card Body", "Card Header", "Vector", "Row 1", "Row 2", "Row 3", "Settings Content", "Settings Nav", "Title Wrapper"]);
 
   // Nav icon gate: data.yaml label → expected codeName
@@ -32,17 +39,22 @@ export function createDetector(componentMap, data) {
 
   function findNestedIcon(node) {
     let iconName = null;
+    let iconColor = null;
     const walk = (n) => {
       if (t.isJSXElement(n)) {
         const tagName = t.isJSXIdentifier(n.openingElement.name) ? n.openingElement.name.name : null;
         if (tagName && KNOWN_ICONS.has(tagName)) { iconName = tagName; return; }
         const dn = getAttr(n.openingElement.attributes, "data-name");
         if (dn) { const mapped = ICON_NAME_MAP[dn]; if (mapped) iconName = mapped; }
+        // check for fg color on icon wrapper
+        const cls = getAttr(n.openingElement.attributes, "className") || "";
+        const colorMatch = cls.match(/text-\[color:var\(--foregrounds\/fg-(subtle|muted|base|error)[^\]]*\)\]/);
+        if (colorMatch && !iconColor) iconColor = colorMatch[1];
         for (const child of n.children || []) walk(child);
       }
     };
     walk(node);
-    return iconName;
+    return { name: iconName, color: iconColor };
   }
 
   // ── Config-driven rules (from transform-rules.json) ──
@@ -110,11 +122,38 @@ export function createDetector(componentMap, data) {
     if (emit.iconChild) {
       let iconName;
       if (typeof emit.iconChild === "string") iconName = emit.iconChild;
-      else if (emit.iconChild.fromNestedDataName) iconName = findNestedIcon(el) || emit.iconChild.fallback || "EllipsisHorizontal";
+      else if (emit.iconChild.fromNestedDataName) iconName = (findNestedIcon(el).name) || emit.iconChild.fallback || "EllipsisHorizontal";
       if (iconName) children = [makeJSXElement(iconName, {}, [], true)];
     }
     const selfClosing = emit.selfClosing || (children.length === 0 && !emit.children);
+    // Detect size mismatch and add TODO
+    const todos = [];
+    const actualSize = detectSize(cls);
+    if (emit.props?.size && typeof emit.props.size === "string" && emit.props.size !== actualSize) {
+      props.size = actualSize;
+      todos.push(`size corrected: rule=${emit.props.size} → figma=${actualSize}`);
+    }
+    // Detect if Avatar has image but rule emits ColorAvatar (initials only)
+    if (emit.tag === "ColorAvatar") {
+      const hasImage = el.children?.some(function checkImg(c) {
+        if (!t.isJSXElement(c)) return false;
+        const tag = t.isJSXIdentifier(c.openingElement.name) ? c.openingElement.name.name : "";
+        if (tag === "img") return true;
+        return (c.children || []).some(checkImg);
+      });
+      if (hasImage) todos.push("has image — may need Avatar with src instead of ColorAvatar");
+    }
+
     let result = makeJSXElement(emit.tag, props, children, selfClosing);
+    // Wrap with TODO comment if issues found
+    if (todos.length > 0) {
+      const comment = t.jsxExpressionContainer(
+        t.jsxEmptyExpression()
+      );
+      comment.expression.innerComments = [{ type: "CommentBlock", value: ` TODO: ${todos.join("; ")} ` }];
+      const fragment = t.jsxFragment(t.jsxOpeningFragment(), t.jsxClosingFragment(), [comment, result]);
+      result = fragment;
+    }
     if (emit.wrapper) {
       const wrapperProps = {};
       for (const [k, v] of Object.entries(emit.wrapper.props || {})) wrapperProps[k] = v;
@@ -138,12 +177,21 @@ export function createDetector(componentMap, data) {
     const cls = getAttr(opening.attributes, "className") || "";
     const dataName = getAttr(opening.attributes, "data-name");
 
+    // helper: build icon className with color from Figma
+    function iconClassName(color) {
+      const base = "w-[15px] h-[15px]";
+      if (color && color !== "base") return `${base} text-ui-fg-${color}`;
+      return base;
+    }
+
     // 1. IconButton: square size-[28px] + buttons bg
     if (cls.includes("size-[28px]") && (cls.includes("buttons/") || cls.includes("buttons\\/") || dataName === "IconButton")) {
-      const icon = findNestedIcon(el) || "EllipsisHorizontal";
-      const props = { size: "small", variant: "transparent" };
+      const { name: iconName, color: iconColor } = findNestedIcon(el);
+      const resolvedIcon = iconName || "EllipsisHorizontal";
+      const variant = (cls.includes("button-transparent") || cls.includes("buttons\\/button-transparent")) ? "transparent" : "primary";
+      const props = { size: detectSize(cls), variant };
       const result = makeJSXElement("IconButton", props,
-        [makeJSXElement(icon, {}, [], true)], false);
+        [makeJSXElement(resolvedIcon, {}, [], true)], false);
       path.replaceWith(result);
       return true;
     }
@@ -152,11 +200,11 @@ export function createDetector(componentMap, data) {
     if ((dataName === "Button" && !cls.includes("size-[28px]")) || ((cls.includes("button-neutral") || cls.includes("buttons\\/button-neutral")) && cls.includes("h-[28px]") && !cls.includes("size-[28px]"))) {
       const texts = getTextChildren(el);
       if (texts.length > 0) {
-        const icon = findNestedIcon(el);
+        const { name: iconName, color: iconColor } = findNestedIcon(el);
         const children = [];
-        if (icon) children.push(makeJSXElement(icon, { className: "w-[15px] h-[15px]" }, [], true));
+        if (iconName) children.push(makeJSXElement(iconName, { className: iconClassName(iconColor) }, [], true));
         children.push(t.jsxText(texts[0]));
-        const result = makeJSXElement("Button", { variant: "secondary", size: "small" }, children, false);
+        const result = makeJSXElement("Button", { variant: "secondary", size: detectSize(cls) }, children, false);
         path.replaceWith(result);
         return true;
       }
@@ -166,11 +214,11 @@ export function createDetector(componentMap, data) {
     if ((dataName === "Button" && (cls.includes("contrast") || cls.includes("inverted") || cls.includes("button-inverted"))) || ((cls.includes("contrast") || cls.includes("shadow-[0px_1px_2px_0px_rgba(0,0,0,0.4)") || cls.includes("button-inverted") || cls.includes("buttons\\/button-inverted")) && cls.includes("h-[28px]"))) {
       const texts = getTextChildren(el);
       if (texts.length > 0) {
-        const icon = findNestedIcon(el);
+        const { name: iconName, color: iconColor } = findNestedIcon(el);
         const children = [];
-        if (icon) children.push(makeJSXElement(icon, { className: "w-[15px] h-[15px]" }, [], true));
+        if (iconName) children.push(makeJSXElement(iconName, { className: iconClassName(iconColor) }, [], true));
         children.push(t.jsxText(texts[0]));
-        const result = makeJSXElement("Button", { variant: "primary", size: "small" }, children, false);
+        const result = makeJSXElement("Button", { variant: "primary", size: detectSize(cls) }, children, false);
         path.replaceWith(result);
         return true;
       }
@@ -178,7 +226,7 @@ export function createDetector(componentMap, data) {
 
     // 4. Icon wrapper: size-[15px] with nested img/vector OR known icon dataName, skip status dots
     if (cls.includes("size-[15px]") && !cls.includes("size-full") && !(dataName && dataName.startsWith("square-"))) {
-      let icon = findNestedIcon(el) || null;
+      let { name: icon } = findNestedIcon(el);
       if (!icon && dataName) {
         icon = ICON_NAME_MAP[dataName] || null;
       }
@@ -232,7 +280,7 @@ export function createDetector(componentMap, data) {
       if (dataName === "Search Input" || texts.some(tx => tx === "Search" || tx === "⌘K")) {
         const shortcut = texts.find(tx => tx.includes("⌘")) || "⌘K";
         const placeholder = texts.find(tx => tx !== shortcut && tx !== "⌘K" && tx.length > 0) || "Search";
-        const input = makeJSXElement("Input", { type: "search", size: "small", placeholder }, [], true);
+        const input = makeJSXElement("Input", { type: "search", size: detectSize(cls), placeholder }, [], true);
         const kbd = makeJSXElement("Kbd", {}, [t.jsxText(shortcut)], false);
         const wrapper = makeJSXElement("div", { className: "relative" }, [input, kbd], false);
         path.replaceWith(wrapper);
@@ -267,7 +315,7 @@ export function createDetector(componentMap, data) {
     if (dataName === "Text Input") {
       const texts = getTextChildren(el);
       const value = texts.find(tx => tx && tx !== "Text Input") || "";
-      const props = { size: "small", className: "w-full" };
+      const props = { size: detectSize(cls), className: "w-full" };
       if (value) props.defaultValue = value;
       path.replaceWith(makeJSXElement("Input", props, [], true));
       return true;
@@ -287,7 +335,7 @@ export function createDetector(componentMap, data) {
     if (dataName === "Select") {
       const texts = getTextChildren(el);
       const placeholder = texts.find(tx => tx && tx !== "triangles-mini") || "Select";
-      path.replaceWith(makeJSXElement("Select", { size: "small", placeholder }, [], true));
+      path.replaceWith(makeJSXElement("Select", { size: detectSize(cls), placeholder }, [], true));
       return true;
     }
 
@@ -304,7 +352,7 @@ export function createDetector(componentMap, data) {
     // 9. Field wrapper: data-name ends with " Field"
     if (dataName && dataName.endsWith(" Field")) {
       const labelText = dataName.replace(/ Field$/, "");
-      const label = makeJSXElement("Label", { size: "small" }, [t.jsxText(labelText)], false);
+      const label = makeJSXElement("Label", { size: detectSize(cls) }, [t.jsxText(labelText)], false);
       let inputNode = null;
       let inputType = null;
       const walkForInput = (node) => {
@@ -332,7 +380,7 @@ export function createDetector(componentMap, data) {
         const texts = getTextChildren(inputNode);
         if (inputType === "input") {
           const value = texts.find(tx => tx && tx !== "Text Input") || "";
-          const props = { size: "small", className: "w-full" };
+          const props = { size: detectSize(cls), className: "w-full" };
           if (value) props.defaultValue = value;
           children.push(makeJSXElement("Input", props, [], true));
         } else if (inputType === "textarea") {
@@ -342,7 +390,7 @@ export function createDetector(componentMap, data) {
           children.push(makeJSXElement("Textarea", props, [], true));
         } else if (inputType === "select") {
           const placeholder = texts.find(tx => tx && tx !== "triangles-mini") || "Select";
-          children.push(makeJSXElement("Select", { size: "small", placeholder }, [], true));
+          children.push(makeJSXElement("Select", { size: detectSize(cls), placeholder }, [], true));
         } else if (inputType === "switch") {
           children.push(makeJSXElement("Switch", {}, [], true));
         }
@@ -422,6 +470,29 @@ export function createDetector(componentMap, data) {
       const body = makeJSXElement("Table.Body", {}, bodyRows, false);
       const table = makeJSXElement("Table", {}, [header, body], false);
       path.replaceWith(table);
+      return true;
+    }
+
+    // Fallback emit for known component names that weren't caught by rules
+    const FALLBACK_COMPONENTS = {
+      "Text Input": { tag: "Input", props: { size: detectSize(cls) }, todo: "Text Input detected by data-name fallback" },
+      "Text Area": { tag: "Textarea", props: {}, todo: "Textarea detected by data-name fallback" },
+      "Text Area Input": { tag: "Textarea", props: {}, todo: "Textarea detected by data-name fallback" },
+      "Label": { tag: "Label", props: { size: detectSize(cls) }, todo: "Label detected by data-name fallback" },
+      "Single / Multi Select": { tag: "Select", props: { size: detectSize(cls) }, todo: "Select detected by data-name fallback" },
+    };
+    if (dataName && FALLBACK_COMPONENTS[dataName]) {
+      const fb = FALLBACK_COMPONENTS[dataName];
+      const texts = getTextChildren(el);
+      const children = texts.length > 0 ? [t.jsxText(texts[0])] : [];
+      const placeholder = texts.find(tx => tx.length > 0);
+      const fbProps = { ...fb.props };
+      if (placeholder) fbProps.placeholder = placeholder;
+      const comment = t.jsxExpressionContainer(t.jsxEmptyExpression());
+      comment.expression.innerComments = [{ type: "CommentBlock", value: ` TODO: ${fb.todo} ` }];
+      const result = makeJSXElement(fb.tag, fbProps, children, children.length === 0);
+      const fragment = t.jsxFragment(t.jsxOpeningFragment(), t.jsxClosingFragment(), [comment, result]);
+      path.replaceWith(fragment);
       return true;
     }
 
