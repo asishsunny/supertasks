@@ -69,10 +69,16 @@
       "fail": ["class names not in transform", "layout structure differs from transform", "invented markup", "changed variant/size that transform extracted from Figma"]
     },
     {
+      "id": "typescript",
+      "label": "TypeScript",
+      "rule": "Block must compile with zero type errors. Run tsc --noEmit. ReactNode is too permissive for structured data — prefer typed interfaces over ReactNode when the shape matters.",
+      "fail": ["type errors in block", "ReactNode used where structured type would catch regressions"]
+    },
+    {
       "id": "verify-render",
       "label": "Verify Render",
-      "rule": "After every edit: open in browser, visually confirm the change rendered. A 200 status code is not verification. Import without render change = broken. Screenshot or visual check required before moving on.",
-      "fail": ["added import but didn't update render code", "claimed fixed without visual check", "200 assumed = working"]
+      "rule": "Gallery page must render with expected visual markers (badges, avatars, tables, cards). Automated: curl gallery page, check for DS class names and HTML elements. Missing markers = visual regression.",
+      "fail": ["gallery returns 500", "expected DS component missing from rendered HTML", "badge/avatar absent when transform shows them"]
     }
   ],
 

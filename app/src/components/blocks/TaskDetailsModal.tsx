@@ -1,18 +1,17 @@
 import { Button, IconButton, Badge, Kbd } from "@medusajs/ui";
 import { XMark } from "@medusajs/icons";
 import { ColorAvatar } from "@/components/ColorAvatar";
+import type { ReactNode } from "react";
 import type { Member } from "@/types";
 
 export interface InfoRow {
   label: string;
-  value: string;
-  badge?: { color: "grey" | "orange" | "red" | "purple" | "blue" | "green" };
-  error?: boolean;
-  assignee?: Pick<Member, "initials" | "avatarBg" | "avatarText" | "name">;
+  value: ReactNode;
 }
 
 export interface ActivityEntry {
-  member: Pick<Member, "initials" | "avatarBg" | "avatarText" | "name">;
+  member: Pick<Member, "initials" | "avatarBg" | "avatarText">;
+  name: string;
   time: string;
   text: string;
 }
@@ -32,64 +31,106 @@ export interface TaskDetailsModalProps {
   onSecondary?: () => void;
 }
 
-export function TaskDetailsModal({ heading, title, desc, infoLabel, info, activityLabel, activity, primaryAction, secondaryAction, onClose, onPrimary, onSecondary }: TaskDetailsModalProps) {
+export function TaskDetailsModal({
+  heading,
+  title,
+  desc,
+  infoLabel,
+  info,
+  activityLabel,
+  activity,
+  primaryAction,
+  secondaryAction,
+  onClose,
+  onPrimary,
+  onSecondary,
+}: TaskDetailsModalProps) {
   return (
-    <div className="flex flex-col overflow-clip rounded-xl shadow-elevation-card-rest w-full">
-      <div className="flex items-center justify-between px-6 py-2 w-full">
-        <p className="flex-1 min-w-[1px] text-ui-fg-base txt-compact-medium-plus">{heading}</p>
-        <div className="flex gap-1 items-center">
-          <Kbd>Esc</Kbd>
-          <IconButton size="small" variant="transparent" onClick={onClose} aria-label="Close modal">
-            <XMark />
-          </IconButton>
+    <div className="bg-ui-bg-base flex flex-col overflow-clip rounded-xl shadow-elevation-card-rest w-full h-full">
+      {/* Header */}
+      <div className="flex flex-col items-center w-full">
+        <div className="flex items-center justify-between px-6 py-2 w-full">
+          <p className="flex-1 min-w-[1px] text-ui-fg-base txt-compact-medium-plus">
+            {heading}
+          </p>
+          <div className="flex gap-1 items-center">
+            <Kbd>Esc</Kbd>
+            <IconButton
+              size="small"
+              variant="transparent"
+              onClick={onClose}
+              aria-label="Close modal"
+            >
+              <XMark />
+            </IconButton>
+          </div>
         </div>
+        <div className="h-px bg-ui-border-base w-full" />
       </div>
-      <div className="h-px bg-ui-border-base" />
+
+      {/* Body */}
       <div className="flex flex-1 flex-col gap-6 min-h-[1px] overflow-y-auto pb-6 pt-4 px-6 w-full">
+        {/* Title + Description */}
         <div className="flex flex-col gap-2 w-full">
-          <p className="text-ui-fg-base w-full font-medium text-[18px] leading-[28px]">{title}</p>
+          <p className="text-ui-fg-base w-full font-medium text-[18px] leading-[28px]">
+            {title}
+          </p>
           <p className="text-ui-fg-subtle w-full txt-small">{desc}</p>
         </div>
+
+        {/* Info rows */}
         <div className="flex flex-col gap-4 w-full">
           <p className="text-ui-fg-base txt-compact-small-plus">{infoLabel}</p>
           {info.map((row) => (
-            <div key={row.label} className="flex items-center justify-between w-full">
+            <div
+              key={row.label}
+              className="flex items-center justify-between w-full"
+            >
               <p className="text-ui-fg-subtle txt-compact-small">{row.label}</p>
-              {row.badge ? (
-                <Badge color={row.badge.color} size="2xsmall" rounded="full">{row.value}</Badge>
-              ) : row.assignee ? (
-                <div className="flex gap-2 items-center">
-                  <ColorAvatar member={row.assignee} size="xsmall" />
-                  <p className="text-ui-fg-base txt-compact-small">{row.assignee.name}</p>
-                </div>
-              ) : (
-                <p className={`txt-compact-small ${row.error ? "text-ui-fg-error" : "text-ui-fg-base"}`}>{row.value}</p>
-              )}
+              {row.value}
             </div>
           ))}
         </div>
+
+        {/* Activity log */}
         {activity.length > 0 && (
           <div className="flex flex-col gap-4 w-full">
-            <p className="text-ui-fg-base txt-compact-small-plus">{activityLabel}</p>
-            {activity.map((a, i) => (
+            <p className="text-ui-fg-base txt-compact-small-plus">
+              {activityLabel}
+            </p>
+            {activity.map((entry, i) => (
               <div key={i} className="flex flex-col gap-1 w-full">
                 <div className="flex items-center justify-between w-full">
                   <div className="flex gap-2 items-center">
-                    <ColorAvatar member={a.member} size="xsmall" />
-                    <p className="text-ui-fg-base txt-compact-small-plus">{a.member.name}</p>
+                    <ColorAvatar member={entry.member} size="xsmall" />
+                    <p className="text-ui-fg-base txt-compact-small-plus">
+                      {entry.name}
+                    </p>
                   </div>
-                  <p className="text-ui-fg-subtle txt-compact-xsmall">{a.time}</p>
+                  <p className="text-ui-fg-subtle txt-compact-xsmall">
+                    {entry.time}
+                  </p>
                 </div>
-                <p className="text-ui-fg-subtle w-full txt-small">{a.text}</p>
+                <p className="text-ui-fg-subtle w-full txt-small">
+                  {entry.text}
+                </p>
               </div>
             ))}
           </div>
         )}
       </div>
-      <div className="h-px bg-ui-border-base" />
-      <div className="flex gap-2 items-center justify-end px-6 py-4 w-full">
-        <Button variant="secondary" size="small" onClick={onSecondary}>{secondaryAction}</Button>
-        <Button variant="primary" size="small" onClick={onPrimary}>{primaryAction}</Button>
+
+      {/* Footer */}
+      <div className="flex flex-col items-center w-full">
+        <div className="h-px bg-ui-border-base w-full" />
+        <div className="flex gap-2 items-center justify-end px-6 py-4 w-full">
+          <Button variant="secondary" size="small" onClick={onSecondary}>
+            {secondaryAction}
+          </Button>
+          <Button variant="primary" size="small" onClick={onPrimary}>
+            {primaryAction}
+          </Button>
+        </div>
       </div>
     </div>
   );

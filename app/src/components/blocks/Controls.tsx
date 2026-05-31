@@ -15,6 +15,7 @@ export interface ControlsBarProps {
   searchPlaceholder?: string;
   searchShortcut?: string;
   onSearch?: (query: string) => void;
+  onSortClick?: () => void;
 }
 
 export function ControlsBar({
@@ -25,11 +26,15 @@ export function ControlsBar({
   searchPlaceholder,
   searchShortcut,
   onSearch,
+  onSortClick,
 }: ControlsBarProps) {
   return (
     <div className="flex items-center w-full">
       {views && views.length > 0 && (
-        <div className="bg-ui-bg-segment-control flex gap-0.5 items-center p-0.5 rounded-lg">
+        <div
+          className="bg-ui-bg-segment-control flex gap-0.5 items-center p-0.5 rounded-lg"
+          role="tablist"
+        >
           {views.map((v) => (
             <button
               key={v.key}
@@ -37,7 +42,7 @@ export function ControlsBar({
               role="tab"
               aria-selected={activeView === v.key}
               onClick={() => onViewChange?.(v.key)}
-              className={`px-2.5 py-1 rounded-md txt-compact-small cursor-pointer transition-colors ${
+              className={`px-2.5 py-1 rounded-md txt-compact-small-plus cursor-pointer transition-colors ${
                 activeView === v.key
                   ? "bg-ui-bg-base text-ui-fg-base shadow-elevation-card-rest"
                   : "text-ui-fg-subtle hover:text-ui-fg-base"
@@ -60,11 +65,14 @@ export function ControlsBar({
             ))}
           </div>
         )}
-        <span className="shrink-0">
-          <IconButton size="small" variant="primary">
-            <DescendingSorting />
-          </IconButton>
-        </span>
+        <IconButton
+          size="small"
+          variant="primary"
+          aria-label="Sort"
+          onClick={onSortClick}
+        >
+          <DescendingSorting />
+        </IconButton>
         <div className="relative">
           <Input
             type="search"
@@ -73,7 +81,9 @@ export function ControlsBar({
             onChange={(e) => onSearch?.(e.target.value)}
           />
           {searchShortcut && (
-            <Kbd className="absolute right-2 top-1/2 -translate-y-1/2">{searchShortcut}</Kbd>
+            <Kbd className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+              {searchShortcut}
+            </Kbd>
           )}
         </div>
       </div>

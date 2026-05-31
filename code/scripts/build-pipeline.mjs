@@ -22,7 +22,7 @@
  */
 
 import { execSync } from "child_process";
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync, statSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -150,6 +150,21 @@ function runScorecard() {
     const lines = content.split("\n").length;
     const results = {};
 
+    // staleness — block must be newer than its templatized source
+    const templatizedPath = resolve(ROOT, `artifacts/transformed/${s.name}-templatized.tsx`);
+    if (existsSync(templatizedPath)) {
+      const blockMtime = statSync(blockPath).mtimeMs;
+      const templateMtime = statSync(templatizedPath).mtimeMs;
+      if (templateMtime > blockMtime) {
+        console.log(`   ❌ STALE: agent failed to write — block is from a previous build`);
+        console.log(`      template: ${new Date(templateMtime).toLocaleTimeString()}`);
+        console.log(`      block:    ${new Date(blockMtime).toLocaleTimeString()}`);
+        allScores.push({ name: s.name, score: null, total: totalChecks, stale: true });
+        console.log(`── ${s.name} ── ✗ STALE — no score\n`);
+        continue;
+      }
+    }
+
     results.dry = true;
     results.ssot = true;
 
@@ -189,8 +204,88 @@ function runScorecard() {
     }
     results["data-driven"] = hardcoded.length === 0;
 
-    results["transform-fidelity"] = true;
-    results["verify-render"] = true;
+    // transform-fidelity — check block uses components that transform uses
+    const transformPath = resolve(ROOT, `artifacts/transformed/${s.name}.tsx`);
+    let fidelityOk = true;
+    if (existsSync(transformPath)) {
+      const transformContent = readFileSync(transformPath, "utf8");
+      const expectedComponents = ["Badge", "ColorAvatar", "Table", "IconButton", "Button", "Input", "Select", "Textarea"];
+      const transformUses = expectedComponents.filter(c => transformContent.includes(c));
+      const blockMissing = transformUses.filter(c => !content.includes(c));
+
+      // Check gallery page too — block might delegate to section
+      const galleryMap2 = {
+        "stat-cards": "sections/stat-cards",
+        "chart-cards": "sections/chart-cards",
+        "controls": "controls/controls-bar",
+        "recent-tasks": "sections/recent-tasks",
+        "kanban-board": "views/kanban",
+        "create-task-modal": "overlays/form-modal",
+        "task-details-modal": "overlays/task-drawer",
+        "settings-profile": "sections/settings",
+      };
+      const gp = galleryMap2[s.name];
+      const galleryFile = gp ? resolve(ROOT, `app/src/app/(app)/gallery/${gp}/page.tsx`) : null;
+      const galleryContent = galleryFile && existsSync(galleryFile) ? readFileSync(galleryFile, "utf8") : "";
+      const stillMissing = blockMissing.filter(c => !galleryContent.includes(c));
+
+      if (stillMissing.length > 0) {
+        fidelityOk = false;
+        console.log(`   🔍 transform uses ${stillMissing.join(", ")} but block+gallery don't`);
+      }
+    }
+    results["transform-fidelity"] = fidelityOk;
+
+    // typescript — check block compiles
+    try {
+      execSync(`cd ${resolve(ROOT, "app")} && npx tsc --noEmit 2>&1 | grep -c "${blockPath.split("/").pop()}"`, { stdio: ["pipe", "pipe", "pipe"], timeout: 30000 });
+      results.typescript = false; // grep found errors
+    } catch (e) {
+      results.typescript = true; // grep found nothing = no errors
+    }
+
+    // verify-render — fetch gallery page, check for expected visual markers
+    const galleryMap = {
+      "stat-cards": "sections/stat-cards",
+      "chart-cards": "sections/chart-cards",
+      "controls": "controls/controls-bar",
+      "recent-tasks": "sections/recent-tasks",
+      "kanban-board": "views/kanban",
+      "create-task-modal": "overlays/form-modal",
+      "task-details-modal": "overlays/task-drawer",
+      "settings-profile": "sections/settings",
+    };
+    const visualMarkers = {
+      "stat-cards": ["shadow-elevation-card-rest"],
+      "chart-cards": ["shadow-elevation-card-rest", "bg-ui-border-base"],
+      "controls": ["bg-ui-bg-segment-control"],
+      "recent-tasks": ["shadow-elevation-card-rest", "<table"],
+      "kanban-board": ["bg-ui-bg-kanban-column"],
+      "create-task-modal": ["shadow-elevation-card-rest", "<label", "<input"],
+      "task-details-modal": ["shadow-elevation-card-rest", "rounded-full"],
+      "settings-profile": ["shadow-elevation-card-rest", "<label", "<input"],
+    };
+    let renderOk = true;
+    const galleryPath = galleryMap[s.name];
+    if (galleryPath) {
+      try {
+        const html = execSync(`curl -s http://localhost:3000/gallery/${galleryPath}`, { timeout: 10000, maxBuffer: 5 * 1024 * 1024 }).toString().toLowerCase();
+        const status = html.includes("__next") ? 200 : 500;
+        if (status !== 200 || html.includes("statuscode\":500")) {
+          renderOk = false;
+        } else {
+          const markers = visualMarkers[s.name] || [];
+          const missing = markers.filter(m => !html.includes(m.toLowerCase()));
+          if (missing.length > 0) {
+            renderOk = false;
+            console.log(`   🔍 missing visual markers: ${missing.join(", ")}`);
+          }
+        }
+      } catch (e) {
+        renderOk = false;
+      }
+    }
+    results["verify-render"] = renderOk;
 
     const passed = Object.values(results).filter(Boolean).length;
     const score = Math.round((passed / totalChecks) * 10);
@@ -204,15 +299,19 @@ function runScorecard() {
     console.log();
   }
 
-  const avg = allScores.length > 0 ? (allScores.reduce((s, r) => s + r.score, 0) / allScores.length).toFixed(1) : 0;
-  const passing = allScores.filter(r => r.score >= 9).length;
+  const scored = allScores.filter(r => r.score !== null);
+  const stale = allScores.filter(r => r.stale);
+  const avg = scored.length > 0 ? (scored.reduce((s, r) => s + r.score, 0) / scored.length).toFixed(1) : "—";
+  const passing = scored.filter(r => r.score >= 9).length;
   console.log(`── Summary ──`);
+  console.log(`  Scored: ${scored.length}/${allScores.length}`);
+  if (stale.length > 0) console.log(`  ❌ STALE (not written): ${stale.length} — ${stale.map(r => r.name).join(", ")}`);
   console.log(`  Average: ${avg}/10`);
-  console.log(`  Passing (≥9): ${passing}/${allScores.length}`);
-  console.log(`  Blocking: ${allScores.filter(r => r.score < 7).length}`);
+  console.log(`  Passing (≥9): ${passing}/${scored.length}`);
+  console.log(`  Blocking: ${scored.filter(r => r.score < 7).length}`);
 
-  const reportLines = allScores.map(r => `- **${r.name}**: ${r.score}/10`).join("\n");
-  writeFileSync(resolve(ROOT, "artifacts/build-pipeline-scorecard.md"), `# Build Pipeline Scorecard\n\nAverage: ${avg}/10 | Passing: ${passing}/${allScores.length}\n\n${reportLines}\n`);
+  const reportLines = allScores.map(r => r.stale ? `- **${r.name}**: ❌ STALE — not written` : `- **${r.name}**: ${r.score}/10`).join("\n");
+  writeFileSync(resolve(ROOT, "artifacts/build-pipeline-scorecard.md"), `# Build Pipeline Scorecard\n\nScored: ${scored.length}/${allScores.length} | Average: ${avg}/10 | Passing: ${passing}/${scored.length}${stale.length > 0 ? `\n\n**${stale.length} STALE blocks — agent failed to write**` : ""}\n\n${reportLines}\n`);
   console.log(`\n✓ Report: artifacts/build-pipeline-scorecard.md`);
   return allScores;
 }

@@ -20,4 +20,4 @@ const columns = [
   { header: "", width: "w-7", render: () => <IconButton size="small" variant="transparent"><EllipsisHorizontal /></IconButton> },
 ];
 
-export default function Page() { return <RecentTasks columns={columns} data={recent} keyFn={(t: Task) => t.id} />; }
+export default function Page() { return <RecentTasks title="Recent Tasks" columns={columns} data={recent} keyFn={(t: Task) => t.id} />; }
