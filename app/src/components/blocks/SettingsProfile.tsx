@@ -1,100 +1,117 @@
-// source: artifacts/transformed/settings-profile-templatized.tsx
+import { Button, Input, Label, Textarea } from "@medusajs/ui";
+import { ColorAvatar } from "@/components/ColorAvatar";
 
-import { Avatar, Button, Input, Label, Textarea } from "@medusajs/ui";
-
-interface NavItem {
+export interface SettingsField {
   label: string;
-  active?: boolean;
+  value: string;
 }
 
-interface FormField {
-  label: string;
-  defaultValue?: string;
-  placeholder?: string;
-}
-
-interface SettingsProfileProps {
-  title: string;
-  navItems: NavItem[];
-  avatarSrc?: string;
-  userName: string;
-  avatarHint: string;
-  formRows: FormField[][];
-  bioField: { label: string; placeholder: string };
-  submitLabel: string;
+export interface SettingsProfileProps {
+  name: string;
+  avatar: string;
+  initials: string;
+  avatarBg: string;
+  avatarText: string;
+  photoHint: string;
+  fieldRows: [SettingsField, SettingsField][];
+  bioLabel: string;
+  bioPlaceholder: string;
+  saveLabel: string;
+  tabs: string[];
+  activeTab?: number;
+  onTabChange?: (index: number) => void;
+  onSave?: () => void;
 }
 
 export function SettingsProfile({
-  title,
-  navItems,
-  avatarSrc,
-  userName,
-  avatarHint,
-  formRows,
-  bioField,
-  submitLabel,
+  name,
+  initials,
+  avatarBg,
+  avatarText,
+  photoHint,
+  fieldRows,
+  bioLabel,
+  bioPlaceholder,
+  saveLabel,
+  tabs,
+  activeTab = 0,
+  onTabChange,
+  onSave,
 }: SettingsProfileProps) {
   return (
     <div className="flex gap-6 items-start w-full">
+      {/* Sidebar tabs */}
       <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
-        {navItems.map((item) => (
-          <div
-            key={item.label}
-            className={`flex items-center px-4 py-2.5 w-full ${
-              item.active
-                ? "bg-ui-bg-subtle border-ui-fg-base border-l-2"
-                : ""
-            }`}
-          >
-            <p
-              className={`text-ui-fg-${item.active ? "base" : "subtle"} ${
-                item.active ? "txt-compact-small-plus" : "txt-compact-small"
+        {tabs.map((tab, i) => {
+          const isActive = i === activeTab;
+          return (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => onTabChange?.(i)}
+              className={`flex items-center px-4 py-2.5 w-full text-left ${
+                isActive
+                  ? "bg-ui-bg-subtle border-ui-fg-base border-l-2 text-ui-fg-base txt-compact-small-plus"
+                  : "text-ui-fg-subtle txt-compact-small"
               }`}
             >
-              {item.label}
-            </p>
-          </div>
-        ))}
+              {tab}
+            </button>
+          );
+        })}
       </div>
+
+      {/* Content panel */}
       <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip rounded-[8px] shadow-elevation-card-rest">
         <div className="flex flex-col px-6 py-3 w-full">
-          <p className="text-ui-fg-base txt-compact-medium-plus">{title}</p>
+          <p className="text-ui-fg-base txt-compact-medium-plus">
+            {tabs[activeTab]}
+          </p>
         </div>
         <div className="h-px bg-ui-border-base" />
         <div className="flex flex-col gap-5 p-6 w-full">
+          {/* Avatar row */}
           <div className="flex gap-3 items-center w-full">
-            <Avatar src={avatarSrc} fallback={userName.charAt(0)} size="xlarge" />
-            <div className="flex flex-col gap-0.5 w-[100px]">
-              <p className="text-ui-fg-base txt-compact-small-plus">
-                {userName}
+            <ColorAvatar
+              member={{ initials, avatarBg, avatarText }}
+              size="xlarge"
+            />
+            <div className="flex flex-col gap-0.5">
+              <p className="text-ui-fg-base txt-compact-medium-plus">
+                {name}
               </p>
               <p className="text-ui-fg-subtle txt-compact-small">
-                {avatarHint}
+                {photoHint}
               </p>
             </div>
           </div>
-          {formRows.map((row, ri) => (
+
+          {/* Field rows (data-repeat="3" with data-repeat="2" fields each) */}
+          {fieldRows.map((row, ri) => (
             <div key={ri} className="flex gap-4 items-start w-full">
               {row.map((field) => (
                 <div key={field.label} className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
                   <Label size="small">{field.label}</Label>
-                  <Input
-                    size="small"
-                    className="w-full"
-                    defaultValue={field.defaultValue}
-                    placeholder={field.placeholder}
-                  />
+                  <Input size="small" className="w-full" defaultValue={field.value} />
                 </div>
               ))}
             </div>
           ))}
+
+          {/* Bio */}
           <div className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
-            <Label size="small">{bioField.label}</Label>
-            <Textarea placeholder={bioField.placeholder} />
+            <Label size="small">{bioLabel}</Label>
+            <Textarea placeholder={bioPlaceholder} />
           </div>
+
+          {/* Save button */}
           <div className="flex items-start justify-end w-full">
-            <Button variant="primary" size="small">
-              {submitLabel}
+            <Button
+              variant="primary"
+              size="small"
+              onClick={onSave}
+            >
+              {saveLabel}
             </Button>
           </div>
         </div>

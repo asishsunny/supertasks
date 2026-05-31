@@ -1,7 +1,4 @@
-// source: artifacts/transformed/chart-cards-templatized.tsx
-
-export interface BarItem {
-  key: string;
+export interface ChartRow {
   label: string;
   count: number;
   color: string;
@@ -9,51 +6,50 @@ export interface BarItem {
 
 export interface ChartCardData {
   title: string;
-  bars: BarItem[];
-}
-
-interface ChartCardsProps {
-  cards: ChartCardData[];
+  rows: ChartRow[];
   total: number;
 }
 
-function BarRow({ label, count, total, color }: { label: string; count: number; total: number; color: string }) {
-  const pct = total > 0 ? (count / total) * 100 : 0;
-  return (
-    <div className="flex flex-col gap-1 w-full">
-      <div className="flex gap-2 items-center w-full">
-        <p className="text-ui-fg-subtle w-[88px] txt-compact-small">{label}</p>
-        <div className="bg-ui-border-base flex-1 h-2 min-w-[1px] overflow-clip rounded relative">
-          <div
-            className="absolute h-2 left-0 rounded top-0"
-            style={{ width: `${pct}%`, backgroundColor: color }}
-          />
-        </div>
-        <p className="text-ui-fg-base txt-compact-small-plus">{count}</p>
-      </div>
-    </div>
-  );
+export interface ChartCardsProps {
+  charts: ChartCardData[];
 }
 
-export function ChartCards({ cards, total }: ChartCardsProps) {
+export function ChartCards({ charts }: ChartCardsProps) {
   return (
     <div className="flex gap-4 items-start w-full">
-      {cards.map((card) => (
+      {charts.map((chart) => (
         <div
-          key={card.title}
+          key={chart.title}
           className="bg-ui-bg-base flex flex-1 flex-col gap-4 min-w-[1px] overflow-clip p-6 rounded-xl shadow-elevation-card-rest"
         >
-          <p className="text-ui-fg-base txt-compact-medium-plus">{card.title}</p>
+          <p className="text-ui-fg-base txt-compact-medium-plus">
+            {chart.title}
+          </p>
           <div className="flex flex-col gap-4 w-full">
-            {card.bars.map((bar) => (
-              <BarRow
-                key={bar.key}
-                label={bar.label}
-                count={bar.count}
-                total={total}
-                color={bar.color}
-              />
-            ))}
+            {chart.rows.map((row) => {
+              const pct = chart.total > 0 ? (row.count / chart.total) * 100 : 0;
+              return (
+                <div key={row.label} className="flex flex-col gap-1 w-full">
+                  <div className="flex gap-2 items-center w-full">
+                    <p className="text-ui-fg-subtle w-[88px] txt-compact-small">
+                      {row.label}
+                    </p>
+                    <div className="bg-ui-border-base flex-1 h-2 min-w-[1px] overflow-clip relative rounded">
+                      <div
+                        className="absolute h-2 left-0 rounded top-0"
+                        style={{
+                          width: `${pct}%`,
+                          backgroundColor: row.color,
+                        }}
+                      />
+                    </div>
+                    <p className="text-ui-fg-base txt-compact-small-plus">
+                      {row.count}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       ))}
