@@ -2,7 +2,17 @@
 import { CreateTaskModal } from "@/components/blocks/CreateTaskModal";
 import { MODAL_CONFIGS } from "@/lib/data";
 
-const config = MODAL_CONFIGS.create_task;
 export default function Page() {
-  return <CreateTaskModal title={config.title} fields={config.fields} primaryAction={config.actions.primary} secondaryAction={config.actions.secondary} />;
+  return (
+    <div className="flex flex-col gap-8">
+      {Object.entries(MODAL_CONFIGS).map(([key, config]) => (
+        <div key={key}>
+          <p className="text-ui-fg-subtle txt-compact-small mb-2">{key.replace(/_/g, " ")}</p>
+          <div className="max-w-[480px]">
+            <CreateTaskModal title={config.title} fields={config.fields} primaryAction={config.actions.primary} secondaryAction={config.actions.secondary} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }

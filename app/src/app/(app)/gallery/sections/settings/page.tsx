@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { SettingsProfile } from "@/components/blocks/SettingsProfile";
 import { CURRENT_USER } from "@/lib/data";
 
@@ -10,6 +11,8 @@ const FIELD_ROWS: [{ label: string; value: string }, { label: string; value: str
 ];
 
 export default function Page() {
+  const [activeTab, setActiveTab] = useState(0);
+
   return (
     <SettingsProfile
       name={CURRENT_USER.name}
@@ -17,6 +20,8 @@ export default function Page() {
       avatar={CURRENT_USER.avatar}
       photoHint="Click to change photo"
       tabs={TABS}
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
       fieldRows={FIELD_ROWS}
       bioLabel="Bio"
       bioPlaceholder="Write something about yourself..."
