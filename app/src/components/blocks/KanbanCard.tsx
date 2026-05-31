@@ -9,7 +9,7 @@ export interface KanbanCardProps {
   member: Pick<Member, "initials" | "avatarBg" | "avatarText">;
   name: string;
   dueDate: string;
-  overdue: boolean;
+  overdue?: boolean;
   priorityLabel: string;
   priorityColor: BadgeColor;
   onClick?: () => void;
@@ -31,7 +31,7 @@ export function KanbanCard({
       className="bg-ui-bg-base shadow-elevation-card-rest flex flex-col gap-3 p-3 rounded-lg w-full"
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
-      aria-label={onClick ? `${title} — ${priorityLabel} priority` : undefined}
+      aria-label={onClick ? title : undefined}
       onClick={onClick}
       onKeyDown={
         onClick
@@ -51,7 +51,7 @@ export function KanbanCard({
       <div className="flex gap-1.5 items-center w-full">
         <ColorAvatar member={member} size="xsmall" />
         <p className="text-ui-fg-subtle txt-compact-xsmall">{name}</p>
-        <div className="flex-1 h-px min-w-[1px]" />
+        <div className="flex-1 min-w-[1px]" />
         <p
           className={`txt-compact-xsmall ${overdue ? "text-ui-fg-error" : "text-ui-fg-subtle"}`}
         >

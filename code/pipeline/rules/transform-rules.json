@@ -1,0 +1,156 @@
+{
+  "__doc": "Project-specific rules. Component detection, noise config, font maps, imports.",
+
+  "tokens": {},
+
+  "font": {
+    "font/family/header": null,
+    "font/family/body": null,
+    "font/family/code": null,
+    "font/weight/500": "font-medium",
+    "font/weight/400": "font-normal",
+    "font/size/4xlarge": "text-[4xlarge]",
+    "font/size/3xlarge": "text-[3xlarge]",
+    "font/size/2xlarge": "text-[2xlarge]",
+    "font/size/xlarge": "text-lg",
+    "font/size/large": "text-base",
+    "font/size/medium": "text-sm",
+    "font/size/small": "text-[13px]",
+    "font/size/xsmall": "text-xs"
+  },
+
+  "components": [
+    {
+      "name": "HorizontalDivider",
+      "detect": { "element": "HorizontalDivider" },
+      "emit": { "tag": "div", "props": { "className": "h-px bg-ui-border-base" }, "selfClosing": true }
+    },
+    {
+      "name": "TableCell:Actions",
+      "detect": { "element": "TableCell", "propMatch": { "type": "Actions" } },
+      "emit": {
+        "wrapper": { "tag": "div", "props": { "className": "flex h-full items-center justify-end shrink-0 w-7" } },
+        "tag": "IconButton",
+        "props": { "variant": "transparent", "size": "small" },
+        "iconChild": "EllipsisHorizontal"
+      }
+    },
+    {
+      "name": "IconButton",
+      "detect": { "dataName": "IconButton" },
+      "emit": {
+        "tag": "IconButton",
+        "props": { "variant": "primary", "size": "small" },
+        "iconChild": { "fromNestedDataName": true, "fallback": "EllipsisHorizontal" }
+      }
+    },
+    {
+      "name": "Badge",
+      "detect": { "dataName": "Badge" },
+      "emit": {
+        "tag": "Badge",
+        "props": {
+          "color": { "deriveFromClass": "tag-color", "bindTo": "PRIORITY_COLOR[task.priority]" },
+          "size": "2xsmall",
+          "rounded": "__from_medusa_map__"
+        },
+        "children": "text"
+      },
+      "fallbackDetect": { "classAll": ["tag/", "rounded-", "border"] }
+    },
+    {
+      "name": "Avatar",
+      "detect": { "dataName": "Avatar" },
+      "emit": {
+        "tag": "ColorAvatar",
+        "props": { "member": { "bind": "member" }, "size": "xsmall" },
+        "selfClosing": true
+      },
+      "fallbackDetect": { "classAll": ["rounded-", "shadow-", "size-[20px]"] }
+    },
+    {
+      "name": "StatusDot",
+      "detect": { "dataNamePrefix": "square-" },
+      "emit": { "pattern": "statusDot", "colorFrom": "dataName" }
+    }
+  ],
+
+  "statusDotPattern": "<span className=\"inline-flex items-center gap-1.5\"><span className=\"inline-block size-2 rounded-[2px] shrink-0 border border-black/[.12] dark:border-white/[.12]\" style={{ backgroundColor: BAR_COLORS[task.status] }} /><span className=\"txt-compact-small text-ui-fg-subtle\">{STATUS_LABEL[task.status]}</span></span>",
+
+  "imports": {
+    "Badge": { "module": "@medusajs/ui", "name": "Badge" },
+    "IconButton": { "module": "@medusajs/ui", "name": "IconButton" },
+    "ColorAvatar": { "module": "@/components/ColorAvatar", "name": "ColorAvatar" },
+    "Table": { "module": "@medusajs/ui", "name": "Table" }
+  },
+
+  "noise": {
+    "strip": [
+      "content-stretch",
+      "[word-break:break-word]",
+      "whitespace-nowrap",
+      "bg-clip-padding",
+      "border-0",
+      "border-[transparent]",
+      "border-solid",
+      "rounded-[inherit]",
+      "pointer-events-none",
+      "aria-hidden",
+      "data-node-id",
+      "data-name"
+    ],
+    "strip_patterns": [
+      "font-\\[family-name:var\\(--font.*?\\)\\]",
+      "font-\\[var\\(--font/weight.*?\\)\\]",
+      "text-\\[length:var\\(--font/size.*?\\)\\]",
+      "text-\\[color:var\\(--.*?\\)\\]",
+      "leading-\\[20px\\]",
+      "leading-\\[1\\.5\\]",
+      "-translate-x-1/2",
+      "-translate-y-1/2"
+    ],
+    "replace_fixed_widths": {
+      "w-[1200px]": "w-full",
+      "w-[1136px]": "w-full",
+      "w-[1440px]": "w-full",
+      "w-[933px]": "w-full",
+      "w-[800px]": "w-full",
+      "w-[480px]": "max-w-[480px] w-full",
+      "w-[280px]": "w-full",
+      "h-[900px]": "h-full",
+      "h-[767px]": "flex-1"
+    },
+    "keep_fixed_widths": [
+      "w-[160px]", "w-[120px]", "w-[130px]", "w-[140px]",
+      "w-[110px]", "w-[100px]", "w-[90px]", "w-[80px]", "w-[88px]",
+      "w-px", "size-2", "size-[8px]", "size-[15px]",
+      "size-[16px]", "size-[20px]", "size-[28px]"
+    ]
+  },
+
+  "shadows": {
+    "0px_1px_2px_0px_rgba(0,0,0,0.12),0px_0px_0px_1px_rgba(0,0,0,0.08)": "shadow-borders-base",
+    "0px_0px_0px_1px_rgba(0,0,0,0.04),0px_1px_2px_-1px_rgba(0,0,0,0.08),0px_2px_4px_0px_rgba(0,0,0,0.04)": "shadow-elevation-card-rest",
+    "0px_0px_0px_1px_rgba(0,0,0,0.08),0px_8px_16px": "shadow-elevation-modal"
+  },
+
+  "textStyles": [
+    { "weight": "500", "size": "medium", "leading": "20px", "out": "txt-compact-medium-plus" },
+    { "weight": "500", "size": "small", "leading": "20px", "out": "txt-compact-small-plus" },
+    { "weight": "400", "size": "small", "leading": "20px", "out": "txt-compact-small" },
+    { "weight": "500", "size": "xsmall", "leading": "20px", "out": "txt-compact-xsmall-plus" },
+    { "weight": "400", "size": "xsmall", "leading": "20px", "out": "txt-compact-xsmall" },
+    { "weight": "500", "size": "14", "leading": "20px", "out": "text-sm font-medium leading-5" },
+    { "weight": "400", "size": "small", "leading": "1.5", "out": "txt-small" },
+    { "weight": "400", "size": "32px", "leading": "44px", "out": "text-[32px] leading-[44px] tracking-[-0.16px] font-normal" }
+  ],
+
+  "arbitraryMap": {
+    "flex-[1_0_0]": "flex-1",
+    "flex-[1_0_0px]": "flex-1",
+    "min-w-px": "min-w-[1px]",
+    "min-h-px": "min-h-[1px]",
+    "content-stretch": null,
+    "size-full": "w-full h-full"
+  }
+}

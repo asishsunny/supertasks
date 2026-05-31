@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Badge } from "@medusajs/ui";
 import { ControlsBar } from "@/components/controls/ControlsBar";
 import { TableView, type Column } from "@/components/views/TableView";
-import { KanbanView, type KanbanColumn } from "@/components/views/KanbanView";
+import { KanbanView, type KanbanColumnData } from "@/components/views/KanbanView";
 import { Pagination } from "@/components/controls/Pagination";
 import { AvatarCell, BadgeCell, StatusDotCell, DateCell } from "@/components/cells";
 import { ColorAvatar } from "@/components/ColorAvatar";
@@ -53,17 +53,13 @@ export default function TasksSectionGallery() {
   const [view, setView] = useState("kanban");
   const [tasks, setTasks] = useState(INITIAL_TASKS);
 
-  const kanbanColumns: KanbanColumn<Task>[] = STATUSES.map((s) => ({
+  const kanbanColumns: KanbanColumnData<Task>[] = STATUSES.map((s) => ({
     key: s,
     label: STATUS_LABEL[s],
-    color: s,
+    count: tasks.filter((t) => t.status === s).length,
     dotIcon: <StatusDot status={s} />,
     items: tasks.filter((t) => t.status === s),
   }));
-
-  function handleMove(itemKey: string | number, _from: string, to: string) {
-    setTasks((prev) => prev.map((t) => t.id === Number(itemKey) ? { ...t, status: to as Status } : t));
-  }
 
   return (
     <>
@@ -80,7 +76,6 @@ export default function TasksSectionGallery() {
           columns={kanbanColumns}
           renderCard={(t) => <KanbanCard task={t} />}
           keyFn={(t) => t.id}
-          onMove={handleMove}
         />
       )}
     </>

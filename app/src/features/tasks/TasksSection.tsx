@@ -4,14 +4,15 @@ import { useState, useMemo, useCallback } from "react";
 import { useQueryState } from "nuqs";
 import { useStore } from "@/app/(app)/store";
 import { useMemberLookup } from "@/lib/hooks";
-import { STATUS_LABEL } from "@/lib/constants";
+import { STATUS_LABEL, PRIORITY_COLOR } from "@/lib/constants";
+import { formatDueDate, isOverdue } from "@/lib/utils";
 import { useTaskFilters, useFilteredTasks, usePagination } from "./hooks";
 import { getTaskColumns } from "./columns";
-import { KanbanCard } from "./KanbanCard";
+import { KanbanCard } from "@/components/blocks/KanbanCard";
 import { ControlsBar } from "@/components/controls/ControlsBar";
 import { Pagination } from "@/components/controls/Pagination";
 import { TableView } from "@/components/views/TableView";
-import { KanbanView, type KanbanColumn } from "@/components/views/KanbanView";
+import { KanbanView, type KanbanColumnData } from "@/components/views/KanbanView";
 import { TaskDetailDrawer } from "@/components/overlays/TaskDetailDrawer";
 import { FormModal } from "@/components/overlays/FormModal";
 import { ViewBoundary } from "@/components/shared/ViewBoundary";
@@ -42,22 +43,18 @@ export function TasksSection() {
     [memberMap]
   );
 
-  const kanbanColumns: KanbanColumn<Task>[] = useMemo(
-    () => STATUSES.map((s) => ({
-      key: s,
-      label: STATUS_LABEL[s],
-      color: s,
-      dotIcon: <StatusDot status={s} />,
-      items: filtered.filter((t) => t.status === s),
-    })),
+  const kanbanColumns: KanbanColumnData<Task>[] = useMemo(
+    () => STATUSES.map((s) => {
+      const items = filtered.filter((t) => t.status === s);
+      return {
+        key: s,
+        label: STATUS_LABEL[s],
+        count: items.length,
+        dotIcon: <StatusDot status={s} />,
+        items,
+      };
+    }),
     [filtered]
-  );
-
-  const handleMove = useCallback(
-    (itemKey: string | number, _from: string, to: string) => {
-      dispatch({ type: "MOVE_TASK", id: Number(itemKey), status: to as Status });
-    },
-    [dispatch]
   );
 
   const selectedMember = selectedTask ? memberMap.get(selectedTask.assignee) : undefined;
@@ -92,15 +89,23 @@ export function TasksSection() {
         ) : (
           <KanbanView
             columns={kanbanColumns}
-            renderCard={(t) => (
-              <KanbanCard
-                task={t}
-                member={memberMap.get(t.assignee)!}
-                onClick={() => setSelectedTask(t)}
-              />
-            )}
+            renderCard={(t) => {
+              const m = memberMap.get(t.assignee)!;
+              return (
+                <KanbanCard
+                  title={t.title}
+                  desc={t.desc}
+                  member={m}
+                  name={m.name.split(" ")[0]}
+                  dueDate={formatDueDate(t.due)}
+                  overdue={isOverdue(t.due)}
+                  priorityLabel={t.priority.charAt(0).toUpperCase() + t.priority.slice(1)}
+                  priorityColor={PRIORITY_COLOR[t.priority]}
+                  onClick={() => setSelectedTask(t)}
+                />
+              );
+            }}
             keyFn={(t) => t.id}
-            onMove={handleMove}
           />
         )}
       </ViewBoundary>

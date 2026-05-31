@@ -1,4 +1,6 @@
-import { Avatar, Button, Input, Label, Textarea } from "@medusajs/ui";
+import { Button, Input, Label, Textarea } from "@medusajs/ui";
+import { ColorAvatar } from "@/components/ColorAvatar";
+import type { Member } from "@/types";
 
 export interface SettingsField {
   label: string;
@@ -7,7 +9,7 @@ export interface SettingsField {
 
 export interface SettingsProfileProps {
   name: string;
-  avatar?: string;
+  avatar: string;
   initials: string;
   photoHint: string;
   fieldRows: [SettingsField, SettingsField][];
@@ -22,7 +24,6 @@ export interface SettingsProfileProps {
 
 export function SettingsProfile({
   name,
-  avatar,
   initials,
   photoHint,
   fieldRows,
@@ -35,72 +36,78 @@ export function SettingsProfile({
   onSave,
 }: SettingsProfileProps) {
   return (
-    <div className="flex flex-col md:flex-row gap-6 items-start w-full">
+    <div className="flex gap-6 items-start w-full h-full">
       {/* Sidebar tabs */}
-      <div className="bg-ui-bg-base flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible overflow-clip py-0 md:py-2 rounded-lg shadow-elevation-card-rest shrink-0 w-full md:w-[200px]">
-        {tabs.map((tab, i) => (
-          <button
-            key={tab}
-            type="button"
-            role="tab"
-            aria-selected={i === activeTab}
-            onClick={() => onTabChange?.(i)}
-            className={`flex flex-1 md:flex-none items-center justify-center md:justify-start px-4 py-2.5 whitespace-nowrap text-left cursor-pointer ${
-              i === activeTab
-                ? "bg-ui-bg-subtle md:border-l-2 border-b-2 md:border-b-0 border-ui-fg-base txt-compact-small-plus text-ui-fg-base"
-                : "txt-compact-small text-ui-fg-subtle"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
+      <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 rounded-[8px] shadow-elevation-card-rest shrink-0 w-[200px]">
+        {tabs.map((tab, i) => {
+          const isActive = i === activeTab;
+          return (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => onTabChange?.(i)}
+              className={`flex items-center px-4 py-2.5 w-full text-left ${
+                isActive
+                  ? "bg-ui-bg-subtle border-ui-fg-base border-l-2 text-ui-fg-base txt-compact-small-plus"
+                  : "text-ui-fg-subtle txt-compact-small"
+              }`}
+            >
+              {tab}
+            </button>
+          );
+        })}
       </div>
 
       {/* Content panel */}
-      <div className="bg-ui-bg-base flex flex-1 flex-col min-w-0 w-full md:w-auto overflow-clip rounded-lg shadow-elevation-card-rest">
+      <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip rounded-[8px] shadow-elevation-card-rest">
         <div className="flex flex-col px-6 py-3 w-full">
           <p className="text-ui-fg-base txt-compact-medium-plus">
             {tabs[activeTab]}
           </p>
         </div>
         <div className="h-px bg-ui-border-base" />
-        <div className="flex flex-col gap-4 md:gap-5 p-4 md:p-6 w-full">
+        <div className="flex flex-col gap-5 p-6 w-full">
           {/* Avatar row */}
           <div className="flex gap-3 items-center w-full">
-            <Avatar src={avatar} fallback={initials} size="xlarge" />
+            <ColorAvatar
+              member={{ initials, avatarBg: "tag-orange-bg", avatarText: "tag-orange-text" }}
+              size="xlarge"
+            />
             <div className="flex flex-col gap-0.5">
-              <p className="text-ui-fg-base txt-compact-small-plus">{name}</p>
-              <p className="text-ui-fg-subtle txt-compact-small">{photoHint}</p>
+              <p className="text-ui-fg-base txt-compact-medium-plus">
+                {name}
+              </p>
+              <p className="text-ui-fg-subtle txt-compact-small">
+                {photoHint}
+              </p>
             </div>
           </div>
 
           {/* Field rows */}
-          {fieldRows.map((row, i) => (
-            <div
-              key={i}
-              className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start w-full"
-            >
-              {row.map((f) => (
-                <div
-                  key={f.label}
-                  className="flex flex-1 flex-col gap-1.5 min-w-0 w-full sm:w-auto"
-                >
-                  <Label size="small">{f.label}</Label>
-                  <Input size="small" className="w-full" defaultValue={f.value} />
+          {fieldRows.map((row, ri) => (
+            <div key={ri} className="flex gap-4 items-start w-full">
+              {row.map((field) => (
+                <div key={field.label} className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
+                  <Label size="small">{field.label}</Label>
+                  <Input size="small" className="w-full" defaultValue={field.value} />
                 </div>
               ))}
             </div>
           ))}
 
           {/* Bio */}
-          <div className="flex flex-col gap-1.5 w-full">
+          <div className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
             <Label size="small">{bioLabel}</Label>
             <Textarea placeholder={bioPlaceholder} />
           </div>
 
-          {/* Save */}
+          {/* Save button */}
           <div className="flex items-start justify-end w-full">
-            <Button variant="primary" size="small" onClick={onSave}>
+            <Button
+              variant="primary"
+              size="small"
+              onClick={onSave}
+            >
               {saveLabel}
             </Button>
           </div>

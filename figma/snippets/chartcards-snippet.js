@@ -1,6 +1,7 @@
 // chartcards-snippet.js — Chart Cards row (1136×212)
 
 // ── DATA ──
+/* __DATA__ */
 const DATA = {
   cards: [
     {

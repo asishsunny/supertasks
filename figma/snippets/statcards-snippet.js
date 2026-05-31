@@ -28,12 +28,13 @@ const inProgress = taskOffsets.filter(t => t.status === 'in_progress').length;
 const completed = taskOffsets.filter(t => t.status === 'done').length;
 const overdue = taskOffsets.filter(t => t.offset < 0 && t.status !== 'done').length;
 
+/* __DATA__ */
 const DATA = {
   cards: [
     { label: 'Total Tasks', value: String(total) },
     { label: 'In Progress', value: String(inProgress) },
     { label: 'Completed',   value: String(completed) },
-    { label: 'Overdue',     value: String(overdue) },
+    { label: 'Overdue',     value: String(overdue), error: true },
   ],
 };
 

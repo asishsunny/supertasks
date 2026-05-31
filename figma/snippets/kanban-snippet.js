@@ -8,6 +8,7 @@ function dueDate(offset) {
 }
 
 // ── DATA ──
+/* __DATA__ */
 const DATA = {
   statuses: [
     { key: 'todo',        label: 'To Do',       dotKey: 'squareGreySolid' },

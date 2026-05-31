@@ -8,6 +8,7 @@ function dueDate(offset) {
 }
 
 // ── DATA (from data.yaml) ──
+/* __DATA__ */
 const DATA = {
   drawerTitle: 'Task details',
   kbdLabel: 'Esc',

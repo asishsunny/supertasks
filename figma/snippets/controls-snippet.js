@@ -2,6 +2,7 @@
 // Generic — DATA block injected per screen (tasks, reports, etc.)
 
 // ── DATA ──
+/* __DATA__ */
 const DATA = {
   tabs: [
     { label: 'Kanban', active: false },
@@ -43,15 +44,22 @@ await figma.loadFontAsync({ family: 'Geist', style: 'Regular' });
 await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
 await figma.loadFontAsync({ family: 'Inter', style: 'Medium' });
 
-const V = async (key) => {
-  const v = await figma.variables.importVariableByKeyAsync(key);
-  if (!v) throw new Error(`Variable not found: ${key}`);
+const V = async (id) => {
+  const v = await figma.variables.getVariableByIdAsync(id);
+  if (!v) throw new Error(`Variable not found: ${id}`);
   return v;
 };
-const SOLID = async (key) => {
-  const v = await V(key);
+const SOLID = async (id) => {
+  const v = await V(id);
+  let c = v.valuesByMode[Object.keys(v.valuesByMode)[0]];
+  while (c?.type === 'VARIABLE_ALIAS') {
+    const av = await figma.variables.getVariableByIdAsync(c.id);
+    if (!av) break;
+    c = av.valuesByMode[Object.keys(av.valuesByMode)[0]];
+  }
+  const rgb = (c && typeof c.r === 'number') ? { r: c.r, g: c.g, b: c.b } : { r: 0.5, g: 0.5, b: 0.5 };
   return figma.variables.setBoundVariableForPaint(
-    { type: 'SOLID', color: { r: 0.5, g: 0.5, b: 0.5 }, opacity: 1 }, 'color', v
+    { type: 'SOLID', color: rgb, opacity: 1 }, 'color', v
   );
 };
 async function applyIconFills(parent, varId) {

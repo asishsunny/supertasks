@@ -1,0 +1,152 @@
+{
+  "__doc": "How each block/view connects to its section. Defines what props the section must provide, what state it owns, and what interactivity layer it adds.",
+
+  "patterns": {
+    "dumb-block": {
+      "desc": "Props in, JSX out. No hooks, no state, no data imports.",
+      "applies_to": ["StatCards", "ChartCards", "RecentTasks", "KanbanCard", "CreateTaskModal", "TaskDetailsModal", "SettingsProfile", "ControlsBar"]
+    },
+    "dumb-view": {
+      "desc": "Renders data layout. Accepts wrapper props for interactivity injection. No hooks, no state.",
+      "applies_to": ["KanbanView", "TableView"]
+    },
+    "smart-section": {
+      "desc": "Owns state, reads store, wires callbacks, composes blocks/views. Only layer that imports data or uses hooks.",
+      "applies_to": ["TasksSection", "TeamSection", "ReportsSection", "DashboardSection", "SettingsSection"]
+    }
+  },
+
+  "blocks": {
+    "StatCards": {
+      "props": {
+        "cards": "{ label: string; value: string | number; error?: boolean }[]"
+      },
+      "section_provides": "Compute from tasks: total, in_progress count, done count, overdue count",
+      "interactivity": "none"
+    },
+
+    "ChartCards": {
+      "props": {
+        "charts": "{ title: string; rows: { label: string; count: number; color: string }[]; total: number }[]"
+      },
+      "section_provides": "Group tasks by priority/status, compute counts, pass BAR_COLORS/PRIORITY_BAR_COLORS",
+      "interactivity": "none"
+    },
+
+    "ControlsBar": {
+      "props": {
+        "views": "{ key: string; label: string }[]",
+        "activeView": "string",
+        "onViewChange": "(key: string) => void",
+        "filters": "{ label: string; icon: ReactNode }[]",
+        "searchPlaceholder": "string",
+        "searchShortcut": "string",
+        "onSearch": "(query: string) => void"
+      },
+      "section_provides": "View state (useState or URL param via nuqs), filter/search handlers",
+      "interactivity": "Segment tabs toggle view mode. Filter buttons trigger dropdowns (future). Search filters data."
+    },
+
+    "RecentTasks": {
+      "props": {
+        "columns": "Column<T>[]",
+        "data": "T[]",
+        "keyFn": "(row: T) => string | number"
+      },
+      "section_provides": "Sort tasks by due date, slice top 5, build column render functions using AvatarCell/BadgeCell/StatusDotCell/DateCell",
+      "interactivity": "Row click opens TaskDetailsModal (future)"
+    },
+
+    "KanbanCard": {
+      "props": {
+        "title": "string",
+        "desc": "string",
+        "member": "Pick<Member, 'initials' | 'avatarBg' | 'avatarText'>",
+        "name": "string",
+        "dueDate": "string",
+        "overdue": "boolean",
+        "priorityLabel": "string",
+        "priorityColor": "BadgeColor",
+        "onClick": "() => void"
+      },
+      "section_provides": "Resolve member from task.assignee, format due date, compute overdue, map priority color",
+      "interactivity": "Click opens TaskDetailsModal (future)"
+    },
+
+    "CreateTaskModal": {
+      "props": {
+        "title": "string",
+        "fields": "ModalField[]",
+        "primaryAction": "string",
+        "secondaryAction": "string",
+        "onClose": "() => void",
+        "onSubmit": "() => void"
+      },
+      "section_provides": "Modal open state, field config from MODAL_CONFIGS, submit handler dispatches ADD_TASK to store",
+      "interactivity": "Form inputs, select dropdowns, submit/cancel"
+    },
+
+    "TaskDetailsModal": {
+      "props": {
+        "heading": "string",
+        "title": "string",
+        "desc": "string",
+        "infoLabel": "string",
+        "info": "InfoRow[]",
+        "activityLabel": "string",
+        "activity": "ActivityEntry[]",
+        "primaryAction": "string",
+        "secondaryAction": "string",
+        "onClose": "() => void",
+        "onPrimary": "() => void",
+        "onSecondary": "() => void"
+      },
+      "section_provides": "Selected task from store, resolve member, format dates, filter activity by task_id, build info rows with badges/avatars",
+      "interactivity": "Mark complete dispatches MOVE_TASK to done. Edit opens CreateTaskModal in edit mode (future)."
+    },
+
+    "SettingsProfile": {
+      "props": {
+        "name": "string",
+        "avatar": "string",
+        "initials": "string",
+        "photoHint": "string",
+        "fieldRows": "[SettingsField, SettingsField][]",
+        "bioLabel": "string",
+        "bioPlaceholder": "string",
+        "saveLabel": "string",
+        "tabs": "string[]",
+        "activeTab": "number",
+        "onTabChange": "(index: number) => void",
+        "onSave": "() => void"
+      },
+      "section_provides": "User data from CURRENT_USER, field config from data.yaml settings, tab state",
+      "interactivity": "Tab switching, form editing, save"
+    }
+  },
+
+  "views": {
+    "KanbanView": {
+      "props": {
+        "columns": "KanbanColumnData<T>[]",
+        "renderCard": "(item: T) => ReactNode",
+        "keyFn": "(item: T) => string | number",
+        "columnWrapper": "(props: { id: string; children: ReactNode }) => ReactNode",
+        "cardWrapper": "(props: { id: string; children: ReactNode }) => ReactNode"
+      },
+      "section_provides": "DndContext wrapping, DroppableColumn as columnWrapper, DraggableCard as cardWrapper, DragOverlay, onMove handler dispatches MOVE_TASK",
+      "interactivity_owner": "section",
+      "dnd_pattern": "Section defines DroppableColumn + DraggableCard, passes as wrapper props. View renders layout. Section owns DndContext + DragOverlay + state."
+    },
+
+    "TableView": {
+      "props": {
+        "columns": "Column<T>[]",
+        "data": "T[]",
+        "keyFn": "(row: T) => string | number"
+      },
+      "section_provides": "Filtered/sorted/paged data, column definitions with render functions",
+      "interactivity_owner": "section"
+    }
+  }
+}

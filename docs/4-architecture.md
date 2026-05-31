@@ -13,10 +13,9 @@ Page (shell — compose sections)
         │  compose blocks, wire props
         │  dispatch actions back to store
         └── Blocks (dumb — render via props)
-              ├── Controls    →  ControlsBar, Pagination
-              ├── Views       →  TableView, KanbanView
-              └── Overlays    →  FormModal, TaskDetailDrawer
 ```
+
+Three layers. No more. Blocks include everything dumb: views, controls, overlays, cards, cells, forms.
 
 **Store** is powered by Zustand — a single place where all app data lives (tasks, members, reports) along with UI state (which drawer is open, which modal, which view mode). It lives outside all sections so any section can reach it.
 
@@ -61,17 +60,17 @@ Tasks is ONE section with two render modes. Filters persist across both. Never s
 
 ## Blocks
 
-Dumb. Props only. No store, no data imports, no state hooks.
+Dumb. Props only. No store, no data imports, no state hooks. All live in `components/blocks/`.
 
-**Controls** — segment tabs, filter buttons, search. Section owns active state and wires callbacks.
+Types of blocks:
+- **Views** — layout renderers (KanbanView, TableView). Accept wrapper props for interactivity injection (dnd, selection).
+- **Controls** — segment tabs, filter buttons, search. Section wires callbacks.
+- **Overlays** — modals, drawers. Section controls open/close.
+- **Cards** — display components (KanbanCard, StatCards, ChartCards).
+- **Forms** — settings, profile editors.
+- **Cells** — table column render functions (AvatarCell, BadgeCell, etc).
 
-**Views** — render data layouts (table, kanban). Section passes data, view renders. dnd-kit lives in section, view accepts wrapper props for drag/drop injection.
-
-**Cells** — shared render functions for table columns. Reusable across domains.
-
-**Overlays** — modals, drawers. Section controls open/close and wires data.
-
-**Error boundaries** — ViewBoundary wraps views, not sections. Controls/overlays survive if a view crashes.
+All follow the same rule: props in, JSX out. Section owns state, dnd, and event handling.
 
 ---
 
@@ -95,18 +94,15 @@ One domain → `features/`. Two+ domains → `components/`.
 ```
 app/src/
 ├── store/               ← Zustand (global)
-├── components/           ← shared blocks
-│   ├── views/            TableView, KanbanView
-│   ├── cells/            AvatarCell, BadgeCell, StatusDotCell, DateCell, TextCell
-│   ├── controls/         ControlsBar, Pagination
-│   ├── overlays/         FormModal, TaskDetailDrawer
+├── components/
+│   ├── blocks/           ← all dumb blocks (views, controls, overlays, cards, cells, forms)
 │   └── shared/           ColorAvatar, StatusDot, ViewBoundary
 ├── features/             ← domain sections
-│   ├── dashboard/        StatCards, ChartCards, RecentTasks
-│   ├── tasks/            TasksSection, KanbanCard, columns, hooks
-│   ├── team/             TeamTable, columns
-│   ├── reports/          ReportsStatCards, ReportsTable, columns
-│   └── settings/         SettingsSection + tab panels
+│   ├── dashboard/        DashboardSection
+│   ├── tasks/            TasksSection, columns, hooks
+│   ├── team/             TeamSection, columns
+│   ├── reports/          ReportsSection, columns
+│   └── settings/         SettingsSection
 ├── app/(app)/            ← pages (shells) + gallery (dev)
 ├── lib/                  filters, hooks, constants, utils
 └── types/
@@ -139,12 +135,9 @@ Figma MCP → artifacts/cache/*.jsx       (raw)
 ## Build Order
 
 ```
-1. Cells     → AvatarCell, BadgeCell, StatusDotCell, DateCell, TextCell
-2. Views     → TableView, KanbanView
-3. Controls  → ControlsBar, Pagination
-4. Overlays  → FormModal, TaskDetailDrawer
-5. Sections  → per page, gallery first
-6. Pages     → wire shells, delete gallery
+1. Blocks    → all dumb components (pipeline builds these)
+2. Sections  → per page, gallery first
+3. Pages     → wire shells
 ```
 
 ---

@@ -86,7 +86,7 @@ Shell: nav=Reports, breadcrumbs=[Reports, 30 days], actions=[Generate report]
 Snippets: shell, statcards, controls, table
 Controls: tabs=[90d, 30d, 7d], active=30d, buttons=[Filter (Funnel)], search=true
 
-**Stats** — Total completed (3), Avg completion rate (17%), Overdue (5), On track (10)
+**Stats** — Total reports (6), Flagged overdue (4), Avg per month (2), Last generated (May 7)
 Stats render between header and controls bar, same grid as dashboard statcards.
 
 **Table** — 6 rows, no pagination

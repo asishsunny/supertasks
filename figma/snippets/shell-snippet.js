@@ -1,6 +1,7 @@
 // shell-snippet.js — Snippet (1440×900)
 
 // ── DATA (from data.yaml + views.yaml) ──
+/* __DATA__ */
 const DATA = {
   pageName: 'Dashboard',
   frameName: 'Dashboard v2',

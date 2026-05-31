@@ -9,6 +9,7 @@ function dueDate(offset) {
 }
 
 // ── DATA ──
+/* __DATA__ */
 const DATA = {
   title: 'Recent Tasks',
   showTitle: true,

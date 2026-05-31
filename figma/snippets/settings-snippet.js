@@ -2,6 +2,7 @@
 // Renders: page header, left nav, right content card. Tab content driven by DATA.activeTab.
 
 // ── DATA (from data.yaml → settings) ──
+/* __DATA__ */
 const DATA = {
   activeTab: 'Profile',
   tabs: ['Profile', 'Notifications', 'Security', 'Billing'],

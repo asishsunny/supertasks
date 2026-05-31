@@ -1,0 +1,479 @@
+{
+  "__doc": "Composition rules \u2014 how each screen assembles into a page.",
+  "screens": {
+    "dashboard": {
+      "imports": {
+        "named": {
+          "@medusajs/ui": [
+            "Badge",
+            "IconButton"
+          ],
+          "@medusajs/icons": [
+            "EllipsisHorizontal"
+          ],
+          "@/components/ColorAvatar": [
+            "ColorAvatar"
+          ],
+          "@/lib/constants": [
+            "PRIORITY_COLOR",
+            "PRIORITY_BAR_COLORS",
+            "BAR_COLORS",
+            "STATUS_LABEL"
+          ],
+          "@/lib/data": [
+            "INITIAL_TASKS",
+            "MEMBERS"
+          ],
+          "@/lib/utils": [
+            "formatDate",
+            "isOverdue"
+          ],
+          "@/types": [
+            "Priority",
+            "Status"
+          ]
+        },
+        "typeOnly": [
+          "@/types"
+        ]
+      },
+      "composition": {
+        "wrapper": "flex flex-col gap-4",
+        "data": "const tasks = INITIAL_TASKS;\n  const total = tasks.length;",
+        "componentName": "DashboardPage",
+        "exportDefault": true,
+        "useClient": true
+      },
+      "sections": [
+        {
+          "name": "stat-cards",
+          "compose": {
+            "type": "stat-cards",
+            "data": "const stats = [\n    { label: \"Total Tasks\", value: total, error: false },\n    { label: \"In Progress\", value: tasks.filter((t) => t.status === \"in_progress\").length, error: false },\n    { label: \"Completed\", value: tasks.filter((t) => t.status === \"done\").length, error: false },\n    { label: \"Overdue\", value: tasks.filter((t) => t.status !== \"done\" && isOverdue(t.due)).length, error: true }\n  ];",
+            "iterator": "s",
+            "dataVar": "stats",
+            "keyExpr": "s.label"
+          }
+        },
+        {
+          "name": "chart-cards",
+          "compose": {
+            "type": "chart-cards",
+            "constants": "const PRIORITY_ROWS: { key: Priority; label: string }[] = [\n  { key: \"critical\", label: \"Critical\" },\n  { key: \"high\", label: \"High\" },\n  { key: \"medium\", label: \"Medium\" },\n  { key: \"low\", label: \"Low\" }\n];\n\nconst STATUS_ROWS: { key: Status; label: string }[] = [\n  { key: \"todo\", label: \"To Do\" },\n  { key: \"in_progress\", label: \"In Progress\" },\n  { key: \"in_review\", label: \"In Review\" },\n  { key: \"done\", label: \"Done\" }\n];",
+            "charts": [
+              {
+                "title": "Tasks by Priority",
+                "dataVar": "PRIORITY_ROWS",
+                "iterator": "row",
+                "countExpr": "tasks.filter((t) => t.priority === row.key).length",
+                "colorExpr": "PRIORITY_BAR_COLORS[row.key]",
+                "labelExpr": "row.label"
+              },
+              {
+                "title": "Tasks by Status",
+                "dataVar": "STATUS_ROWS",
+                "iterator": "row",
+                "countExpr": "tasks.filter((t) => t.status === row.key).length",
+                "colorExpr": "BAR_COLORS[row.key]",
+                "labelExpr": "row.label"
+              }
+            ]
+          }
+        },
+        {
+          "name": "table",
+          "compose": {
+            "type": "table-loop",
+            "data": "const recentTasks = tasks\n    .filter((t) => t.status !== \"done\")\n    .sort((a, b) => b.due.localeCompare(a.due))\n    .slice(0, 5);",
+            "title": "Recent Tasks",
+            "dataVar": "recentTasks",
+            "iterator": "task",
+            "keyExpr": "task.id",
+            "rowSetup": "const member = MEMBERS.find((m) => m.id === task.assignee) ?? MEMBERS[0];",
+            "columns": [
+              {
+                "label": "Task",
+                "field": "title",
+                "cellClass": "text-ui-fg-base"
+              },
+              {
+                "label": "Assignee",
+                "width": "w-[160px]"
+              },
+              {
+                "label": "Priority",
+                "width": "w-[120px]"
+              },
+              {
+                "label": "Due Date",
+                "width": "w-[130px]"
+              },
+              {
+                "label": "Status",
+                "width": "w-[140px]"
+              },
+              {
+                "type": "action"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "team": {
+      "imports": {
+        "named": {
+          "@medusajs/ui": [
+            "Button",
+            "Heading",
+            "IconButton"
+          ],
+          "@medusajs/icons": [
+            "EllipsisHorizontal",
+            "PlusMini"
+          ],
+          "@/components/ColorAvatar": [
+            "ColorAvatar"
+          ],
+          "@/lib/data": [
+            "INITIAL_TASKS",
+            "MEMBERS"
+          ],
+          "@/lib/utils": [
+            "isOverdue"
+          ]
+        },
+        "typeOnly": []
+      },
+      "composition": {
+        "wrapper": "flex flex-col gap-4",
+        "data": "const members = MEMBERS;\n  const tasks = INITIAL_TASKS;",
+        "componentName": "TeamPage",
+        "exportDefault": true,
+        "useClient": true
+      },
+      "sections": [
+        {
+          "name": "table",
+          "compose": {
+            "type": "table-loop",
+            "dataVar": "members",
+            "iterator": "member",
+            "keyExpr": "member.id",
+            "rowSetup": "const activeTasks = tasks.filter(t => t.assignee === member.id && t.status !== \"done\").length;\nconst overdueTasks = tasks.filter(t => t.assignee === member.id && t.status !== \"done\" && isOverdue(t.due)).length;",
+            "columns": [
+              {
+                "label": "Member",
+                "cellClass": "text-ui-fg-base"
+              },
+              {
+                "label": "Email",
+                "width": "w-[220px]",
+                "field": "email"
+              },
+              {
+                "label": "Role",
+                "width": "w-[160px]",
+                "field": "role"
+              },
+              {
+                "label": "Active tasks",
+                "width": "w-[100px]"
+              },
+              {
+                "label": "Overdue",
+                "width": "w-[100px]"
+              },
+              {
+                "type": "action"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "tasks": {
+      "imports": {
+        "named": {
+          "@medusajs/ui": [
+            "Badge",
+            "Button",
+            "Heading",
+            "IconButton",
+            "Input",
+            "Kbd",
+            "DropdownMenu"
+          ],
+          "@medusajs/icons": [
+            "DescendingSorting",
+            "EllipsisHorizontal",
+            "PlusMini"
+          ],
+          "@/components/ColorAvatar": [
+            "ColorAvatar"
+          ],
+          "@/lib/constants": [
+            "BAR_COLORS",
+            "PRIORITY_COLOR",
+            "STATUS_LABEL"
+          ],
+          "@/lib/data": [
+            "INITIAL_TASKS",
+            "MEMBERS"
+          ],
+          "@/lib/utils": [
+            "formatDate",
+            "isOverdue"
+          ]
+        },
+        "typeOnly": []
+      },
+      "composition": {
+        "wrapper": "flex flex-col gap-4",
+        "data": "const tasks = INITIAL_TASKS;",
+        "componentName": "TasksPage",
+        "exportDefault": true,
+        "useClient": true
+      },
+      "variants": {
+        "stateVar": "view",
+        "default": "list",
+        "control": "segment",
+        "swapSection": "table",
+        "options": [
+          { "key": "list", "label": "List", "section": "table" },
+          { "key": "kanban", "label": "Kanban", "cache": "tasks-kanban.jsx", "compose": { "type": "kanban" } }
+        ]
+      },
+      "sections": [
+        {
+          "name": "controls",
+          "compose": {
+            "type": "controls-bar",
+            "segments": [
+              "Kanban",
+              "List"
+            ],
+            "activeSegment": "List",
+            "filters": [
+              {
+                "label": "Filter",
+                "icon": "Funnel",
+                "dropdownItems": [
+                  "Priority",
+                  "Status",
+                  "Assignee"
+                ]
+              },
+              {
+                "label": "Date",
+                "icon": "CalendarMini",
+                "dropdownItems": [
+                  "Due today",
+                  "Due this week",
+                  "Overdue",
+                  "No due date"
+                ]
+              },
+              {
+                "label": "Columns",
+                "icon": "Adjustments",
+                "dropdownItems": [
+                  "Task",
+                  "Assignee",
+                  "Priority",
+                  "Due date",
+                  "Status"
+                ]
+              }
+            ],
+            "hasSort": true,
+            "hasSearch": true
+          }
+        },
+        {
+          "name": "table",
+          "compose": {
+            "type": "table-loop",
+            "dataVar": "tasks",
+            "iterator": "task",
+            "keyExpr": "task.id",
+            "pageSize": 10,
+            "rowSetup": "const member = MEMBERS.find((m) => m.id === task.assignee) ?? MEMBERS[0];",
+            "columns": [
+              {
+                "label": "Task",
+                "field": "title",
+                "cellClass": "text-ui-fg-base"
+              },
+              {
+                "label": "Assignee",
+                "width": "w-[160px]"
+              },
+              {
+                "label": "Priority",
+                "width": "w-[120px]"
+              },
+              {
+                "label": "Due Date",
+                "width": "w-[130px]"
+              },
+              {
+                "label": "Status",
+                "width": "w-[140px]"
+              },
+              {
+                "type": "action"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "reports": {
+      "imports": {
+        "named": {
+          "@medusajs/ui": [
+            "Badge",
+            "Button",
+            "Heading",
+            "IconButton",
+            "Input",
+            "Kbd",
+            "DropdownMenu"
+          ],
+          "@medusajs/icons": [
+            "DescendingSorting",
+            "EllipsisHorizontal",
+            "Funnel"
+          ],
+          "@/components/ColorAvatar": [
+            "ColorAvatar"
+          ],
+          "@/lib/data": [
+            "INITIAL_REPORTS",
+            "MEMBERS"
+          ]
+        },
+        "typeOnly": []
+      },
+      "composition": {
+        "wrapper": "flex flex-col gap-4",
+        "data": "const reports = INITIAL_REPORTS;",
+        "componentName": "ReportsPage",
+        "exportDefault": true,
+        "useClient": true
+      },
+      "sections": [
+        {
+          "name": "controls",
+          "compose": {
+            "type": "controls-bar",
+            "segments": [
+              "90d",
+              "30d",
+              "7d"
+            ],
+            "activeSegment": "30d",
+            "filters": [
+              {
+                "label": "Filter",
+                "icon": "Funnel",
+                "dropdownItems": [
+                  "Status",
+                  "Type",
+                  "Owner"
+                ]
+              }
+            ],
+            "hasSort": true,
+            "hasSearch": true
+          }
+        },
+        {
+          "name": "table",
+          "compose": {
+            "type": "table-loop",
+            "dataVar": "reports",
+            "iterator": "report",
+            "keyExpr": "report.id",
+            "rowSetup": "const member = MEMBERS.find((m) => m.id === report.memberId) ?? MEMBERS[0];",
+            "columns": [
+              {
+                "label": "Report name",
+                "field": "report",
+                "cellClass": "text-ui-fg-base"
+              },
+              {
+                "label": "Member",
+                "width": "w-[200px]"
+              },
+              {
+                "label": "Date range",
+                "width": "w-[160px]",
+                "field": "range"
+              },
+              {
+                "label": "Generated on",
+                "width": "w-[140px]",
+                "field": "generated"
+              },
+              {
+                "type": "action"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "settings": {
+      "imports": {
+        "named": {
+          "@medusajs/ui": [
+            "Avatar",
+            "Button",
+            "Heading",
+            "Input",
+            "Label",
+            "Switch"
+          ],
+          "@/lib/data": [
+            "CURRENT_USER"
+          ]
+        },
+        "typeOnly": []
+      },
+      "composition": {
+        "wrapper": "flex flex-col gap-4",
+        "componentName": "SettingsPage",
+        "exportDefault": true,
+        "useClient": true
+      },
+      "variants": {
+        "stateVar": "activeTab",
+        "default": "profile",
+        "control": "tabs",
+        "swapSection": "content",
+        "options": [
+          { "key": "profile", "label": "Profile", "section": "content" },
+          { "key": "notifications", "label": "Notifications", "cache": "settings-notifications.jsx" },
+          { "key": "security", "label": "Security", "cache": "settings-security.jsx" },
+          { "key": "billing", "label": "Billing", "cache": "settings-billing.jsx" }
+        ],
+        "bindings": {
+          "Ludvig Rask": "CURRENT_USER.name",
+          "ludvig@taskflow.io": "CURRENT_USER.email",
+          "Head of Product": "CURRENT_USER.role"
+        }
+      },
+      "sections": [
+        {
+          "name": "content",
+          "compose": {
+            "type": "passthrough"
+          }
+        }
+      ]
+    }
+  }
+}
