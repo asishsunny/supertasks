@@ -1,5 +1,7 @@
 "use client";
 
-export default function ReportsPage() {
-  return <p className="text-ui-fg-muted txt-compact-small">Reports content</p>;
+import { ReportsSection } from "@/features/reports/ReportsSection";
+
+export default function Page() {
+  return <ReportsSection />;
 }

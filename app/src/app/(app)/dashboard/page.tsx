@@ -1,5 +1,7 @@
 "use client";
 
-export default function DashboardPage() {
-  return <p className="text-ui-fg-muted txt-compact-small">Dashboard content</p>;
+import { DashboardSection } from "@/features/dashboard/DashboardSection";
+
+export default function Page() {
+  return <DashboardSection />;
 }

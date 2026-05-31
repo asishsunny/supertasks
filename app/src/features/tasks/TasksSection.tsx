@@ -72,10 +72,6 @@ export function TasksSection() {
         activeView={view ?? "kanban"}
         onViewChange={(v) => setView(v)}
         onSearch={(q) => setSearch(q || null)}
-        statusFilter={filters.status}
-        priorityFilter={filters.priority}
-        onStatusFilter={(s) => setStatus(s === "all" ? null : s)}
-        onPriorityFilter={(p) => setPriority(p === "all" ? null : p)}
       />
 
       <ViewBoundary>

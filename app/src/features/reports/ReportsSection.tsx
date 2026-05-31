@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useStore } from "@/app/(app)/store";
 import { useMemberLookup } from "@/lib/hooks";
 import { getReportColumns } from "./columns";
+import { ReportsStatCards } from "./ReportsStatCards";
 import { ControlsBar } from "@/components/controls/ControlsBar";
 import { TableView } from "@/components/views/TableView";
 import { FormModal } from "@/components/overlays/FormModal";
@@ -16,10 +17,11 @@ const RANGE_VIEWS = [
   { key: "7d", label: "7d" },
 ];
 
-export function ReportsTable() {
+export function ReportsSection() {
   const { state } = useStore();
   const memberMap = useMemberLookup();
   const [search, setSearch] = useState("");
+  const [range, setRange] = useState("30d");
   const [showGenerate, setShowGenerate] = useState(false);
 
   const filtered = useMemo(() => {
@@ -31,18 +33,27 @@ export function ReportsTable() {
   const columns = useMemo(() => getReportColumns(memberMap), [memberMap]);
 
   return (
-    <>
+    <div className="flex flex-col gap-6 w-full">
+      <ReportsStatCards />
+
       <ControlsBar
         views={RANGE_VIEWS}
-        activeView="30d"
+        activeView={range}
+        onViewChange={setRange}
         onSearch={setSearch}
       />
+
       <ViewBoundary>
         <div className="bg-ui-bg-base rounded-xl shadow-elevation-card-rest overflow-clip">
           <TableView data={filtered} columns={columns} keyFn={(r) => r.id} />
         </div>
       </ViewBoundary>
-      <FormModal config={MODAL_CONFIGS.generate_report} open={showGenerate} onClose={() => setShowGenerate(false)} />
-    </>
+
+      <FormModal
+        config={MODAL_CONFIGS.generate_report}
+        open={showGenerate}
+        onClose={() => setShowGenerate(false)}
+      />
+    </div>
   );
 }

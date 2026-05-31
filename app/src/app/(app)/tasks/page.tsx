@@ -1,5 +1,7 @@
 "use client";
 
-export default function TasksPage() {
-  return <p className="text-ui-fg-muted txt-compact-small">Tasks content</p>;
+import { TasksSection } from "@/features/tasks/TasksSection";
+
+export default function Page() {
+  return <TasksSection />;
 }
