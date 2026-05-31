@@ -189,7 +189,17 @@ No new docs needed. Feed these to Claude → sections come out.
 
 ### Known gaps (from plan.md audit)
 
-**Missing blocks — create Snippet Gallery page in Figma first:**
+**Missing blocks — Snippet Gallery page exists, fetch and pipeline:**
+
+Settings tab content blocks need fetching from Snippet Gallery:
+- Profile: node `4553:47187` (already cached as settings-profile)
+- Notifications: node `4553:47282`
+- Security: node `4553:47352`  
+- Billing: node `4553:47418`
+
+Fetch each → cache → transform → templatize → build → display in `/gallery/views/settings`
+
+**Previously documented:**
 
 Create a "Snippet Gallery" page in Figma UI file that renders every block variation using existing snippets with different DATA configs. One page, all variations. Pipeline fetches individual nodes from here.
 

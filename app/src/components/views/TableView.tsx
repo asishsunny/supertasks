@@ -21,8 +21,8 @@ export function TableView<T>({ data, columns, keyFn }: TableViewProps<T>) {
     <Table className="min-w-[800px] table-fixed">
       <Table.Header className="border-t-0">
         <Table.Row>
-          {columns.map((col) => (
-            <Table.HeaderCell key={col.header} className={col.width}>
+          {columns.map((col, i) => (
+            <Table.HeaderCell key={col.header || `col-${i}`} className={`${col.width || ""} ${i === columns.length - 1 ? "pr-4" : ""}`}>
               {col.header}
             </Table.HeaderCell>
           ))}
@@ -31,8 +31,8 @@ export function TableView<T>({ data, columns, keyFn }: TableViewProps<T>) {
       <Table.Body>
         {data.map((row) => (
           <Table.Row key={keyFn(row)}>
-            {columns.map((col) => (
-              <Table.Cell key={col.header} className={col.width}>
+            {columns.map((col, i) => (
+              <Table.Cell key={col.header || `col-${i}`} className={`${col.width || ""} ${i === columns.length - 1 ? "pr-4" : ""}`}>
                 {col.render(row)}
               </Table.Cell>
             ))}

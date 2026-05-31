@@ -24,7 +24,7 @@ export function RecentTasks<T>({
   keyFn,
 }: RecentTasksProps<T>) {
   return (
-    <div className="bg-ui-bg-base flex flex-col overflow-clip rounded-xl shadow-elevation-card-rest w-full h-full">
+    <div className="bg-ui-bg-base flex flex-col overflow-clip rounded-xl shadow-elevation-card-rest w-full">
       <div className="flex items-start pb-4 pt-6 px-6 w-full">
         <p className="text-ui-fg-base txt-compact-medium-plus">{title}</p>
       </div>
