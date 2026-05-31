@@ -23,7 +23,7 @@ export function SettingsSecurity({
   onToggle,
 }: SettingsSecurityProps) {
   return (
-    <div className="flex gap-6 items-start w-full h-full">
+    <div className="flex gap-6 items-start w-full">
       {/* Sidebar tabs */}
       <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
         {tabs.map((tab, i) => {
@@ -54,7 +54,7 @@ export function SettingsSecurity({
         <div className="flex flex-col gap-5 p-6 w-full">
           <div className="flex flex-col gap-3 w-full">
             {toggles.map((toggle, i) => (
-              <div key={i}>
+              <div key={toggle.label}>
                 <div className="flex items-center justify-between w-full">
                   <div className="flex flex-col gap-1 text-[13px]">
                     <p className="text-ui-fg-base font-medium">

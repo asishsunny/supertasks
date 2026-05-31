@@ -25,7 +25,7 @@ export function ControlsBar({
   onSearch,
 }: ControlsBarProps) {
   return (
-    <div className="flex gap-0 items-center w-full h-full">
+    <div className="flex gap-0 h-8 items-center w-full">
       {/* Segment control — templatized: bg-ui-bg-segment-control flex gap-0.5 ... */}
       <div className="bg-ui-bg-segment-control flex gap-0.5 items-center p-0.5 rounded-lg shrink-0">
         {views.map((v) => (

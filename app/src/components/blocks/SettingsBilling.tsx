@@ -53,7 +53,7 @@ export function SettingsBilling({
   onUpdatePayment,
 }: SettingsBillingProps) {
   return (
-    <div className="flex gap-6 items-start w-full h-full">
+    <div className="flex gap-6 items-start w-full">
       {/* Sidebar tabs */}
       <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
         {tabs.map((tab, i) => {

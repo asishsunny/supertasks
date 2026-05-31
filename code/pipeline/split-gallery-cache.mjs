@@ -24,7 +24,7 @@ const code = raw.find(item => item.type === "text")?.text || "";
 
 if (!code) { console.error("No code found in MCP result"); process.exit(1); }
 
-// Map data-name to cache filename
+// Map data-name to cache filename (ordered by appearance in gallery)
 const NAME_MAP = {
   "Stat Cards": ["stat-cards", "stat-cards-reports"],
   "Chart Cards": ["chart-cards"],
@@ -44,7 +44,7 @@ const NAME_MAP = {
 // Find all top-level snippet positions by data-name
 const SNIPPET_NAMES = new Set(Object.keys(NAME_MAP));
 const positions = [];
-const re = /data-node-id="(4553:\d+)"\s+data-name="([^"]+)"/g;
+const re = /data-node-id="(\d+:\d+)"\s+data-name="([^"]+)"/g;
 let m;
 while ((m = re.exec(code)) !== null) {
   if (SNIPPET_NAMES.has(m[2])) {

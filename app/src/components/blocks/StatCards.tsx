@@ -1,16 +1,16 @@
-export interface StatCard {
+export interface StatCardItem {
   label: string;
   value: string | number;
   error?: boolean;
 }
 
 export interface StatCardsProps {
-  cards: StatCard[];
+  cards: StatCardItem[];
 }
 
 export function StatCards({ cards }: StatCardsProps) {
   return (
-    <div className="flex gap-4 items-start w-full h-full">
+    <div className="flex gap-4 items-start w-full">
       {cards.map((card) => (
         <div
           key={card.label}
