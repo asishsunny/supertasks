@@ -26,7 +26,7 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-8">
       <Section label="Profile">
-        <SettingsProfile name={CURRENT_USER.name} initials={CURRENT_USER.initials} avatar={CURRENT_USER.avatar} photoHint="Click to change photo" tabs={TABS} activeTab={0} fieldRows={FIELD_ROWS} bioLabel="Bio" bioPlaceholder="Write something about yourself..." saveLabel="Save changes" />
+        <SettingsProfile name={CURRENT_USER.name} initials={CURRENT_USER.initials} avatar={CURRENT_USER.avatar} avatarBg="tag-orange-bg" avatarText="tag-orange-text" photoHint="Click to change photo" tabs={TABS} activeTab={0} fieldRows={FIELD_ROWS} bioLabel="Bio" bioPlaceholder="Write something about yourself..." saveLabel="Save changes" />
       </Section>
       <Section label="Notifications">
         <SettingsNotifications tabs={TABS} activeTab={1} heading="Notifications" toggles={NOTIFICATION_TOGGLES} saveLabel="Save changes" />

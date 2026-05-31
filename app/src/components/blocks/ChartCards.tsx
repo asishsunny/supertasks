@@ -16,7 +16,7 @@ export interface ChartCardsProps {
 
 export function ChartCards({ charts }: ChartCardsProps) {
   return (
-    <div className="flex gap-4 items-start w-full h-full">
+    <div className="flex gap-4 items-start w-full">
       {charts.map((chart) => (
         <div
           key={chart.title}
@@ -34,9 +34,9 @@ export function ChartCards({ charts }: ChartCardsProps) {
                     <p className="text-ui-fg-subtle w-[88px] txt-compact-small">
                       {row.label}
                     </p>
-                    <div className="bg-ui-border-base flex-1 h-2 min-w-[1px] overflow-clip rounded">
+                    <div className="bg-ui-border-base flex-1 h-2 min-w-[1px] overflow-clip relative rounded">
                       <div
-                        className="h-2 left-0 rounded top-0"
+                        className="absolute h-2 left-0 rounded top-0"
                         style={{
                           width: `${pct}%`,
                           backgroundColor: row.color,

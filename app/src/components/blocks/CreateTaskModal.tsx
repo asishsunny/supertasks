@@ -59,7 +59,7 @@ export function CreateTaskModal({
   }
 
   return (
-    <div className="bg-ui-bg-base flex flex-col overflow-clip rounded-xl shadow-elevation-card-rest w-full">
+    <div className="bg-ui-bg-base flex flex-col overflow-clip rounded-xl shadow-elevation-card-rest max-w-[480px] w-full">
       {/* Header */}
       <div className="flex flex-col w-full">
         <div className="flex items-center justify-between px-6 py-2 w-full">

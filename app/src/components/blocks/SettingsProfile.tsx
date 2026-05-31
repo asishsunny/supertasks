@@ -10,6 +10,8 @@ export interface SettingsProfileProps {
   name: string;
   avatar: string;
   initials: string;
+  avatarBg: string;
+  avatarText: string;
   photoHint: string;
   fieldRows: [SettingsField, SettingsField][];
   bioLabel: string;
@@ -23,8 +25,9 @@ export interface SettingsProfileProps {
 
 export function SettingsProfile({
   name,
-  avatar,
   initials,
+  avatarBg,
+  avatarText,
   photoHint,
   fieldRows,
   bioLabel,
@@ -36,9 +39,9 @@ export function SettingsProfile({
   onSave,
 }: SettingsProfileProps) {
   return (
-    <div className="flex gap-6 items-start w-full h-full">
+    <div className="flex gap-6 items-start w-full">
       {/* Sidebar tabs */}
-      <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 rounded-[8px] shadow-elevation-card-rest shrink-0 w-[200px]">
+      <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
         {tabs.map((tab, i) => {
           const isActive = i === activeTab;
           return (
@@ -70,7 +73,7 @@ export function SettingsProfile({
           {/* Avatar row */}
           <div className="flex gap-3 items-center w-full">
             <ColorAvatar
-              member={{ initials, avatarBg: "tag-orange-bg", avatarText: "tag-orange-text" }}
+              member={{ initials, avatarBg, avatarText }}
               size="xlarge"
             />
             <div className="flex flex-col gap-0.5">
@@ -83,7 +86,7 @@ export function SettingsProfile({
             </div>
           </div>
 
-          {/* Field rows */}
+          {/* Field rows (data-repeat="3" with data-repeat="2" fields each) */}
           {fieldRows.map((row, ri) => (
             <div key={ri} className="flex gap-4 items-start w-full">
               {row.map((field) => (

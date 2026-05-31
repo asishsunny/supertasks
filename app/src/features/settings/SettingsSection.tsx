@@ -33,6 +33,8 @@ export function SettingsSection() {
           name={CURRENT_USER.name}
           avatar={CURRENT_USER.avatar}
           initials={CURRENT_USER.initials}
+          avatarBg="tag-orange-bg"
+          avatarText="tag-orange-text"
           photoHint="Upload a photo (max 2MB)"
           fieldRows={[
             [

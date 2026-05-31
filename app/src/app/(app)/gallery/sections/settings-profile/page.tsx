@@ -15,6 +15,8 @@ export default function Page() {
       name={CURRENT_USER.name}
       initials={CURRENT_USER.initials}
       avatar={CURRENT_USER.avatar}
+      avatarBg="tag-orange-bg"
+      avatarText="tag-orange-text"
       photoHint="Click to change photo"
       tabs={TABS}
       fieldRows={FIELD_ROWS}
