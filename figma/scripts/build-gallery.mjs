@@ -115,7 +115,7 @@ function mkTableData(rawData, vd) {
       const color = avatarToColor[member?.avatar_bg] || 'neutral';
       const row = {}; const errorFields = [];
       for (const col of colDefs) {
-        const val = r[col.field] ?? '';
+        const val = r[col.field] ?? member?.[col.field] ?? '';
         if (col.type === 'user') row.user = { name: member?.name || '', initial: member?.initials || '?', color };
         else row[col.field] = typeof val === 'number' ? String(val) : val;
         if (col.field === 'overdue' && Number(r.overdue) > 0) errorFields.push('overdue');
