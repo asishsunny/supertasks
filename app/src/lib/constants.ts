@@ -1,6 +1,6 @@
 import type { Priority, Status } from "@/types";
 
-type BadgeColor = "grey" | "orange" | "red" | "purple" | "blue" | "green";
+export type BadgeColor = "grey" | "orange" | "red" | "purple" | "blue" | "green";
 
 export const PRIORITY_COLOR: Record<Priority, BadgeColor> = {
   low: "grey",

@@ -134,6 +134,12 @@ Snippets with `"view": true` output to `components/views/` instead of `component
 | `code/rules/transform-rules.json` | Component detection, noise config, token maps, imports |
 | `code/rules/compose-rules.json` | Per-screen composition, iterators, data bindings |
 | `code/rules/build-checklist.json` | 12-rule quality scorecard |
+| `code/rules/wiring-rules.json` | Block→section wiring — what props each block needs, what state the section owns, where interactivity lives |
+
+## Known fixes
+
+- **CLI arg parsing**: `cliArgs.indexOf("--flag") + 1` returns `cliArgs[0]` when flag is absent (indexOf returns -1, +1 = 0). Always guard with `indexOf !== -1` before accessing the value. This caused the pipeline to silently do nothing when `--phase` was omitted.
+- **maxBuffer**: `execSync` defaults to 1MB buffer. Large transforms (kanban 75KB cache) can exceed it. Set `maxBuffer: 10 * 1024 * 1024`.
 
 ## Key lessons
 

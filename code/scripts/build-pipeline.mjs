@@ -31,7 +31,8 @@ const ROOT = resolve(__dirname, "../..");
 const manifest = JSON.parse(readFileSync(resolve(ROOT, "artifacts/pipeline-x.json"), "utf8"));
 
 const cliArgs = process.argv.slice(2);
-const phase = cliArgs[cliArgs.indexOf("--phase") + 1] || "all";
+const phaseIdx = cliArgs.indexOf("--phase");
+const phase = phaseIdx !== -1 ? cliArgs[phaseIdx + 1] : "all";
 const snippetFilter = cliArgs.includes("--snippet") ? cliArgs[cliArgs.indexOf("--snippet") + 1] : null;
 const force = cliArgs.includes("--force");
 
@@ -63,7 +64,7 @@ function runTransform() {
     }
 
     try {
-      execSync(`node ${resolve(__dirname, "transform.mjs")} "${cachePath}" --out "${outPath}"`, { cwd: ROOT, stdio: ["pipe", "pipe", "pipe"] });
+      execSync(`node ${resolve(__dirname, "transform.mjs")} "${cachePath}" --out "${outPath}"`, { cwd: ROOT, stdio: ["pipe", "pipe", "pipe"], maxBuffer: 10 * 1024 * 1024 });
       const size = `${(readFileSync(outPath).length / 1024).toFixed(1)}KB`;
       results.push({ name: s.name, status: "OK", size });
     } catch (e) {
@@ -106,7 +107,7 @@ function runTemplatize() {
     }
 
     try {
-      execSync(`node ${resolve(__dirname, "templatize.mjs")} "${inPath}" --out "${outPath}"`, { cwd: ROOT, stdio: ["pipe", "pipe", "pipe"] });
+      execSync(`node ${resolve(__dirname, "templatize.mjs")} "${inPath}" --out "${outPath}"`, { cwd: ROOT, stdio: ["pipe", "pipe", "pipe"], maxBuffer: 10 * 1024 * 1024 });
       const inSize = readFileSync(inPath).length;
       const outSize = readFileSync(outPath).length;
       const reduction = Math.round((1 - outSize / inSize) * 100);
