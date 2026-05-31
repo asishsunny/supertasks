@@ -26,9 +26,9 @@ if (!code) { console.error("No code found in MCP result"); process.exit(1); }
 
 // Map data-name to cache filename
 const NAME_MAP = {
-  "Stat Cards": ["stat-cards-dashboard", "stat-cards-reports"],
+  "Stat Cards": ["stat-cards", "stat-cards-reports"],
   "Chart Cards": ["chart-cards"],
-  "Controls": ["controls-tasks", "controls-reports"],
+  "Controls": ["controls", "controls-reports"],
   "Recent Tasks": ["recent-tasks"],
   "Tasks": ["tasks-table"],
   "Team": ["team-table"],
