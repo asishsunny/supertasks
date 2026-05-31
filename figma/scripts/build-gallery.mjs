@@ -296,7 +296,7 @@ if (args.includes('--render-all')) {
       console.log('✓ Bridge connected\n');
     } catch { console.error('❌ Bridge not running. Start: node figma/scripts/figma-bridge.mjs'); process.exit(1); }
 
-    execViaBridge(`
+    const pageResult = execViaBridge(`
       await figma.loadAllPagesAsync();
       let page = figma.root.children.find(p => p.name === 'Snippet Gallery');
       if (!page) { page = figma.createPage(); page.name = 'Snippet Gallery'; }
@@ -318,12 +318,27 @@ if (args.includes('--render-all')) {
       } catch (e) { console.log(` ✗ ${e.message.slice(0, 100)}`); fail++; }
     }
 
-    execViaBridge(`
+    // Wrap all in one frame, stack vertically
+    const wrapResult = execViaBridge(`
       const page = figma.currentPage;
-      let y = 0;
-      for (const child of page.children) { child.x = 0; child.y = y; y += child.height + 60; }
-      return { arranged: page.children.length, totalHeight: y };
+      const wrapper = figma.createFrame();
+      wrapper.name = 'Snippet Gallery';
+      wrapper.layoutMode = 'VERTICAL';
+      wrapper.primaryAxisSizingMode = 'AUTO';
+      wrapper.counterAxisSizingMode = 'AUTO';
+      wrapper.itemSpacing = 60;
+      wrapper.fills = [];
+      wrapper.clipsContent = false;
+      const children = [...page.children].filter(c => c !== wrapper);
+      for (const child of children) {
+        wrapper.appendChild(child);
+      }
+      page.appendChild(wrapper);
+      wrapper.x = 0;
+      wrapper.y = 0;
+      return { wrapperId: wrapper.id, children: wrapper.children.length, width: Math.round(wrapper.width), height: Math.round(wrapper.height) };
     `);
+    console.log(`\n✓ Wrapper frame: ${wrapResult.wrapperId} (${wrapResult.children} items, ${wrapResult.width}×${wrapResult.height})`);
 
     console.log(`\n── Summary ──`);
     console.log(`  ✓ ${ok} rendered`);
