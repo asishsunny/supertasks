@@ -13,12 +13,6 @@ const FIELD_ROWS: [{ label: string; value: string }, { label: string; value: str
   [{ label: "Location", value: "San Francisco, CA" }, { label: "Time zone", value: "Pacific Time (UTC-8)" }],
 ];
 
-const HISTORY_COLUMNS = [
-  { header: "Date", width: "flex-1" },
-  { header: "Description", width: "flex-1" },
-  { header: "Amount", width: "w-[120px]" },
-];
-
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
@@ -41,7 +35,7 @@ export default function Page() {
         <SettingsSecurity tabs={TABS} activeTab={2} heading="Security" toggles={SECURITY_TOGGLES} saveLabel="Save changes" />
       </Section>
       <Section label="Billing">
-        <SettingsBilling tabs={TABS} activeTab={3} heading="Billing" plan={{ name: BILLING.plan.name, price: BILLING.plan.price, renews: BILLING.plan.renews, action: BILLING.plan.action }} payment={{ label: BILLING.payment.label, value: BILLING.payment.value, action: BILLING.payment.action }} historyHeading="Billing history" historyColumns={HISTORY_COLUMNS} historyRows={BILLING.history.map(h => ({ date: h.date, desc: h.desc, amount: h.amount }))} />
+        <SettingsBilling tabs={TABS} activeTab={3} heading="Billing" plan={{ name: BILLING.plan.name, price: BILLING.plan.price, renewalNote: BILLING.plan.renews, changeLabel: BILLING.plan.action }} payment={{ label: BILLING.payment.label, desc: BILLING.payment.value, updateLabel: BILLING.payment.action }} historyHeading="Billing history" historyColumns={[{ key: "date", header: "Date" }, { key: "description", header: "Description" }, { key: "amount", header: "Amount", className: "w-[120px]" }]} historyRows={BILLING.history.map(h => ({ date: h.date, description: h.desc, amount: h.amount }))} />
       </Section>
     </div>
   );

@@ -60,6 +60,7 @@ const GALLERY: GalleryGroup[] = [
     items: [
       { title: "Table", icon: QueueList, href: "/gallery/views/table" },
       { title: "Kanban", icon: GridList, href: "/gallery/views/kanban" },
+      { title: "Settings", icon: CogSixTooth, href: "/gallery/views/settings" },
     ],
   },
   {
