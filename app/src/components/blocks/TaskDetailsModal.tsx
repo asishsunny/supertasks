@@ -1,13 +1,35 @@
+// source: artifacts/transformed/task-details-modal-templatized.tsx
+// adapt: info → InfoRow[] (discriminated union), activity → ActivityEntry[], hardcoded text → props
+
 import { Button, IconButton, Kbd } from "@medusajs/ui";
 import { XMark } from "@medusajs/icons";
 import { ColorAvatar } from "@/components/ColorAvatar";
-import type { ReactNode } from "react";
 import type { Member } from "@/types";
 
-export interface InfoRow {
+export interface BadgeInfoRow {
+  type: "badge";
   label: string;
-  value: ReactNode;
+  badgeLabel: string;
+  badgeBg: string;
+  badgeBorder: string;
+  badgeText: string;
 }
+
+export interface AvatarInfoRow {
+  type: "avatar";
+  label: string;
+  member: Pick<Member, "initials" | "avatarBg" | "avatarText">;
+  name: string;
+}
+
+export interface TextInfoRow {
+  type: "text";
+  label: string;
+  value: string;
+  error?: boolean;
+}
+
+export type InfoRow = BadgeInfoRow | AvatarInfoRow | TextInfoRow;
 
 export interface ActivityEntry {
   member: Pick<Member, "initials" | "avatarBg" | "avatarText">;
@@ -31,6 +53,52 @@ export interface TaskDetailsModalProps {
   onSecondary?: () => void;
 }
 
+function InfoRowItem({ row }: { row: InfoRow }) {
+  switch (row.type) {
+    case "badge":
+      return (
+        <div className="flex items-center justify-between w-full">
+          <p className="text-ui-fg-subtle txt-compact-small">{row.label}</p>
+          <div
+            className="flex gap-0.5 h-5 items-center justify-center px-1.5 py-px rounded-full"
+            style={{
+              backgroundColor: row.badgeBg,
+              borderWidth: 1,
+              borderStyle: "solid",
+              borderColor: row.badgeBorder,
+            }}
+          >
+            <p
+              className="text-center txt-compact-xsmall-plus"
+              style={{ color: row.badgeText }}
+            >
+              {row.badgeLabel}
+            </p>
+          </div>
+        </div>
+      );
+    case "avatar":
+      return (
+        <div className="flex items-center justify-between w-full">
+          <p className="text-ui-fg-subtle txt-compact-small">{row.label}</p>
+          <div className="flex gap-2 items-center">
+            <ColorAvatar member={row.member} size="xsmall" />
+            <p className="text-ui-fg-base txt-compact-small">{row.name}</p>
+          </div>
+        </div>
+      );
+    case "text":
+      return (
+        <div className="flex items-center justify-between w-full txt-compact-small">
+          <p className="text-ui-fg-subtle">{row.label}</p>
+          <p className={row.error ? "text-ui-fg-error" : "text-ui-fg-base"}>
+            {row.value}
+          </p>
+        </div>
+      );
+  }
+}
+
 export function TaskDetailsModal({
   heading,
   title,
@@ -46,9 +114,9 @@ export function TaskDetailsModal({
   onSecondary,
 }: TaskDetailsModalProps) {
   return (
-    <div className="flex flex-col overflow-clip rounded-[12px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_8px_16px_0px_rgba(0,0,0,0.08),0px_16px_32px_0px_rgba(0,0,0,0.08)] w-full h-full">
+    <div className="flex flex-col overflow-clip rounded-xl shadow-elevation-card-rest w-full h-full">
       {/* Header */}
-      <div className="flex flex-col items-center shrink-0 w-full">
+      <div className="flex flex-col items-center w-full">
         <div className="flex items-center justify-between px-6 py-2 w-full">
           <p className="flex-1 min-w-[1px] text-ui-fg-base txt-compact-medium-plus">
             {heading}
@@ -58,8 +126,8 @@ export function TaskDetailsModal({
             <IconButton
               size="small"
               variant="transparent"
+              aria-label="Close modal"
               onClick={onClose}
-              aria-label={heading}
             >
               <XMark />
             </IconButton>
@@ -82,15 +150,7 @@ export function TaskDetailsModal({
         <div className="flex flex-col gap-4 w-full">
           <p className="text-ui-fg-base txt-compact-small-plus">{infoLabel}</p>
           {info.map((row, i) => (
-            <div
-              key={i}
-              className="flex items-center justify-between w-full"
-            >
-              <p className="text-ui-fg-subtle txt-compact-small">
-                {row.label}
-              </p>
-              {row.value}
-            </div>
+            <InfoRowItem key={i} row={row} />
           ))}
         </div>
 
@@ -121,7 +181,7 @@ export function TaskDetailsModal({
       </div>
 
       {/* Footer */}
-      <div className="flex flex-col items-center shrink-0 w-full">
+      <div className="flex flex-col items-center w-full">
         <div className="h-px bg-ui-border-base w-full" />
         <div className="flex gap-2 items-center justify-end px-6 py-4 w-full">
           <Button variant="secondary" size="small" onClick={onSecondary}>

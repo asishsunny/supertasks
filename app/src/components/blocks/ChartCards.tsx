@@ -16,7 +16,7 @@ export interface ChartCardsProps {
 
 export function ChartCards({ charts }: ChartCardsProps) {
   return (
-    <div className="flex gap-4 items-start w-full">
+    <div className="flex gap-4 items-start w-full h-full">
       {charts.map((chart) => (
         <div
           key={chart.title}

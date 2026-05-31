@@ -1,5 +1,5 @@
 // source: artifacts/transformed/recent-tasks-templatized.tsx
-// adapt: data-repeat → .map(), hardcoded text → props, generic Column<T>
+// built: data-repeat → .map(), hardcoded text → props, generic Column<T>
 
 import type { ReactNode } from "react";
 import { Table } from "@medusajs/ui";

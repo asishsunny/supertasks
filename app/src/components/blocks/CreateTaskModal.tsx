@@ -1,5 +1,5 @@
 // source: artifacts/transformed/create-task-modal-templatized.tsx
-// adapt: fields → ModalField[] prop, row grouping, hardcoded text → props
+// built: fields → ModalField[] prop, row grouping, hardcoded text → props
 
 import { Button, IconButton, Input, Kbd, Label, Select, Textarea } from "@medusajs/ui";
 import { XMark } from "@medusajs/icons";

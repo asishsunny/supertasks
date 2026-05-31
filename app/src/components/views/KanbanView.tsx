@@ -1,3 +1,4 @@
+// source: artifacts/transformed/kanban-board-templatized.tsx (view extract)
 import type { ReactNode } from "react";
 
 export interface KanbanColumnData<T> {

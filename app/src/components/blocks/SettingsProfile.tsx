@@ -1,6 +1,5 @@
 import { Button, Input, Label, Textarea } from "@medusajs/ui";
 import { ColorAvatar } from "@/components/ColorAvatar";
-import type { Member } from "@/types";
 
 export interface SettingsField {
   label: string;
@@ -24,6 +23,7 @@ export interface SettingsProfileProps {
 
 export function SettingsProfile({
   name,
+  avatar,
   initials,
   photoHint,
   fieldRows,

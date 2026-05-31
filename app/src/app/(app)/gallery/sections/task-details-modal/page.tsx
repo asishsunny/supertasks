@@ -1,48 +1,69 @@
 "use client";
-import { Badge } from "@medusajs/ui";
 import { TaskDetailsModal } from "@/components/blocks/TaskDetailsModal";
 import type { InfoRow, ActivityEntry } from "@/components/blocks/TaskDetailsModal";
 import { INITIAL_TASKS, MEMBERS, ACTIVITY } from "@/lib/data";
-import { STATUS_COLOR, STATUS_LABEL, PRIORITY_COLOR } from "@/lib/constants";
-import { ColorAvatar } from "@/components/ColorAvatar";
+import { STATUS_LABEL } from "@/lib/constants";
 import { formatDueDate, isOverdue } from "@/lib/utils";
+import type { Status, Priority } from "@/types";
+
+/* Badge color palettes — section maps semantic status to raw CSS values */
+const BADGE_PALETTE: Record<string, { bg: string; border: string; text: string }> = {
+  blue:   { bg: "rgba(59,130,246,0.12)",  border: "#bfdbfe", text: "#1e40af" },
+  green:  { bg: "rgba(34,197,94,0.12)",   border: "#bbf7d0", text: "#166534" },
+  orange: { bg: "rgba(249,115,22,0.12)",  border: "#fed7aa", text: "#9a3412" },
+  red:    { bg: "rgba(239,68,68,0.12)",   border: "#fecaca", text: "#991b1b" },
+  purple: { bg: "rgba(168,85,247,0.12)",  border: "#e9d5ff", text: "#6b21a8" },
+  grey:   { bg: "rgba(107,114,128,0.12)", border: "#d1d5db", text: "#374151" },
+};
+
+const STATUS_BADGE: Record<Status, string> = {
+  todo: "grey",
+  in_progress: "blue",
+  in_review: "orange",
+  done: "green",
+};
+
+const PRIORITY_BADGE: Record<Priority, string> = {
+  low: "grey",
+  medium: "orange",
+  high: "red",
+  critical: "purple",
+};
 
 const task = INITIAL_TASKS[0]; // "Update onboarding flow"
 const member = MEMBERS.find((m) => m.id === task.assignee)!;
 
+const statusPal = BADGE_PALETTE[STATUS_BADGE[task.status]];
+const priorityPal = BADGE_PALETTE[PRIORITY_BADGE[task.priority]];
+
 const info: InfoRow[] = [
   {
+    type: "badge",
     label: "Status",
-    value: (
-      <Badge color={STATUS_COLOR[task.status]} size="2xsmall" rounded="full">
-        {STATUS_LABEL[task.status]}
-      </Badge>
-    ),
+    badgeLabel: STATUS_LABEL[task.status],
+    badgeBg: statusPal.bg,
+    badgeBorder: statusPal.border,
+    badgeText: statusPal.text,
   },
   {
+    type: "badge",
     label: "Priority",
-    value: (
-      <Badge color={PRIORITY_COLOR[task.priority]} size="2xsmall" rounded="full">
-        {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-      </Badge>
-    ),
+    badgeLabel: task.priority.charAt(0).toUpperCase() + task.priority.slice(1),
+    badgeBg: priorityPal.bg,
+    badgeBorder: priorityPal.border,
+    badgeText: priorityPal.text,
   },
   {
+    type: "avatar",
     label: "Assignee",
-    value: (
-      <div className="flex gap-2 items-center">
-        <ColorAvatar member={member} size="xsmall" />
-        <p className="text-ui-fg-base txt-compact-small">{member.name}</p>
-      </div>
-    ),
+    member: { initials: member.initials, avatarBg: member.avatarBg, avatarText: member.avatarText },
+    name: member.name,
   },
   {
+    type: "text",
     label: "Due date",
-    value: (
-      <p className={`txt-compact-small ${isOverdue(task.due) ? "text-ui-fg-error" : "text-ui-fg-base"}`}>
-        {formatDueDate(task.due)}
-      </p>
-    ),
+    value: formatDueDate(task.due),
+    error: isOverdue(task.due),
   },
 ];
 

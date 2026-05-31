@@ -1,3 +1,4 @@
+// source: artifacts/transformed/kanban-board-templatized.tsx (card extract)
 import { Badge } from "@medusajs/ui";
 import { ColorAvatar } from "@/components/ColorAvatar";
 import type { Member } from "@/types";

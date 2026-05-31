@@ -1,5 +1,8 @@
-import { ReactNode } from "react";
-import { Button, IconButton, Input } from "@medusajs/ui";
+// source: artifacts/transformed/controls-templatized.tsx
+// wiring: code/rules/wiring-rules.json → ControlsBar
+
+import { type ReactNode } from "react";
+import { Button, IconButton, Input, Kbd } from "@medusajs/ui";
 import { DescendingSorting } from "@medusajs/icons";
 
 export interface ControlsBarProps {
@@ -22,9 +25,9 @@ export function ControlsBar({
   onSearch,
 }: ControlsBarProps) {
   return (
-    <div className="flex items-center w-full">
-      {/* Segment control */}
-      <div className="bg-ui-bg-segment-control flex gap-0.5 items-center p-0.5 rounded-lg">
+    <div className="flex gap-0 items-center w-full h-full">
+      {/* Segment control — templatized: bg-ui-bg-segment-control flex gap-0.5 ... */}
+      <div className="bg-ui-bg-segment-control flex gap-0.5 items-center p-0.5 rounded-lg shrink-0">
         {views.map((v) => (
           <button
             key={v.key}
@@ -43,13 +46,13 @@ export function ControlsBar({
         ))}
       </div>
 
-      {/* Spacer */}
-      <div className="flex-1" />
+      {/* Spacer — templatized: flex-1 h-full min-w-[1px] */}
+      <div className="flex-1 h-full min-w-[1px]" />
 
       {/* Right-side controls */}
-      <div className="flex gap-2 items-center">
-        {/* Filter buttons */}
-        <div className="flex gap-2 items-center">
+      <div className="flex gap-2 items-center shrink-0">
+        {/* Filter buttons — templatized: 3x Button variant="secondary" size="small" */}
+        <div className="flex gap-2 items-center shrink-0">
           {filters.map((f) => (
             <Button key={f.label} variant="secondary" size="small">
               {f.icon}
@@ -58,16 +61,12 @@ export function ControlsBar({
           ))}
         </div>
 
-        {/* Sort button */}
-        <IconButton
-          size="small"
-          variant="primary"
-          aria-label="Sort"
-        >
+        {/* Sort — templatized: IconButton size="small" variant="primary" */}
+        <IconButton size="small" variant="primary" aria-label="Sort">
           <DescendingSorting />
         </IconButton>
 
-        {/* Search with keyboard shortcut */}
+        {/* Search + Kbd — templatized: relative wrapper with Input + Kbd */}
         <div className="relative">
           <Input
             type="search"
@@ -75,9 +74,9 @@ export function ControlsBar({
             placeholder={searchPlaceholder}
             onChange={(e) => onSearch?.(e.target.value)}
           />
-          <kbd className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 txt-compact-xsmall text-ui-fg-muted">
+          <Kbd className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2">
             {searchShortcut}
-          </kbd>
+          </Kbd>
         </div>
       </div>
     </div>

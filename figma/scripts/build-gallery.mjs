@@ -239,23 +239,31 @@ function injectSnippet(screenName, snippetName) {
 
 // ── Gallery variations ──
 const GALLERY = [
+  // Stat Cards
   { label: 'StatCards — Dashboard', screen: 'dashboard', snippet: 'statcards' },
   { label: 'StatCards — Reports', screen: 'reports', snippet: 'statcards' },
+  // Chart Cards
   { label: 'ChartCards', screen: 'dashboard', snippet: 'chartcards' },
+  // Controls
   { label: 'Controls — Tasks', screen: 'tasks_list', snippet: 'controls' },
   { label: 'Controls — Reports', screen: 'reports', snippet: 'controls' },
+  // Tables
   { label: 'Table — Dashboard', screen: 'dashboard', snippet: 'table' },
   { label: 'Table — Tasks', screen: 'tasks_list', snippet: 'table' },
   { label: 'Table — Team', screen: 'team', snippet: 'table' },
   { label: 'Table — Reports', screen: 'reports', snippet: 'table' },
+  // Kanban
   { label: 'Kanban', screen: 'tasks_kanban', snippet: 'kanban' },
+  // Settings
   { label: 'Settings — Profile', screen: 'settings', snippet: 'settings' },
   { label: 'Settings — Notifications', screen: 'settings_notifications', snippet: 'settings' },
   { label: 'Settings — Security', screen: 'settings_security', snippet: 'settings' },
   { label: 'Settings — Billing', screen: 'settings_billing', snippet: 'settings' },
+  // Modals
   { label: 'Modal — Create Task', screen: '_modal_create_task', snippet: 'modal' },
   { label: 'Modal — Invite Member', screen: '_modal_invite_member', snippet: 'modal' },
   { label: 'Modal — Generate Report', screen: '_modal_generate_report', snippet: 'modal' },
+  // Task Details
   { label: 'Task Details', screen: 'dashboard', snippet: 'modal-details' },
 ];
 
