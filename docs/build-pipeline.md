@@ -91,12 +91,18 @@ Dashboard, Tasks, Team, Reports, Settings — all wired.
 ## Block Pipeline
 
 ```
+0. Gallery      Render all snippet variations in Figma → Snippet Gallery page
 1. Cache        Figma MCP → artifacts/cache/{name}.jsx
 2. Transform    AST → artifacts/transformed/{name}.tsx
 3. Templatize   AST noise strip + dedup → {name}-templatized.tsx
 4. Build        Claude agent → app/src/components/blocks/
 5. Scorecard    14-rule quality check
 6. Diff         Browser vs Figma screenshot
+```
+
+Render gallery (step 0 — needs bridge running):
+```bash
+node figma/scripts/build-gallery.mjs --render-all
 ```
 
 Run steps 2+3+5:
@@ -114,6 +120,7 @@ Workflow({ name: "build-pipeline", args: { skipCache: true } })
 | File | Purpose |
 |------|---------|
 | build-pipeline.mjs | Main orchestrator (transform + templatize + scorecard) |
+| `figma/scripts/build-gallery.mjs` | Snippet gallery renderer (all block variations via bridge) |
 | transform.mjs | AST: tokens + component detection |
 | templatize.mjs | AST: noise strip + dedup (data-repeat markers) |
 | adapt.mjs | Verbatim wrapper (legacy step 1) |
