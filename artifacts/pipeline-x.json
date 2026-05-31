@@ -5,9 +5,9 @@
     { "name": "chart-cards",        "nodeId": "4223:126295" },
     { "name": "controls",           "nodeId": "4229:9176" },
     { "name": "recent-tasks",       "nodeId": "4223:126439" },
-    { "name": "kanban-board",       "nodeId": "4417:76386" },
+    { "name": "kanban-board",       "nodeId": "4417:76386", "view": true },
     { "name": "create-task-modal",  "nodeId": "4223:127016" },
     { "name": "task-details-modal", "nodeId": "4225:131094" },
-    { "name": "settings",           "nodeId": "4223:127208" }
+    { "name": "settings-profile",    "nodeId": "4223:127208" }
   ]
 }

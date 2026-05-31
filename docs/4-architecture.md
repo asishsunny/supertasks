@@ -63,29 +63,13 @@ Tasks is ONE section with two render modes. Filters persist across both. Never s
 
 Dumb. Props only. No store, no data imports, no state hooks.
 
-**Controls** — section wires callbacks
-```
-<ControlsBar views={[...]} activeView={view} onViewChange={setView} onSearch={setSearch} />
-<Pagination page={page} total={total} onPageChange={setPage} />
-```
+**Controls** — segment tabs, filter buttons, search. Section owns active state and wires callbacks.
 
-**Views** — section passes data, view renders
-```
-<TableView data={filtered} columns={columns} keyFn={(t) => t.id} />
-<KanbanView columns={kanbanCols} renderCard={renderCard} keyFn={(t) => t.id} onMove={handleMove} />
-```
-dnd-kit lives in KanbanView — view owns drag mechanics, section owns state update.
+**Views** — render data layouts (table, kanban). Section passes data, view renders. dnd-kit lives in section, view accepts wrapper props for drag/drop injection.
 
-**Cells** — shared across domains, wired as column render functions
-```
-AvatarCell, BadgeCell, StatusDotCell, DateCell, TextCell
-```
+**Cells** — shared render functions for table columns. Reusable across domains.
 
-**Overlays** — store controls open/close, section wires data
-```
-<FormModal config={modalConfig} open={showCreate} onClose={close} />
-<TaskDetailDrawer task={task} member={member} open={showDrawer} onClose={close} />
-```
+**Overlays** — modals, drawers. Section controls open/close and wires data.
 
 **Error boundaries** — ViewBoundary wraps views, not sections. Controls/overlays survive if a view crashes.
 

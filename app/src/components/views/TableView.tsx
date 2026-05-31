@@ -17,7 +17,8 @@ interface TableViewProps<T> {
 
 export function TableView<T>({ data, columns, keyFn }: TableViewProps<T>) {
   return (
-    <Table>
+    <div className="overflow-x-auto w-full">
+    <Table className="min-w-[800px] table-fixed">
       <Table.Header className="border-t-0">
         <Table.Row>
           {columns.map((col) => (
@@ -39,5 +40,6 @@ export function TableView<T>({ data, columns, keyFn }: TableViewProps<T>) {
         ))}
       </Table.Body>
     </Table>
+    </div>
   );
 }

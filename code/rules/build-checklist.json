@@ -1,0 +1,84 @@
+{
+  "__doc": "Quality checklist for pipeline step 2 (Claude build from transforms). Every block must pass before merge.",
+
+  "checks": [
+    {
+      "id": "dry",
+      "label": "DRY",
+      "rule": "No duplicated markup, classes, or type definitions across files. Shared constants exported from one place.",
+      "fail": ["inline union types that exist in constants", "column/card classes duplicated between view and section"]
+    },
+    {
+      "id": "ssot",
+      "label": "Single Source of Truth",
+      "rule": "Types from @/types, data from @/lib/data, constants from @/lib/constants, tokens from DS classes. Never redefine.",
+      "fail": ["local BadgeColor type when constants has one", "hardcoded color strings", "duplicated data"]
+    },
+    {
+      "id": "separation",
+      "label": "Separation of Concerns",
+      "rule": "Block=display (props only). View=layout (no state). Section=state+events+data. Never mix layers.",
+      "fail": ["useState in a block", "useStore in a block", "data import in a block", "dnd in a block"]
+    },
+    {
+      "id": "dumb-blocks",
+      "label": "Dumb Blocks",
+      "rule": "No hooks, no store, no data imports, no side effects. Props in, JSX out.",
+      "fail": ["any React hook in a block file", "import from @/lib/data in a block"]
+    },
+    {
+      "id": "ds-tokens",
+      "label": "DS Compliance",
+      "rule": "All text styles via DS classes (txt-compact-*). All colors via DS tokens (bg-ui-*, text-ui-*). Shadows via DS (shadow-elevation-*). No raw hex, no arbitrary Tailwind where DS class exists.",
+      "fail": ["bg-[#...]", "text-[#...]", "font-normal text-[13px] when txt-compact-small exists", "overflow-hidden text-ellipsis when truncate works"]
+    },
+    {
+      "id": "types",
+      "label": "Type Safety",
+      "rule": "All props typed with exported interfaces. Use generics for reusable components. Use Pick/Omit for partial types. Import shared types, don't redeclare.",
+      "fail": ["any type", "inline object types in props", "duplicated type union"]
+    },
+    {
+      "id": "no-noise",
+      "label": "No Figma Noise",
+      "rule": "Strip classes that serve no purpose: relative (no absolute children), shrink-0 (in flex-col parent with no overflow risk), min-w-full (on block element).",
+      "fail": ["relative on element with no absolute children", "shrink-0 where parent doesn't squeeze"]
+    },
+    {
+      "id": "responsive",
+      "label": "Responsive",
+      "rule": "Flex layouts must not break on small screens. Use min-w + overflow-x-auto for horizontal layouts. Use flex-1 for equal distribution.",
+      "fail": ["fixed widths that overflow viewport", "no scroll on horizontal overflow"]
+    },
+    {
+      "id": "a11y",
+      "label": "Accessibility",
+      "rule": "Interactive elements need role, tabIndex, aria-label. Clickable divs need role='button' tabIndex={0} onKeyDown. Color not sole indicator.",
+      "fail": ["onClick without role='button'", "no keyboard handler on clickable element", "color-only status indication"]
+    },
+    {
+      "id": "data-driven",
+      "label": "Data Driven",
+      "rule": "Zero hardcoded content strings in blocks. All text (labels, titles, placeholders, button text) comes from props. Props come from data.yaml via lib/data.ts at the section/gallery level. Blocks never import data — they receive it.",
+      "fail": ["hardcoded user-visible string in block (e.g. 'Save changes', 'Click to change photo')", "block renders content not passed as prop", "section/gallery has inline strings that exist in data.yaml"]
+    },
+    {
+      "id": "transform-fidelity",
+      "label": "Transform Fidelity",
+      "rule": "Structure derived FROM transform output. Classes preserved unless noise. Repeated siblings → .map(). Hardcoded text → props. Never rebuild from memory. NEVER override component variant/size/props from transform — transform reads Figma directly and is more accurate than visual guessing.",
+      "fail": ["class names not in transform", "layout structure differs from transform", "invented markup", "changed variant/size that transform extracted from Figma"]
+    },
+    {
+      "id": "verify-render",
+      "label": "Verify Render",
+      "rule": "After every edit: open in browser, visually confirm the change rendered. A 200 status code is not verification. Import without render change = broken. Screenshot or visual check required before moving on.",
+      "fail": ["added import but didn't update render code", "claimed fixed without visual check", "200 assumed = working"]
+    }
+  ],
+
+  "scoring": {
+    "pass": "All checks green",
+    "warn": "a11y or responsive yellow — fix before merge",
+    "fail": "Any of separation, dumb-blocks, transform-fidelity red — block merge"
+  }
+}

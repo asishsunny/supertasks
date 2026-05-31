@@ -22,5 +22,5 @@ const activity = ACTIVITY.filter((a) => a.taskId === task.id).map((a) => ({
 }));
 
 export default function Page() {
-  return <TaskDetailsModal title={task.title} desc={task.desc} info={info} activity={activity} primaryAction="Mark complete" secondaryAction="Edit" />;
+  return <TaskDetailsModal heading="Task details" title={task.title} desc={task.desc} infoLabel="Info" info={info} activityLabel="Activity log" activity={activity} primaryAction="Mark complete" secondaryAction="Edit" />;
 }

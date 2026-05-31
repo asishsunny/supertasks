@@ -1,8 +1,7 @@
 export { StatCards } from "./StatCards";
 export { ChartCards } from "./ChartCards";
-export { ControlsBar } from "./ControlsBar";
+export { ControlsBar } from "./Controls";
 export { RecentTasks } from "./RecentTasks";
-export { KanbanBoard } from "./KanbanBoard";
 export { KanbanCard } from "./KanbanCard";
 export { CreateTaskModal } from "./CreateTaskModal";
 export { TaskDetailsModal } from "./TaskDetailsModal";

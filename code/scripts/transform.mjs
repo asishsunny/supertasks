@@ -38,7 +38,8 @@ const { detectAndSwap, patternDetectAndSwap, getWarnings } = createDetector(MAPS
 
 // ── AST transform pipeline ──
 function transformAST(code) {
-  const wrapped = code.trim().startsWith("<") ? `<>${code}</>` : code;
+  const startsWithJSX = code.trim().startsWith("<");
+  const wrapped = startsWithJSX ? `<>${code}</>` : code;
   const ast = parse(wrapped, { sourceType: "module", plugins: ["jsx", "typescript"] });
 
   // ── Pass 1: Strip Figma scaffolding (component defs, asset URLs, decorative elements) ──
@@ -109,15 +110,18 @@ function transformAST(code) {
     noScope: true,
   });
 
-  // Extract fragment body
+  // Extract output. Only when the source was a bare JSX fragment do we unwrap
+  // the top-level wrapper `<>…</>`; otherwise emit the whole module. Detection
+  // passes can inject their own nested fragments (TODO-comment wrappers), so we
+  // must target the wrapper specifically — not the first fragment in traversal.
   let output = "";
-  traverse(ast, {
-    JSXFragment(path) {
-      output = path.node.children.map(c => generate(c, { jsescapeOption: { minimal: true }, compact: false }).code).join("");
-      path.stop();
-    },
-    noScope: true,
-  });
+  if (startsWithJSX) {
+    const stmt = ast.program.body[0];
+    const wrapperFragment = t.isExpressionStatement(stmt) && t.isJSXFragment(stmt.expression) ? stmt.expression : null;
+    if (wrapperFragment) {
+      output = wrapperFragment.children.map(c => generate(c, { jsescapeOption: { minimal: true }, compact: false }).code).join("");
+    }
+  }
   if (!output) {
     output = generate(ast, { jsescapeOption: { minimal: true }, retainLines: false, compact: false }).code;
   }

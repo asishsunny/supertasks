@@ -40,7 +40,7 @@
       "detect": { "dataName": "IconButton" },
       "emit": {
         "tag": "IconButton",
-        "props": { "variant": "transparent", "size": "small" },
+        "props": { "variant": "primary", "size": "small" },
         "iconChild": { "fromNestedDataName": true, "fallback": "EllipsisHorizontal" }
       }
     },

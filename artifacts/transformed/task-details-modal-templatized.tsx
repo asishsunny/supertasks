@@ -3,7 +3,7 @@ export default function TaskDetailsModal() {
       
       <div className="flex flex-col items-center relative shrink-0 w-full">
         <div className="flex items-center justify-between px-6 py-2 relative shrink-0 w-full">
-          <p className="flex-1 min-w-[1px] relative text-ui-fg-base font-medium text-[14px] leading-[20px]">
+          <p className="flex-1 min-w-[1px] relative text-ui-fg-base txt-compact-medium-plus">
             Task details
           </p>
           <div className="flex gap-1 items-center relative shrink-0">
@@ -26,7 +26,7 @@ export default function TaskDetailsModal() {
           <p className="relative shrink-0 text-ui-fg-base txt-compact-small-plus">
             Info
           </p>
-          <div className="flex items-center justify-between relative shrink-0 w-full">
+          <div className="flex items-center justify-between relative shrink-0 w-full" data-repeat="2">
             <p className="relative shrink-0 text-ui-fg-subtle txt-compact-small">
               Status
             </p>
@@ -36,16 +36,7 @@ export default function TaskDetailsModal() {
               </p>
             </div>
           </div>
-          <div className="flex items-center justify-between relative shrink-0 w-full">
-            <p className="relative shrink-0 text-ui-fg-subtle txt-compact-small">
-              Priority
-            </p>
-            <div className="bg-[rgba(244,63,94,0.12)] border border-[#fecdd3] flex gap-0.5 h-5 items-center justify-center px-1.5 py-px relative rounded-full shrink-0">
-              <p className="relative shrink-0 text-[#9f1239] text-center txt-compact-xsmall-plus">
-                High
-              </p>
-            </div>
-          </div>
+          
           <div className="flex items-center justify-between relative shrink-0 w-full">
             <p className="relative shrink-0 text-ui-fg-subtle txt-compact-small">
               Assignee
@@ -59,7 +50,7 @@ export default function TaskDetailsModal() {
               </p>
             </div>
           </div>
-          <div className="flex items-center justify-between relative shrink-0 w-full txt-compact-small">
+          <div className="flex items-center justify-between relative shrink-0 w-full txt-compact-small" data-repeat="2">
             <p className="relative shrink-0 text-ui-fg-subtle">
               Due date
             </p>
@@ -67,20 +58,13 @@ export default function TaskDetailsModal() {
               May 7, 2026
             </p>
           </div>
-          <div className="flex items-center justify-between relative shrink-0 w-full txt-compact-small">
-            <p className="relative shrink-0 text-ui-fg-subtle">
-              Created
-            </p>
-            <p className="relative shrink-0 text-ui-fg-base">
-              Jan 5, 2026
-            </p>
-          </div>
+          
         </div>
         <div className="flex flex-col gap-4 relative shrink-0 w-full">
           <p className="relative shrink-0 text-ui-fg-base txt-compact-small-plus">
             Activity log
           </p>
-          <div className="flex flex-col gap-1 relative shrink-0 w-full">
+          <div className="flex flex-col gap-1 relative shrink-0 w-full" data-repeat="2">
             <div className="flex items-center justify-between relative shrink-0 w-full">
               <div className="flex gap-2 items-center relative shrink-0">
                 <>{
@@ -98,24 +82,7 @@ export default function TaskDetailsModal() {
               Moving this to in progress — starting the research phase today.
             </p>
           </div>
-          <div className="flex flex-col gap-1 relative shrink-0 w-full">
-            <div className="flex items-center justify-between relative shrink-0 w-full">
-              <div className="flex gap-2 items-center relative shrink-0">
-                <>{
-                  /* TODO: size corrected: rule=xsmall → figma=small */
-                }<ColorAvatar member={member} size="small" /></>
-                <p className="relative shrink-0 text-ui-fg-base txt-compact-small-plus">
-                  Sara Nelson
-                </p>
-              </div>
-              <p className="relative shrink-0 text-ui-fg-subtle txt-compact-xsmall">
-                Yesterday
-              </p>
-            </div>
-            <p className="relative shrink-0 text-ui-fg-subtle w-full txt-small">
-              Added initial wireframes to the shared drive. Let me know if you have feedback.
-            </p>
-          </div>
+          
         </div>
       </div>
       <div className="flex flex-col items-center relative shrink-0 w-full">

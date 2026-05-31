@@ -1,104 +1,75 @@
-"use client";
+import { Avatar, Button, Input, Label, Textarea } from "@medusajs/ui";
 
-// source: artifacts/transformed/settings.tsx
-// step 2: imports added, hardcoded user data → props
-// noise: relative/shrink-0 stripped
-
-import { Avatar, Button } from "@medusajs/ui";
-
-interface SettingsProfileProps {
-  name: string;
-  email: string;
-  role: string;
-  avatar?: string;
-  initials: string;
-  phone?: string;
-  location?: string;
-  timezone?: string;
+export interface SettingsField {
+  label: string;
+  value: string;
 }
 
-export function SettingsProfile({ name, email, role, avatar, initials, phone, location, timezone }: SettingsProfileProps) {
+export interface SettingsProfileProps {
+  name: string;
+  avatar?: string;
+  initials: string;
+  photoHint: string;
+  fieldRows: [SettingsField, SettingsField][];
+  bioLabel: string;
+  bioPlaceholder: string;
+  saveLabel: string;
+  tabs: string[];
+  activeTab?: number;
+  onTabChange?: (index: number) => void;
+  onSave?: () => void;
+}
+
+export function SettingsProfile({ name, avatar, initials, photoHint, fieldRows, bioLabel, bioPlaceholder, saveLabel, tabs, activeTab = 0, onTabChange, onSave }: SettingsProfileProps) {
   return (
-    <div className="flex gap-6 items-start w-full">
-      {/* nav — from transform lines 3-15 */}
-      <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 rounded-[8px] shadow-elevation-card-rest shrink-0 w-[200px] self-start">
-        <div className="bg-ui-bg-subtle border-ui-fg-base border-l-2 flex items-center px-4 py-2.5 w-full">
-          <p className="text-ui-fg-base txt-compact-small-plus">Profile</p>
-        </div>
-        <div className="flex items-center px-4 py-2.5 w-full">
-          <p className="text-ui-fg-subtle txt-compact-small">Notifications</p>
-        </div>
-        <div className="flex items-center px-4 py-2.5 w-full">
-          <p className="text-ui-fg-subtle txt-compact-small">Security</p>
-        </div>
-        <div className="flex items-center px-4 py-2.5 w-full">
-          <p className="text-ui-fg-subtle txt-compact-small">Billing</p>
-        </div>
+    <div className="flex flex-col md:flex-row gap-6 items-start w-full">
+      <div className="bg-ui-bg-base flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible overflow-clip py-0 md:py-2 rounded-lg shadow-elevation-card-rest shrink-0 w-full md:w-[200px]">
+        {tabs.map((tab, i) => (
+          <button
+            key={tab}
+            type="button"
+            role="tab"
+            aria-selected={i === activeTab}
+            onClick={() => onTabChange?.(i)}
+            className={`flex flex-1 md:flex-none items-center justify-center md:justify-start px-4 py-2.5 whitespace-nowrap text-left cursor-pointer ${
+              i === activeTab
+                ? "bg-ui-bg-subtle md:border-l-2 border-b-2 md:border-b-0 border-ui-fg-base txt-compact-small-plus text-ui-fg-base"
+                : "txt-compact-small text-ui-fg-subtle"
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
       </div>
-      {/* content card — from transform lines 17-90 */}
-      <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip rounded-[8px] shadow-elevation-card-rest">
+      <div className="bg-ui-bg-base flex flex-1 flex-col min-w-0 w-full md:w-auto overflow-clip rounded-lg shadow-elevation-card-rest">
         <div className="flex flex-col px-6 py-3 w-full">
-          <p className="text-ui-fg-base font-medium text-[14px] leading-[20px]">Profile</p>
+          <p className="text-ui-fg-base txt-compact-medium-plus">{tabs[activeTab]}</p>
         </div>
-        <div className="bg-ui-border-base h-px w-full" />
-        <div className="flex flex-col gap-5 p-6 w-full">
+        <div className="h-px bg-ui-border-base" />
+        <div className="flex flex-col gap-4 md:gap-5 p-4 md:p-6 w-full">
           <div className="flex gap-3 items-center w-full">
             <Avatar src={avatar} fallback={initials} size="xlarge" />
             <div className="flex flex-col gap-0.5">
-              <p className="text-ui-fg-base font-medium text-[14px] leading-[20px]">{name}</p>
-              <p className="text-ui-fg-subtle txt-compact-small">Click to change photo</p>
+              <p className="text-ui-fg-base txt-compact-small-plus">{name}</p>
+              <p className="text-ui-fg-subtle txt-compact-small">{photoHint}</p>
             </div>
           </div>
-          <div className="flex gap-4 items-start w-full">
-            <div className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
-              <p className="text-ui-fg-base txt-compact-small-plus">Full name</p>
-              <div className="bg-ui-bg-field flex h-8 items-center overflow-clip px-2 rounded-md shadow-borders-base w-full">
-                <p className="flex-1 text-ui-fg-base txt-compact-small">{name}</p>
-              </div>
+          {fieldRows.map((row, i) => (
+            <div key={i} className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start w-full">
+              {row.map((f) => (
+                <div key={f.label} className="flex flex-1 flex-col gap-1.5 min-w-0 w-full sm:w-auto">
+                  <Label size="small">{f.label}</Label>
+                  <Input size="small" className="w-full" defaultValue={f.value} />
+                </div>
+              ))}
             </div>
-            <div className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
-              <p className="text-ui-fg-base txt-compact-small-plus">Email</p>
-              <div className="bg-ui-bg-field flex h-8 items-center overflow-clip px-2 rounded-md shadow-borders-base w-full">
-                <p className="flex-1 text-ui-fg-base txt-compact-small">{email}</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-4 items-start w-full">
-            <div className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
-              <p className="text-ui-fg-base txt-compact-small-plus">Job title</p>
-              <div className="bg-ui-bg-field flex h-8 items-center overflow-clip px-2 rounded-md shadow-borders-base w-full">
-                <p className="flex-1 text-ui-fg-base txt-compact-small">{role}</p>
-              </div>
-            </div>
-            <div className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
-              <p className="text-ui-fg-base txt-compact-small-plus">Phone</p>
-              <div className="bg-ui-bg-field flex h-8 items-center overflow-clip px-2 rounded-md shadow-borders-base w-full">
-                <p className="flex-1 text-ui-fg-base txt-compact-small">{phone ?? "+1 (555) 000-0000"}</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-4 items-start w-full">
-            <div className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
-              <p className="text-ui-fg-base txt-compact-small-plus">Location</p>
-              <div className="bg-ui-bg-field flex h-8 items-center overflow-clip px-2 rounded-md shadow-borders-base w-full">
-                <p className="flex-1 text-ui-fg-base txt-compact-small">{location ?? "San Francisco, CA"}</p>
-              </div>
-            </div>
-            <div className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
-              <p className="text-ui-fg-base txt-compact-small-plus">Time zone</p>
-              <div className="bg-ui-bg-field flex h-8 items-center overflow-clip px-2 rounded-md shadow-borders-base w-full">
-                <p className="flex-1 text-ui-fg-base txt-compact-small">{timezone ?? "Pacific Time (UTC-8)"}</p>
-              </div>
-            </div>
-          </div>
+          ))}
           <div className="flex flex-col gap-1.5 w-full">
-            <p className="text-ui-fg-base txt-compact-small-plus">Bio</p>
-            <div className="bg-ui-bg-field flex flex-col gap-1.5 items-end justify-end overflow-clip px-2 py-1.5 rounded-md shadow-borders-base w-full">
-              <p className="min-w-full text-ui-fg-muted txt-small">Placeholder</p>
-            </div>
+            <Label size="small">{bioLabel}</Label>
+            <Textarea placeholder={bioPlaceholder} />
           </div>
           <div className="flex items-start justify-end w-full">
-            <Button variant="primary" size="small">Save changes</Button>
+            <Button variant="primary" size="small" onClick={onSave}>{saveLabel}</Button>
           </div>
         </div>
       </div>

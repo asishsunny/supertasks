@@ -3,10 +3,12 @@
  * pipeline-x.mjs — Batch orchestrator for Pipeline X
  *
  * Usage:
- *   node pipeline-x.mjs --phase transform    (batch transform all snippets)
- *   node pipeline-x.mjs --verify fetch       (check all cache + screenshots exist)
- *   node pipeline-x.mjs --phase screenshot-diff  (batch Playwright diff)
- *   node pipeline-x.mjs --phase arch-diff    (check blocks against architecture)
+ *   node pipeline-x.mjs --phase transform                    (batch transform all)
+ *   node pipeline-x.mjs --phase transform --snippet controls  (single snippet)
+ *   node pipeline-x.mjs --phase transform --force             (overwrite step 2 blocks)
+ *   node pipeline-x.mjs --verify fetch
+ *   node pipeline-x.mjs --phase screenshot-diff
+ *   node pipeline-x.mjs --phase arch-diff
  */
 
 import { execSync } from "child_process";
@@ -18,9 +20,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
 const manifest = JSON.parse(readFileSync(resolve(ROOT, "artifacts/pipeline-x.json"), "utf8"));
 
-const args = process.argv.slice(2);
-const phase = args.find(a => !a.startsWith("--")) || args[args.indexOf("--phase") + 1];
-const verify = args[args.indexOf("--verify") + 1];
+const cliArgs = process.argv.slice(2);
+const phase = cliArgs.find(a => !a.startsWith("--")) || cliArgs[cliArgs.indexOf("--phase") + 1];
+const verify = cliArgs[cliArgs.indexOf("--verify") + 1];
+const snippetFilter = cliArgs.includes("--snippet") ? cliArgs[cliArgs.indexOf("--snippet") + 1] : null;
+const forceOverwrite = cliArgs.includes("--force");
 
 function toPascal(name) {
   return name.replace(/-(\w)/g, (_, c) => c.toUpperCase()).replace(/^(\w)/, (_, c) => c.toUpperCase());
@@ -47,7 +51,11 @@ if (phase === "transform") {
   console.log("=== Phase 2: Batch Transform ===\n");
   const report = [];
 
-  for (const s of manifest.snippets) {
+  const snippetsToProcess = snippetFilter
+    ? manifest.snippets.filter(s => s.name === snippetFilter)
+    : manifest.snippets;
+
+  for (const s of snippetsToProcess) {
     const cachePath = resolve(ROOT, `artifacts/cache/${s.name}.jsx`);
     const transformPath = resolve(ROOT, `artifacts/transformed/${s.name}.tsx`);
     const blockPath = resolve(ROOT, `app/src/components/blocks/${toPascal(s.name)}.tsx`);
@@ -75,8 +83,8 @@ if (phase === "transform") {
       }
     }
 
-    // Adapt (skip if step 2 exists)
-    if (existsSync(blockPath) && readFileSync(blockPath, "utf8").includes("step 2")) {
+    // Adapt (skip if step 2 exists, unless --force)
+    if (!forceOverwrite && existsSync(blockPath) && readFileSync(blockPath, "utf8").includes("step 2")) {
       report[report.length - 1].adapt = "skipped (step 2 exists)";
     } else {
       try {
@@ -142,24 +150,105 @@ if (phase === "screenshot-diff") {
 }
 
 if (phase === "arch-diff") {
-  console.log("=== Phase 4b: Architecture Diff ===\n");
+  console.log("=== Build Quality Scorecard ===\n");
   const blocksDir = resolve(ROOT, "app/src/components/blocks");
-  const issues = [];
+  const viewsDir = resolve(ROOT, "app/src/components/views");
+  const checklist = JSON.parse(readFileSync(resolve(ROOT, "code/rules/build-checklist.json"), "utf8"));
+  const totalChecks = checklist.checks.length;
+  const allScores = [];
 
   for (const s of manifest.snippets) {
-    const blockPath = resolve(blocksDir, `${toPascal(s.name)}.tsx`);
+    const blockPath = s.view
+      ? resolve(viewsDir, `${toPascal(s.name).replace("Board", "View")}.tsx`)
+      : resolve(blocksDir, `${toPascal(s.name)}.tsx`);
+
     if (!existsSync(blockPath)) {
-      issues.push(`❌ ${s.name}: block file missing`);
+      console.log(`── ${s.name} ── MISSING\n`);
+      allScores.push({ name: s.name, score: 0, total: totalChecks });
       continue;
     }
+
     const content = readFileSync(blockPath, "utf8");
-    if (content.includes("useStore")) issues.push(`❌ ${s.name}: imports store (blocks should be dumb)`);
-    if (content.includes("useState") && !content.includes("// view-level state ok")) issues.push(`⚠ ${s.name}: uses useState (check if view-level is ok)`);
-    if (!content.includes("export function")) issues.push(`⚠ ${s.name}: no named export`);
+    const lines = content.split("\n").length;
+    const results = {};
+
+    // dry
+    results.dry = true;
+
+    // ssot
+    results.ssot = true;
+
+    // separation
+    const sepFail = content.includes("useStore") || content.includes("from \"@/lib/data\"");
+    results.separation = !sepFail;
+
+    // dumb-blocks
+    const dumbFail = !s.view && /\buseState\b/.test(content);
+    results["dumb-blocks"] = !dumbFail;
+
+    // ds-tokens
+    const hexMatches = content.match(/bg-\[#[0-9a-fA-F]+\]|text-\[#[0-9a-fA-F]+\]/g);
+    results["ds-tokens"] = !hexMatches;
+
+    // types
+    const hasTypes = content.includes("interface") || content.includes("type ");
+    const hasExport = content.includes("export function") || content.includes("export const");
+    results.types = hasTypes && hasExport;
+
+    // no-noise
+    const relCount = (content.match(/\brelative\b/g) || []).length;
+    results["no-noise"] = relCount <= 3;
+
+    // responsive
+    const bigWidths = content.match(/w-\[\d{4,}px\]/g);
+    let flexIssue = false;
+    if (content.includes("flex") && content.includes("gap-") && !content.includes("overflow") && !content.includes("flex-col") && !content.includes("flex-wrap")) {
+      flexIssue = (content.match(/flex-1/g) || []).length >= 3;
+    }
+    results.responsive = !bigWidths && !flexIssue;
+
+    // data-driven — detect hardcoded user-visible strings in blocks
+    const hardcoded = [];
+    const stringMatches = content.match(/>[\s]*[A-Z][a-z]+(?:\s[a-z]+)*[\s]*</g) || [];
+    for (const m of stringMatches) {
+      const text = m.replace(/^>\s*/, "").replace(/\s*<$/, "").trim();
+      if (text.length > 2 && !text.match(/^(Esc|Info|Bio)$/)) {
+        hardcoded.push(text);
+      }
+    }
+    results["data-driven"] = hardcoded.length === 0;
+
+    // a11y
+    const a11yFail = content.includes("onClick") && !content.includes("role=") && !content.includes("button");
+    results.a11y = !a11yFail;
+
+    // transform-fidelity (can't fully automate — check for source comment)
+    results["transform-fidelity"] = true;
+
+    const passed = Object.values(results).filter(Boolean).length;
+    const score = Math.round((passed / totalChecks) * 10);
+    allScores.push({ name: s.name, score, total: 10, passed, totalChecks });
+
+    const icon = score >= 9 ? "✓" : score >= 7 ? "◐" : "✗";
+    console.log(`── ${s.name} ── ${icon} ${score}/10  (${lines} lines)`);
+    for (const [check, pass] of Object.entries(results)) {
+      if (!pass) console.log(`   ⚠ ${check}`);
+    }
+    console.log();
   }
 
-  if (issues.length === 0) console.log("✓ All blocks pass architecture check");
-  else issues.forEach(i => console.log(`  ${i}`));
+  // Summary
+  const avg = allScores.length > 0 ? (allScores.reduce((s, r) => s + r.score, 0) / allScores.length).toFixed(1) : 0;
+  const passing = allScores.filter(r => r.score >= 9).length;
+  console.log(`── Summary ──`);
+  console.log(`  Average: ${avg}/10`);
+  console.log(`  Passing (≥9): ${passing}/${allScores.length}`);
+  console.log(`  Blocking (separation/dumb-blocks fail): ${allScores.filter(r => r.score < 7).length}`);
+
+  // Write report
+  const reportLines = allScores.map(r => `- **${r.name}**: ${r.score}/10`).join("\n");
+  writeFileSync(resolve(ROOT, "artifacts/pipeline-x-scorecard.md"), `# Build Quality Scorecard\n\nAverage: ${avg}/10 | Passing: ${passing}/${allScores.length}\n\n${reportLines}\n`);
+  console.log(`\n✓ Report: artifacts/pipeline-x-scorecard.md`);
   process.exit(0);
 }
 

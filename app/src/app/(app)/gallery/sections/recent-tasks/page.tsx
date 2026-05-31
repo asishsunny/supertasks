@@ -12,7 +12,7 @@ const memberMap = new Map(MEMBERS.map((m) => [m.id, m]));
 const recent = [...INITIAL_TASKS].sort((a, b) => b.due.localeCompare(a.due)).slice(0, 5);
 
 const columns = [
-  { header: "Task", render: (t: Task) => <span className="txt-compact-small">{t.title}</span> },
+  { header: "Task", width: "min-w-[200px]", render: (t: Task) => <span className="txt-compact-small">{t.title}</span> },
   { header: "Assignee", width: "w-[160px]", render: (t: Task) => { const m = memberMap.get(t.assignee); return m ? <AvatarCell member={m} /> : null; } },
   { header: "Priority", width: "w-[120px]", render: (t: Task) => <BadgeCell label={t.priority.charAt(0).toUpperCase() + t.priority.slice(1)} color={PRIORITY_COLOR[t.priority]} /> },
   { header: "Due Date", width: "w-[130px]", render: (t: Task) => <DateCell date={formatDate(t.due)} overdue={isOverdue(t.due)} /> },
