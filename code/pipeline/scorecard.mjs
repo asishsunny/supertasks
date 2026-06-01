@@ -64,7 +64,7 @@ function runTransform() {
     }
 
     try {
-      execSync(`node ${resolve(__dirname, "transform.mjs")} "${cachePath}" --out "${outPath}"`, { cwd: ROOT, stdio: ["pipe", "pipe", "pipe"], maxBuffer: 10 * 1024 * 1024 });
+      execSync(`node ${resolve(__dirname, "steps/transform.mjs")} "${cachePath}" --out "${outPath}"`, { cwd: ROOT, stdio: ["pipe", "pipe", "pipe"], maxBuffer: 10 * 1024 * 1024 });
       const size = `${(readFileSync(outPath).length / 1024).toFixed(1)}KB`;
       results.push({ name: s.name, status: "OK", size });
     } catch (e) {
@@ -107,7 +107,7 @@ function runTemplatize() {
     }
 
     try {
-      execSync(`node ${resolve(__dirname, "templatize.mjs")} "${inPath}" --out "${outPath}"`, { cwd: ROOT, stdio: ["pipe", "pipe", "pipe"], maxBuffer: 10 * 1024 * 1024 });
+      execSync(`node ${resolve(__dirname, "steps/templatize.mjs")} "${inPath}" --out "${outPath}"`, { cwd: ROOT, stdio: ["pipe", "pipe", "pipe"], maxBuffer: 10 * 1024 * 1024 });
       const inSize = readFileSync(inPath).length;
       const outSize = readFileSync(outPath).length;
       const reduction = Math.round((1 - outSize / inSize) * 100);
@@ -334,7 +334,7 @@ function runDiff() {
 
     try {
       const out = execSync(
-        `node ${resolve(__dirname, "screenshot-diff.mjs")} --name ${s.name} --figma ${figmaPath} --url ${url}`,
+        `node ${resolve(__dirname, "steps/screenshot-diff.mjs")} --name ${s.name} --figma ${figmaPath} --url ${url}`,
         { cwd: ROOT, stdio: ["pipe", "pipe", "pipe"], timeout: 30000 }
       ).toString();
       const match = out.match(/(\d+\.\d+)%/);
