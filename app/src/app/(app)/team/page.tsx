@@ -1,7 +1,5 @@
 "use client";
 
-import { TeamSection } from "@/features/team/TeamSection";
-
-export default function Page() {
-  return <TeamSection />;
+export default function TeamPage() {
+  return <p className="text-ui-fg-muted txt-compact-small">Team content</p>;
 }

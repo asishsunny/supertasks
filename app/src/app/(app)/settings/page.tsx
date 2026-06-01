@@ -1,7 +1,5 @@
 "use client";
 
-import { SettingsSection } from "@/features/settings/SettingsSection";
-
-export default function Page() {
-  return <SettingsSection />;
+export default function SettingsPage() {
+  return <p className="text-ui-fg-muted txt-compact-small">Settings content</p>;
 }
