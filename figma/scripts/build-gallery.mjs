@@ -306,9 +306,10 @@ if (args.includes('--render-all')) {
 
     const pageResult = execViaBridge(`
       await figma.loadAllPagesAsync();
-      let page = figma.root.children.find(p => p.name === 'Snippet Gallery');
-      if (!page) { page = figma.createPage(); page.name = 'Snippet Gallery'; }
-      for (const c of [...page.children]) c.remove();
+      const old = figma.root.children.find(p => p.name === 'Snippet Gallery');
+      if (old) old.remove();
+      const page = figma.createPage();
+      page.name = 'Snippet Gallery';
       await figma.setCurrentPageAsync(page);
       return { pageId: page.id };
     `);
