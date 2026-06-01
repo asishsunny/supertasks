@@ -1,0 +1,17 @@
+{
+  "__doc": "Single source of truth. Everything derived from blocks + fileKey.",
+  "fileKey": "D4Hav0rqH4Zql11h0YgcRv",
+  "blocks": {
+    "stat-cards":              { "figma": "Stat Cards",        "type": "card",    "variations": ["dashboard", "reports"] },
+    "chart-cards":             { "figma": "Chart Cards",       "type": "card" },
+    "controls":                { "figma": "Controls",          "type": "control", "variations": ["tasks", "reports"] },
+    "recent-tasks":            { "figma": "Recent Tasks",      "type": "view" },
+    "kanban-board":            { "figma": "Kanban Board",      "type": "view" },
+    "create-task-modal":       { "figma": "Create Task Modal", "type": "overlay", "variations": ["create-task", "invite-member", "generate-report"] },
+    "task-details-modal":      { "figma": "Task Details Modal","type": "overlay" },
+    "settings-profile":        { "figma": "Settings Content",  "type": "view", "figmaIndex": 0 },
+    "settings-notifications":  { "figma": "Settings Content",  "type": "view", "figmaIndex": 1 },
+    "settings-security":       { "figma": "Settings Content",  "type": "view", "figmaIndex": 2 },
+    "settings-billing":        { "figma": "Settings Content",  "type": "view", "figmaIndex": 3 }
+  }
+}

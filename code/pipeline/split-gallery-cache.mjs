@@ -24,22 +24,23 @@ const code = raw.find(item => item.type === "text")?.text || "";
 
 if (!code) { console.error("No code found in MCP result"); process.exit(1); }
 
-// Map data-name to cache filename (ordered by appearance in gallery)
-const NAME_MAP = {
-  "Stat Cards": ["stat-cards", "stat-cards-reports"],
-  "Chart Cards": ["chart-cards"],
-  "Controls": ["controls", "controls-reports"],
-  "Recent Tasks": ["recent-tasks"],
+// Derive NAME_MAP from manifest.json — single source of truth
+const manifest = JSON.parse(readFileSync(resolve(__dirname, "manifest.json"), "utf8"));
+const NAME_MAP = {};
+for (const [key, block] of Object.entries(manifest.blocks)) {
+  const figmaName = block.figma;
+  if (!NAME_MAP[figmaName]) NAME_MAP[figmaName] = [];
+  NAME_MAP[figmaName].push(key);
+}
+// Add variation-only cache names (gallery renders but not pipeline blocks)
+const EXTRA_NAMES = {
   "Tasks": ["tasks-table"],
   "Team": ["team-table"],
   "Reports": ["reports-table"],
-  "Kanban Board": ["kanban-board"],
-  "Settings Content": ["settings-profile", "settings-notifications", "settings-security", "settings-billing"],
-  "Create Task Modal": ["create-task-modal"],
-  "Invite Team Member": ["invite-member-modal"],
-  "Generate Report": ["generate-report-modal"],
-  "Task Details Modal": ["task-details-modal"],
 };
+for (const [k, v] of Object.entries(EXTRA_NAMES)) {
+  if (!NAME_MAP[k]) NAME_MAP[k] = v;
+}
 
 // Find all top-level snippet positions by data-name
 const SNIPPET_NAMES = new Set(Object.keys(NAME_MAP));
