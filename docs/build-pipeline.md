@@ -91,14 +91,52 @@ Dashboard, Tasks, Team, Reports, Settings — all wired.
 ## Block Pipeline
 
 ```
-0. Gallery      Render all snippet variations in Figma → Snippet Gallery page
-1. Cache        Figma MCP → artifacts/cache/{name}.jsx
+0. Render       Render all snippet variations in Figma → Snippet Gallery page
+1. Fetch+Split  Figma MCP → split-gallery-cache → artifacts/cache/{name}.jsx
 2. Transform    AST → artifacts/transformed/{name}.tsx
 3. Templatize   AST noise strip + dedup → {name}-templatized.tsx
-4. Build        Claude agent → app/src/components/blocks/
-5. Scorecard    14-rule quality check
-6. Diff         Browser vs Figma screenshot
+4. Build        Claude agent → app/src/components/blocks/ + views/ + index.ts
+5. Gallery      Generate gallery pages → app/src/app/(app)/gallery/
+6. Scorecard    14-rule quality check
+7. Diff         Browser vs Figma screenshot
 ```
+
+### Gallery structure (step 5)
+
+Pipeline generates these 10 gallery pages:
+
+```
+app/src/app/(app)/gallery/
+├── views/
+│   ├── settings/page.tsx      — profile + notifications + security + billing
+│   ├── kanban/page.tsx        — kanban board
+│   └── table/page.tsx         — dashboard(5) + tasks(10) + team + reports
+├── cards/
+│   ├── stat-cards/page.tsx    — dashboard + reports variants
+│   ├── chart-cards/page.tsx   — priority + status
+│   └── kanban-card/page.tsx   — single card
+├── controls/
+│   ├── bar/page.tsx           — tasks + reports configs
+│   └── pagination/page.tsx    — pagination
+└── overlays/
+    ├── modals/page.tsx        — create-task + invite + generate
+    └── drawer/page.tsx        — task details
+```
+
+Each page imports its block, wires data from `lib/data.ts`, shows all variations.
+
+### Naming rule
+
+One rule derives everything from manifest name:
+
+```
+manifest name → PascalCase → file name + export name
+stat-cards    → StatCards   → StatCards.tsx, export StatCards
+kanban-board  → KanbanBoard → KanbanBoard.tsx, export KanbanBoard
+```
+
+No aliases. No mapping tables. `toPascal(name)` is the only transform.
+Gallery path derived from block type in `wiring-rules.json` (view/card/control/overlay).
 
 Render gallery (step 0 — needs bridge running):
 ```bash
