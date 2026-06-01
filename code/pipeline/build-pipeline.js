@@ -43,8 +43,6 @@ ${config.skipFetch ? '# skip fetch' : `2. Fetch wrapper from Figma: ToolSearch m
 
 // ── BUILD (parallel) ──
 phase('Build')
-const blockPaths = manifest.snippets.map(s => `${ROOT}/app/src/${s.dest}`)
-await agent(`Delete these files (rm -f): ${blockPaths.join(' ')}. Report count deleted.`, { label: 'wipe', phase: 'Build' })
 log(`Building ${manifest.snippets.length} blocks`)
 
 const buildResults = await parallel(
