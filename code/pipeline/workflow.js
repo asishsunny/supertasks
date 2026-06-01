@@ -91,7 +91,7 @@ log('Running AST transform + templatize on all cached snippets')
 
 const mechResult = await agent(
   `Run this command and report the full output:
-cd ${ROOT} && node code/pipeline/scorecard.mjs --force 2>&1
+cd ${ROOT} && node code/pipeline/run.mjs --force 2>&1
 Report the complete output.`,
   { label: 'transform+templatize', phase: 'Transform+Templatize' }
 )
@@ -133,7 +133,7 @@ RULES:
 - Export COLUMN_CLASSES from KanbanView
 
 After ALL blocks written, run:
-cd ${ROOT} && node code/pipeline/scorecard.mjs --phase scorecard 2>&1
+cd ${ROOT} && node code/pipeline/run.mjs --phase scorecard 2>&1
 
 Report: scorecard output.`,
     { label: 'build-all', phase: 'Build' }
@@ -233,7 +233,7 @@ log('Running 14-rule quality scorecard')
 
 const scoreResult = await agent(
   `Run this command and report the full output:
-cd ${ROOT} && node code/pipeline/scorecard.mjs --phase scorecard 2>&1
+cd ${ROOT} && node code/pipeline/run.mjs --phase scorecard 2>&1
 Report the complete scorecard output including per-block scores and summary.`,
   { label: 'scorecard', phase: 'Scorecard' }
 )
@@ -245,7 +245,7 @@ log('Running screenshot diff — browser vs Figma')
 const diffResult = await agent(
   `Run screenshot diff to compare browser renders against Figma screenshots.
 
-cd ${ROOT} && node code/pipeline/scorecard.mjs --phase diff 2>&1
+cd ${ROOT} && node code/pipeline/run.mjs --phase diff 2>&1
 
 If screenshot-diff requires Figma screenshots in artifacts/diffs/, check they exist first:
 ls ${ROOT}/artifacts/diffs/*-figma.png 2>/dev/null | wc -l
