@@ -18,6 +18,11 @@ import {
   Moon,
   PlusMini,
   EllipsisHorizontal,
+  QueueList,
+  GridList,
+  AdjustmentsDone,
+  Window,
+  DocumentText,
 } from "@medusajs/icons";
 import { CURRENT_USER } from "@/lib/data";
 import { StoreProvider } from "./store";
@@ -37,9 +42,44 @@ const NAV_ITEMS: NavItem[] = [
   { title: "Reports", icon: ChartPie, href: "/reports" },
 ];
 
+interface GalleryGroup {
+  title: string;
+  items: NavItem[];
+}
+
+const GALLERY: GalleryGroup[] = [
+  {
+    title: "Cards",
+    items: [
+      { title: "StatCards", icon: Component, href: "/gallery/cards/stat-cards" },
+      { title: "ChartCards", icon: ChartBar, href: "/gallery/cards/chart-cards" },
+    ],
+  },
+  {
+    title: "Controls",
+    items: [
+      { title: "ControlsBar", icon: AdjustmentsDone, href: "/gallery/controls/controls" },
+    ],
+  },
+  {
+    title: "Views",
+    items: [
+      { title: "RecentTasks", icon: QueueList, href: "/gallery/views/recent-tasks" },
+      { title: "Kanban", icon: GridList, href: "/gallery/views/kanban-board" },
+      { title: "Settings", icon: CogSixTooth, href: "/gallery/views/settings" },
+    ],
+  },
+  {
+    title: "Overlays",
+    items: [
+      { title: "CreateTaskModal", icon: Window, href: "/gallery/overlays/create-task-modal" },
+      { title: "TaskDetails", icon: DocumentText, href: "/gallery/overlays/task-details-modal" },
+    ],
+  },
+];
+
 const NAV_EXTENSIONS: NavItem[] = [
   { title: "Settings", icon: CogSixTooth, href: "/settings" },
-  { title: "Gallery", icon: Component, href: "/gallery" },
 ];
 
 interface PageHeaderConfig {
@@ -139,6 +179,38 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
             );
           })}
         </nav>
+
+        {/* Gallery (dev — delete before ship) */}
+        {!collapsed && (
+          <div className="flex flex-col shrink-0 px-3 pt-2">
+            <DotDivider />
+            <div className="overflow-y-auto max-h-[50vh] pt-4">
+              {GALLERY.map((group) => (
+                <div key={group.title} className="mb-3">
+                  <p className="txt-compact-xsmall-plus text-ui-fg-muted px-2 pb-1">{group.title}</p>
+                  {group.items.map((item) => {
+                    const active = pathname.startsWith(item.href);
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`flex items-center gap-3 h-8 px-2 py-1 rounded-md txt-compact-small transition-colors outline-none focus-visible:shadow-borders-focus ${
+                          active
+                            ? "bg-ui-bg-subtle-pressed text-ui-fg-base"
+                            : "text-ui-fg-subtle hover:bg-ui-bg-subtle-hover"
+                        }`}
+                      >
+                        <Icon className="w-[15px] h-[15px] shrink-0" />
+                        <span className="flex-1 min-w-0 whitespace-nowrap">{item.title}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Spacer */}
         <div className="flex-1" />

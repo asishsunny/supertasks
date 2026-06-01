@@ -1,0 +1,59 @@
+{
+  "__doc": "Maps each gallery page to its block imports + prop expressions. generate-gallery.mjs reads this to produce page files mechanically. All expressions are valid JS that reference lib/data.ts and lib/constants.ts exports.",
+
+  "imports": {
+    "data": ["INITIAL_TASKS", "MEMBERS", "ACTIVITY", "CURRENT_USER", "NOTIFICATION_TOGGLES", "SECURITY_TOGGLES", "MODAL_CONFIGS", "BILLING"],
+    "constants": ["STATUS_LABEL", "STATUS_COLOR", "PRIORITY_COLOR", "BAR_COLORS", "PRIORITY_BAR_COLORS"],
+    "utils": ["formatDueDate", "isOverdue"],
+    "types": ["Status", "Priority"]
+  },
+
+  "pages": {
+    "cards/stat-cards": {
+      "blocks": ["StatCards"],
+      "setup": "const STATUSES: Status[] = ['todo', 'in_progress', 'in_review', 'done'];\nconst cards = STATUSES.map(s => ({ label: STATUS_LABEL[s], value: String(INITIAL_TASKS.filter(t => t.status === s).length) }));",
+      "render": "<StatCards cards={cards} />"
+    },
+    "cards/chart-cards": {
+      "blocks": ["ChartCards"],
+      "setup": "const STATUSES: Status[] = ['todo', 'in_progress', 'in_review', 'done'];\nconst PRIORITIES: Priority[] = ['critical', 'high', 'medium', 'low'];\nconst charts = [\n  { title: 'Tasks by Priority', total: INITIAL_TASKS.length, rows: PRIORITIES.map(p => ({ label: p.charAt(0).toUpperCase() + p.slice(1), count: INITIAL_TASKS.filter(t => t.priority === p).length, color: PRIORITY_BAR_COLORS[p] })) },\n  { title: 'Tasks by Status', total: INITIAL_TASKS.length, rows: STATUSES.map(s => ({ label: STATUS_LABEL[s], count: INITIAL_TASKS.filter(t => t.status === s).length, color: BAR_COLORS[s] })) },\n];",
+      "render": "<ChartCards charts={charts} />"
+    },
+    "controls/controls": {
+      "blocks": ["Controls"],
+      "state": true,
+      "setup": "const [activeTab, setActiveTab] = useState('list');\nconst tabs = [{ key: 'kanban', label: 'Kanban' }, { key: 'list', label: 'List' }];\nconst actions = [{ icon: null as unknown as React.ReactNode, label: 'Filter' }, { icon: null as unknown as React.ReactNode, label: 'Date' }];",
+      "render": "<Controls tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} actions={actions} searchPlaceholder=\"Search\" />"
+    },
+    "views/recent-tasks": {
+      "blocks": ["RecentTasks"],
+      "extraImports": ["import { StatusDot } from '@/components/shared/StatusDot';", "import { Badge } from '@medusajs/ui';"],
+      "setup": "interface TaskRow { id: number; title: string; assigneeName: string; status: Status; priority: Priority; due: string }\nconst rows: TaskRow[] = INITIAL_TASKS.slice(0, 8).map(t => ({ id: t.id, title: t.title, assigneeName: MEMBERS.find(m => m.id === t.assignee)?.name ?? '', status: t.status, priority: t.priority, due: t.due }));\nconst columns = [\n  { key: 'title', header: 'Task', width: 'w-[280px]', render: (row: TaskRow) => <p className=\"text-ui-fg-base txt-compact-small-plus\">{row.title}</p> },\n  { key: 'assignee', header: 'Assignee', width: 'w-[160px]', render: (row: TaskRow) => <p className=\"text-ui-fg-subtle txt-compact-small\">{row.assigneeName}</p> },\n  { key: 'status', header: 'Status', width: 'w-[140px]', render: (row: TaskRow) => <div className=\"flex gap-1 items-center\"><StatusDot status={row.status} /><span className=\"text-ui-fg-subtle txt-compact-small\">{STATUS_LABEL[row.status]}</span></div> },\n  { key: 'priority', header: 'Priority', width: 'w-[100px]', render: (row: TaskRow) => <Badge size=\"2xsmall\" color={PRIORITY_COLOR[row.priority]}>{row.priority.charAt(0).toUpperCase() + row.priority.slice(1)}</Badge> },\n  { key: 'due', header: 'Due Date', width: 'w-[100px]', render: (row: TaskRow) => <p className={`txt-compact-small ${isOverdue(row.due) && row.status !== 'done' ? 'text-ui-fg-error' : 'text-ui-fg-subtle'}`}>{formatDueDate(row.due)}</p> },\n];",
+      "render": "<RecentTasks title=\"Recent Tasks\" columns={columns} rows={rows} />"
+    },
+    "views/kanban-board": {
+      "blocks": ["KanbanBoard", "KanbanCard"],
+      "extraImports": ["import { StatusDot } from '@/components/shared/StatusDot';"],
+      "setup": "const STATUSES: Status[] = ['todo', 'in_progress', 'in_review', 'done'];\nconst columns = STATUSES.map(s => {\n  const tasks = INITIAL_TASKS.filter(t => t.status === s);\n  return {\n    status: s, label: STATUS_LABEL[s], count: tasks.length, statusIcon: <StatusDot status={s} />,\n    cards: tasks.map(t => { const m = MEMBERS.find(mem => mem.id === t.assignee)!; return <KanbanCard key={t.id} title={t.title} desc={t.desc} member={{ initials: m.initials, avatarBg: m.avatarBg, avatarText: m.avatarText }} firstName={m.name.split(' ')[0]} dueDate={formatDueDate(t.due)} overdue={isOverdue(t.due) && t.status !== 'done'} priorityLabel={t.priority.charAt(0).toUpperCase() + t.priority.slice(1)} priorityColor={PRIORITY_COLOR[t.priority]} />; }),\n  };\n});",
+      "wrapper": "h-[600px]",
+      "render": "<KanbanBoard columns={columns} />"
+    },
+    "overlays/create-task-modal": {
+      "blocks": ["CreateTaskModal"],
+      "setup": "const c = MODAL_CONFIGS.create_task;",
+      "wrapper": "max-w-[480px]",
+      "render": "<CreateTaskModal title={c.title} fields={c.fields} primaryAction={c.actions.primary} secondaryAction={c.actions.secondary} />"
+    },
+    "overlays/task-details-modal": {
+      "blocks": ["TaskDetailsModal"],
+      "setup": "const task = INITIAL_TASKS[0];\nconst assignee = MEMBERS.find(m => m.id === task.assignee)!;\nconst STATUS_BADGE_COLORS: Record<Status, { bg: string; border: string; text: string }> = {\n  todo: { bg: 'var(--tag-neutral-bg)', border: 'var(--tag-neutral-border)', text: 'var(--tag-neutral-text)' },\n  in_progress: { bg: 'var(--tag-blue-bg)', border: 'var(--tag-blue-border)', text: 'var(--tag-blue-text)' },\n  in_review: { bg: 'var(--tag-orange-bg)', border: 'var(--tag-orange-border)', text: 'var(--tag-orange-text)' },\n  done: { bg: 'var(--tag-green-bg)', border: 'var(--tag-green-border)', text: 'var(--tag-green-text)' },\n};\nconst infoRows = [\n  { label: 'Status', value: STATUS_LABEL[task.status], type: 'status' as const, statusColor: STATUS_BADGE_COLORS[task.status] },\n  { label: 'Assignee', value: assignee.name, type: 'assignee' as const, member: { initials: assignee.initials, avatarBg: assignee.avatarBg, avatarText: assignee.avatarText } },\n  { label: 'Due date', value: formatDueDate(task.due), type: 'date' as const, overdue: isOverdue(task.due) && task.status !== 'done' },\n];\nconst activity = ACTIVITY.filter(a => a.taskId === task.id).map(a => { const m = MEMBERS.find(mem => mem.id === a.memberId)!; return { member: { initials: m.initials, avatarBg: m.avatarBg, avatarText: m.avatarText }, name: m.name, time: a.time, text: a.text }; });",
+      "wrapper": "max-w-[520px]",
+      "render": "<TaskDetailsModal title={task.title} headerLabel=\"Task details\" description={task.desc} infoLabel=\"Info\" activityLabel=\"Activity log\" infoRows={infoRows} activity={activity} primaryAction=\"Mark complete\" secondaryAction=\"Edit\" escLabel=\"Esc\" />"
+    },
+    "views/settings": {
+      "blocks": ["SettingsProfile", "SettingsNotifications", "SettingsSecurity", "SettingsBilling"],
+      "setup": "const navItems = [{ label: 'Profile', active: true }, { label: 'Notifications' }, { label: 'Security' }, { label: 'Billing' }];\nconst profileFieldRows = [\n  { fields: [{ label: 'Full name', value: CURRENT_USER.name }, { label: 'Email', value: CURRENT_USER.email }] },\n  { fields: [{ label: 'Job title', value: CURRENT_USER.role }] },\n];\nconst billingNav = navItems.map((n, i) => ({ ...n, active: i === 3 }));\nconst billingHistoryColumns = [{ key: 'date', header: 'Date', className: 'w-[140px]' }, { key: 'desc', header: 'Description' }, { key: 'amount', header: 'Amount', className: 'w-[100px]' }];\nconst billingHistoryRows = BILLING.history.map((h, i) => ({ id: i + 1, date: h.date, desc: h.desc, amount: h.amount }));",
+      "render": "<div className=\"flex flex-col gap-8\">\n  <SettingsProfile navItems={navItems} title=\"Profile\" avatarSrc={CURRENT_USER.avatar} avatarFallback={CURRENT_USER.initials} userName={CURRENT_USER.name} avatarHint=\"Click to change photo\" fieldRows={profileFieldRows} bioLabel=\"Bio\" bioPlaceholder=\"\" saveLabel=\"Save changes\" />\n  <SettingsNotifications title=\"Notifications\" toggles={NOTIFICATION_TOGGLES} saveLabel=\"Save changes\" />\n  <SettingsSecurity tabs={['Profile', 'Notifications', 'Security', 'Billing']} activeTab={2} heading=\"Security\" toggles={SECURITY_TOGGLES} saveLabel=\"Save changes\" />\n  <SettingsBilling navItems={billingNav} title=\"Billing\" plan={{ name: BILLING.plan.name, price: BILLING.plan.price, renewalNote: BILLING.plan.renews, changeLabel: BILLING.plan.action }} payment={{ label: BILLING.payment.label, desc: BILLING.payment.value, updateLabel: BILLING.payment.action }} historyTitle=\"Billing history\" historyColumns={billingHistoryColumns} historyRows={billingHistoryRows} />\n</div>"
+    }
+  }
+}

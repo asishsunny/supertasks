@@ -22,7 +22,8 @@
  */
 
 import { execSync } from "child_process";
-import { existsSync, readFileSync, writeFileSync, mkdirSync, statSync } from "fs";
+import { createHash } from "crypto";
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -150,17 +151,24 @@ function runScorecard() {
     const lines = content.split("\n").length;
     const results = {};
 
-    // staleness — block must be newer than its templatized source
+    // empty-file guard — agent created file but wrote nothing
+    if (content.trim().length === 0) {
+      console.log(`   ❌ EMPTY: agent created file but wrote no content`);
+      allScores.push({ name: s.name, score: null, total: totalChecks, stale: true });
+      console.log(`── ${s.name} ── ✗ EMPTY — no score\n`);
+      continue;
+    }
+
+    // staleness — block content must differ from raw template (agent actually transformed it)
     const templatizedPath = resolve(ROOT, `artifacts/transformed/${s.name}-templatized.tsx`);
     if (existsSync(templatizedPath)) {
-      const blockMtime = statSync(blockPath).mtimeMs;
-      const templateMtime = statSync(templatizedPath).mtimeMs;
-      if (templateMtime > blockMtime) {
-        console.log(`   ❌ STALE: agent failed to write — block is from a previous build`);
-        console.log(`      template: ${new Date(templateMtime).toLocaleTimeString()}`);
-        console.log(`      block:    ${new Date(blockMtime).toLocaleTimeString()}`);
+      const templateContent = readFileSync(templatizedPath, "utf8");
+      const blockHash = createHash("md5").update(content).digest("hex");
+      const templateHash = createHash("md5").update(templateContent).digest("hex");
+      if (blockHash === templateHash) {
+        console.log(`   ⚠ COPIED: block is identical to template — agent didn't transform`);
         allScores.push({ name: s.name, score: null, total: totalChecks, stale: true });
-        console.log(`── ${s.name} ── ✗ STALE — no score\n`);
+        console.log(`── ${s.name} ── ✗ COPIED — no score\n`);
         continue;
       }
     }
