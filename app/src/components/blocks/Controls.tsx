@@ -1,72 +1,90 @@
 // source: artifacts/transformed/controls-templatized.tsx
-// wiring: code/rules/wiring-rules.json → ControlsBar
 
-import { type ReactNode } from "react";
+import React from "react";
 import { Button, IconButton, Input, Kbd } from "@medusajs/ui";
-import { DescendingSorting } from "@medusajs/icons";
 
-export interface ControlsBarProps {
-  views: { key: string; label: string }[];
-  activeView: string;
-  onViewChange: (key: string) => void;
-  filters: { label: string; icon: ReactNode }[];
+interface SegmentTab {
+  key: string;
+  label: string;
+}
+
+interface FilterAction {
+  key: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+interface ControlsProps {
+  tabs: SegmentTab[];
+  activeTab: string;
+  onTabChange?: (key: string) => void;
+  filterActions: FilterAction[];
+  onFilterAction?: (key: string) => void;
+  sortIcon: React.ComponentType;
+  onSort?: () => void;
   searchPlaceholder: string;
-  searchShortcut: string;
+  searchKbd: string;
   onSearch?: (query: string) => void;
 }
 
-export function ControlsBar({
-  views,
-  activeView,
-  onViewChange,
-  filters,
+export function Controls({
+  tabs,
+  activeTab,
+  onTabChange,
+  filterActions,
+  onFilterAction,
+  sortIcon: SortIcon,
+  onSort,
   searchPlaceholder,
-  searchShortcut,
+  searchKbd,
   onSearch,
-}: ControlsBarProps) {
+}: ControlsProps) {
   return (
     <div className="flex gap-0 h-8 items-center w-full">
-      {/* Segment control — templatized: bg-ui-bg-segment-control flex gap-0.5 ... */}
       <div className="bg-ui-bg-segment-control flex gap-0.5 items-center p-0.5 rounded-lg shrink-0">
-        {views.map((v) => (
+        {tabs.map((tab) => (
           <button
-            key={v.key}
-            type="button"
+            key={tab.key}
             role="tab"
-            aria-selected={activeView === v.key}
-            onClick={() => onViewChange(v.key)}
-            className={`px-2.5 py-1 rounded-md txt-compact-small-plus cursor-pointer transition-colors ${
-              activeView === v.key
+            aria-selected={tab.key === activeTab}
+            tabIndex={0}
+            onClick={() => onTabChange?.(tab.key)}
+            className={`segment-tab px-2.5 py-1 rounded-md txt-compact-small-plus cursor-pointer transition-colors ${
+              tab.key === activeTab
                 ? "bg-ui-bg-base text-ui-fg-base shadow-elevation-card-rest"
                 : "text-ui-fg-subtle hover:text-ui-fg-base"
             }`}
           >
-            {v.label}
+            {tab.label}
           </button>
         ))}
       </div>
-
-      {/* Spacer — templatized: flex-1 h-full min-w-[1px] */}
       <div className="flex-1 h-full min-w-[1px]" />
-
-      {/* Right-side controls */}
       <div className="flex gap-2 items-center shrink-0">
-        {/* Filter buttons — templatized: 3x Button variant="secondary" size="small" */}
         <div className="flex gap-2 items-center shrink-0">
-          {filters.map((f) => (
-            <Button key={f.label} variant="secondary" size="small">
-              {f.icon}
-              {f.label}
-            </Button>
-          ))}
+          {filterActions.map((action) => {
+            const Icon = action.icon;
+            return (
+              <Button
+                key={action.key}
+                variant="secondary"
+                size="small"
+                onClick={() => onFilterAction?.(action.key)}
+              >
+                <Icon className="w-[15px] h-[15px]" />
+                {action.label}
+              </Button>
+            );
+          })}
         </div>
-
-        {/* Sort — templatized: IconButton size="small" variant="primary" */}
-        <IconButton size="small" variant="primary" aria-label="Sort">
-          <DescendingSorting />
+        <IconButton
+          size="small"
+          variant="primary"
+          onClick={onSort}
+          aria-label="Sort"
+        >
+          <SortIcon />
         </IconButton>
-
-        {/* Search + Kbd — templatized: relative wrapper with Input + Kbd */}
         <div className="relative">
           <Input
             type="search"
@@ -74,8 +92,8 @@ export function ControlsBar({
             placeholder={searchPlaceholder}
             onChange={(e) => onSearch?.(e.target.value)}
           />
-          <Kbd className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2">
-            {searchShortcut}
+          <Kbd className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+            {searchKbd}
           </Kbd>
         </div>
       </div>

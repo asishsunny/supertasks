@@ -9,6 +9,7 @@ export default function Page() {
     <SettingsNotifications
       tabs={TABS}
       activeTab={1}
+      onTabChange={() => {}}
       heading="Notifications"
       toggles={NOTIFICATION_TOGGLES}
       saveLabel="Save changes"

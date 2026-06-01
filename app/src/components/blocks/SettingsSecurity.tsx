@@ -1,54 +1,51 @@
+// source: artifacts/transformed/settings-security-templatized.tsx
+
 import { Button, Switch } from "@medusajs/ui";
 import { SettingsToggle } from "@/types";
 
-export interface SettingsSecurityProps {
-  tabs: string[];
-  activeTab?: number;
-  onTabChange?: (index: number) => void;
-  heading: string;
+interface NavItem {
+  label: string;
+  active?: boolean;
+}
+
+interface SettingsSecurityProps {
+  title: string;
+  navItems: NavItem[];
   toggles: SettingsToggle[];
-  saveLabel: string;
-  onSave?: () => void;
-  onToggle?: (index: number, value: boolean) => void;
+  submitLabel: string;
 }
 
 export function SettingsSecurity({
-  tabs,
-  activeTab = 2,
-  onTabChange,
-  heading,
+  title,
+  navItems,
   toggles,
-  saveLabel,
-  onSave,
-  onToggle,
+  submitLabel,
 }: SettingsSecurityProps) {
   return (
     <div className="flex gap-6 items-start w-full">
-      {/* Sidebar tabs */}
       <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
-        {tabs.map((tab, i) => {
-          const isActive = i === activeTab;
-          return (
-            <button
-              key={tab}
-              type="button"
-              onClick={() => onTabChange?.(i)}
-              className={`flex items-center px-4 py-2.5 w-full text-left ${
-                isActive
-                  ? "bg-ui-bg-subtle border-ui-fg-base border-l-2 text-ui-fg-base txt-compact-small-plus"
-                  : "text-ui-fg-subtle txt-compact-small"
+        {navItems.map((item) => (
+          <div
+            key={item.label}
+            className={`flex items-center px-4 py-2.5 w-full ${
+              item.active
+                ? "bg-ui-bg-subtle border-ui-fg-base border-l-2"
+                : ""
+            }`}
+          >
+            <p
+              className={`text-ui-fg-${item.active ? "base" : "subtle"} ${
+                item.active ? "txt-compact-small-plus" : "txt-compact-small"
               }`}
             >
-              {tab}
-            </button>
-          );
-        })}
+              {item.label}
+            </p>
+          </div>
+        ))}
       </div>
-
-      {/* Content panel */}
       <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip rounded-[8px] shadow-elevation-card-rest">
         <div className="flex flex-col px-6 py-3 w-full">
-          <p className="text-ui-fg-base txt-compact-medium-plus">{heading}</p>
+          <p className="text-ui-fg-base txt-compact-medium-plus">{title}</p>
         </div>
         <div className="h-px bg-ui-border-base" />
         <div className="flex flex-col gap-5 p-6 w-full">
@@ -64,10 +61,7 @@ export function SettingsSecurity({
                       {toggle.desc}
                     </p>
                   </div>
-                  <Switch
-                    checked={toggle.on}
-                    onCheckedChange={(val) => onToggle?.(i, val)}
-                  />
+                  <Switch checked={toggle.on} />
                 </div>
                 {i < toggles.length - 1 && (
                   <div className="h-px bg-ui-border-base mt-3" />
@@ -76,8 +70,8 @@ export function SettingsSecurity({
             ))}
           </div>
           <div className="flex items-start justify-end pt-2 w-full">
-            <Button variant="primary" size="small" onClick={onSave}>
-              {saveLabel}
+            <Button variant="primary" size="small">
+              {submitLabel}
             </Button>
           </div>
         </div>

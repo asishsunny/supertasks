@@ -16,14 +16,14 @@ const reportsCards = [
   { label: "Total reports", value: INITIAL_REPORTS.length },
   { label: "Flagged overdue", value: flagged, error: true },
   { label: "Avg per month", value: Math.round((INITIAL_REPORTS.length / 3) * 10) / 10 },
-  { label: "Last generated", value: INITIAL_REPORTS[0]?.generated?.replace(/, \d{4}$/, "") || "—" },
+  { label: "Pending review", value: INITIAL_REPORTS.filter((r) => r.range.includes("Apr")).length },
 ];
 
 export default function Page() {
   return (
     <div className="flex flex-col gap-8">
-      <div><p className="text-ui-fg-subtle txt-compact-small mb-2">Dashboard</p><StatCards cards={dashboardCards} /></div>
-      <div><p className="text-ui-fg-subtle txt-compact-small mb-2">Reports</p><StatCards cards={reportsCards} /></div>
+      <div><p className="text-ui-fg-subtle txt-compact-small mb-2">Dashboard</p><StatCards items={dashboardCards} /></div>
+      <div><p className="text-ui-fg-subtle txt-compact-small mb-2">Reports</p><StatCards items={reportsCards} /></div>
     </div>
   );
 }

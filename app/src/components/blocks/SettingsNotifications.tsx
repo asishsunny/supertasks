@@ -1,51 +1,51 @@
-import { Button, Switch } from "@medusajs/ui";
-import { SettingsToggle } from "@/types";
+// source: artifacts/transformed/settings-notifications-templatized.tsx
 
-export interface SettingsNotificationsProps {
+import { Button, Switch } from "@medusajs/ui";
+import type { SettingsToggle } from "@/types";
+
+interface SettingsNotificationsProps {
   tabs: string[];
-  activeTab?: number;
-  onTabChange?: (index: number) => void;
+  activeTab: number;
+  onTabChange: (index: number) => void;
   heading: string;
   toggles: SettingsToggle[];
   saveLabel: string;
-  onSave?: () => void;
-  onToggle?: (index: number, value: boolean) => void;
 }
 
 export function SettingsNotifications({
   tabs,
-  activeTab = 1,
+  activeTab,
   onTabChange,
   heading,
   toggles,
   saveLabel,
-  onSave,
-  onToggle,
 }: SettingsNotificationsProps) {
   return (
     <div className="flex gap-6 items-start w-full">
-      {/* Sidebar tabs */}
       <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
-        {tabs.map((tab, i) => {
-          const isActive = i === activeTab;
-          return (
-            <button
-              key={tab}
-              type="button"
-              onClick={() => onTabChange?.(i)}
-              className={`flex items-center px-4 py-2.5 w-full text-left ${
-                isActive
-                  ? "bg-ui-bg-subtle border-ui-fg-base border-l-2 text-ui-fg-base txt-compact-small-plus"
+        {tabs.map((tab, i) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => onTabChange(i)}
+            className={
+              i === activeTab
+                ? "bg-ui-bg-subtle border-ui-fg-base border-l-2 flex items-center px-4 py-2.5 w-full text-left"
+                : "flex items-center px-4 py-2.5 w-full text-left"
+            }
+          >
+            <span
+              className={
+                i === activeTab
+                  ? "text-ui-fg-base txt-compact-small-plus"
                   : "text-ui-fg-subtle txt-compact-small"
-              }`}
+              }
             >
               {tab}
-            </button>
-          );
-        })}
+            </span>
+          </button>
+        ))}
       </div>
-
-      {/* Content panel */}
       <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip rounded-[8px] shadow-elevation-card-rest">
         <div className="flex flex-col px-6 py-3 w-full">
           <p className="text-ui-fg-base txt-compact-medium-plus">{heading}</p>
@@ -64,10 +64,7 @@ export function SettingsNotifications({
                       {toggle.desc}
                     </p>
                   </div>
-                  <Switch
-                    checked={toggle.on}
-                    onCheckedChange={(val) => onToggle?.(i, val)}
-                  />
+                  <Switch checked={toggle.on} />
                 </div>
                 {i < toggles.length - 1 && (
                   <div className="h-px bg-ui-border-base mt-3" />
@@ -76,7 +73,7 @@ export function SettingsNotifications({
             ))}
           </div>
           <div className="flex items-start justify-end pt-2 w-full">
-            <Button variant="primary" size="small" onClick={onSave}>
+            <Button variant="primary" size="small">
               {saveLabel}
             </Button>
           </div>

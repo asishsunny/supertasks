@@ -9,7 +9,7 @@ export default function Page() {
         <div key={key}>
           <p className="text-ui-fg-subtle txt-compact-small mb-2">{key.replace(/_/g, " ")}</p>
           <div className="max-w-[480px]">
-            <CreateTaskModal title={config.title} fields={config.fields} primaryAction={config.actions.primary} secondaryAction={config.actions.secondary} />
+            <CreateTaskModal config={config} />
           </div>
         </div>
       ))}

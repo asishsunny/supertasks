@@ -1,6 +1,5 @@
 "use client";
-import { TaskDetailsModal } from "@/components/blocks/TaskDetailsModal";
-import type { InfoRow, ActivityEntry } from "@/components/blocks/TaskDetailsModal";
+import { TaskDetailsModal, type TaskInfoRow, type TaskActivity } from "@/components/blocks/TaskDetailsModal";
 import { INITIAL_TASKS, MEMBERS, ACTIVITY } from "@/lib/data";
 import { STATUS_LABEL } from "@/lib/constants";
 import { formatDate, isOverdue } from "@/lib/utils";
@@ -36,34 +35,30 @@ const memberMap = new Map(MEMBERS.map((m) => [m.id, m]));
 const statusPal = BADGE_PALETTE[STATUS_BADGE[task.status]];
 const priorityPal = BADGE_PALETTE[PRIORITY_BADGE[task.priority]];
 
-const info: InfoRow[] = [
+const infoRows: TaskInfoRow[] = [
   {
-    type: "badge",
+    type: "status",
     label: "Status",
-    badgeLabel: STATUS_LABEL[task.status],
-    badgeBg: statusPal.bg,
-    badgeBorder: statusPal.border,
-    badgeText: statusPal.text,
+    value: STATUS_LABEL[task.status],
+    statusColor: statusPal,
   },
   {
-    type: "badge",
+    type: "status",
     label: "Priority",
-    badgeLabel: task.priority.charAt(0).toUpperCase() + task.priority.slice(1),
-    badgeBg: priorityPal.bg,
-    badgeBorder: priorityPal.border,
-    badgeText: priorityPal.text,
+    value: task.priority.charAt(0).toUpperCase() + task.priority.slice(1),
+    statusColor: priorityPal,
   },
   {
-    type: "avatar",
+    type: "assignee",
     label: "Assignee",
+    value: member.name,
     member: { initials: member.initials, avatarBg: member.avatarBg, avatarText: member.avatarText },
-    name: member.name,
   },
   {
     type: "text",
     label: "Due date",
     value: formatDate(task.due),
-    error: isOverdue(task.due),
+    isError: isOverdue(task.due),
   },
   {
     type: "text",
@@ -72,7 +67,7 @@ const info: InfoRow[] = [
   },
 ];
 
-const activity: ActivityEntry[] = ACTIVITY.filter((a) => a.taskId === task.id).map((a) => {
+const activities: TaskActivity[] = ACTIVITY.filter((a) => a.taskId === task.id).map((a) => {
   const m = memberMap.get(a.memberId)!;
   return {
     member: { initials: m.initials, avatarBg: m.avatarBg, avatarText: m.avatarText },
@@ -83,5 +78,17 @@ const activity: ActivityEntry[] = ACTIVITY.filter((a) => a.taskId === task.id).m
 });
 
 export default function Page() {
-  return <TaskDetailsModal heading="Task details" title={task.title} desc={task.desc} infoLabel="Info" info={info} activityLabel="Activity log" activity={activity} primaryAction="Mark complete" secondaryAction="Edit" />;
+  return (
+    <TaskDetailsModal
+      headerTitle="Task details"
+      title={task.title}
+      description={task.desc}
+      infoHeading="Info"
+      infoRows={infoRows}
+      activityHeading="Activity log"
+      activities={activities}
+      primaryAction="Mark complete"
+      secondaryAction="Edit"
+    />
+  );
 }

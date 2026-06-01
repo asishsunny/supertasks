@@ -6,56 +6,54 @@ import { SettingsNotifications } from "@/components/blocks/SettingsNotifications
 import { SettingsSecurity } from "@/components/blocks/SettingsSecurity";
 import { SettingsBilling } from "@/components/blocks/SettingsBilling";
 import { CURRENT_USER, NOTIFICATION_TOGGLES, SECURITY_TOGGLES, BILLING } from "@/lib/data";
-import type { BillingHistoryRow } from "@/components/blocks/SettingsBilling";
 
 const TABS = ["Profile", "Notifications", "Security", "Billing"];
 
-const HISTORY_COLUMNS: { key: keyof BillingHistoryRow; header: string; className?: string }[] = [
-  { key: "date", header: "Date", className: "w-[140px]" },
-  { key: "description", header: "Description" },
-  { key: "amount", header: "Amount", className: "w-[100px]" },
-];
+function makeNavItems(activeIndex: number) {
+  return TABS.map((label, i) => ({ label, active: i === activeIndex }));
+}
+
+function makeBillingNavItems(activeIndex: number) {
+  return TABS.map((label, i) => ({
+    key: label.toLowerCase(),
+    label,
+    active: i === activeIndex,
+  }));
+}
 
 export function SettingsSection() {
   const [activeTab, setActiveTab] = useState(0);
-
-  const sharedTabProps = {
-    tabs: TABS,
-    activeTab,
-    onTabChange: setActiveTab,
-  };
 
   switch (activeTab) {
     case 0:
       return (
         <SettingsProfile
-          {...sharedTabProps}
-          name={CURRENT_USER.name}
-          avatar={CURRENT_USER.avatar}
-          initials={CURRENT_USER.initials}
-          avatarBg="tag-orange-bg"
-          avatarText="tag-orange-text"
-          photoHint="Upload a photo (max 2MB)"
-          fieldRows={[
+          title="Profile"
+          navItems={makeNavItems(0)}
+          avatarSrc={CURRENT_USER.avatar}
+          userName={CURRENT_USER.name}
+          avatarHint="Upload a photo (max 2MB)"
+          formRows={[
             [
-              { label: "Full name", value: CURRENT_USER.name },
-              { label: "Email", value: CURRENT_USER.email },
+              { label: "Full name", defaultValue: CURRENT_USER.name },
+              { label: "Email", defaultValue: CURRENT_USER.email },
             ],
             [
-              { label: "Role", value: CURRENT_USER.role },
-              { label: "Department", value: "Product" },
+              { label: "Role", defaultValue: CURRENT_USER.role },
+              { label: "Department", defaultValue: "Product" },
             ],
           ]}
-          bioLabel="Bio"
-          bioPlaceholder="Tell us about yourself..."
-          saveLabel="Save changes"
+          bioField={{ label: "Bio", placeholder: "Tell us about yourself..." }}
+          submitLabel="Save changes"
         />
       );
 
     case 1:
       return (
         <SettingsNotifications
-          {...sharedTabProps}
+          tabs={TABS}
+          activeTab={1}
+          onTabChange={setActiveTab}
           heading="Notifications"
           toggles={NOTIFICATION_TOGGLES}
           saveLabel="Save changes"
@@ -65,32 +63,31 @@ export function SettingsSection() {
     case 2:
       return (
         <SettingsSecurity
-          {...sharedTabProps}
-          heading="Security"
+          title="Security"
+          navItems={makeNavItems(2)}
           toggles={SECURITY_TOGGLES}
-          saveLabel="Save changes"
+          submitLabel="Save changes"
         />
       );
 
     case 3:
       return (
         <SettingsBilling
-          {...sharedTabProps}
-          heading="Billing"
+          navItems={makeBillingNavItems(3)}
           plan={{
             name: BILLING.plan.name,
             price: BILLING.plan.price,
-            renewalNote: BILLING.plan.renews,
-            changeLabel: BILLING.plan.action,
+            renewDate: BILLING.plan.renews,
+            changePlanLabel: BILLING.plan.action,
           }}
           payment={{
             label: BILLING.payment.label,
-            desc: BILLING.payment.value,
+            detail: BILLING.payment.value,
             updateLabel: BILLING.payment.action,
           }}
-          historyHeading="Billing history"
-          historyColumns={HISTORY_COLUMNS}
-          historyRows={BILLING.history.map((h) => ({
+          historyTitle="Billing history"
+          historyColumns={{ date: "Date", description: "Description", amount: "Amount" }}
+          invoices={BILLING.history.map((h) => ({
             date: h.date,
             description: h.desc,
             amount: h.amount,

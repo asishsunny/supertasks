@@ -2,27 +2,30 @@
 import { SettingsProfile } from "@/components/blocks/SettingsProfile";
 import { CURRENT_USER } from "@/lib/data";
 
-const TABS = ["Profile", "Notifications", "Security", "Billing"];
-const FIELD_ROWS: [{ label: string; value: string }, { label: string; value: string }][] = [
-  [{ label: "Full name", value: CURRENT_USER.name }, { label: "Email", value: CURRENT_USER.email }],
-  [{ label: "Job title", value: CURRENT_USER.role }, { label: "Phone", value: "+1 (555) 000-0000" }],
-  [{ label: "Location", value: "San Francisco, CA" }, { label: "Time zone", value: "Pacific Time (UTC-8)" }],
+const NAV_ITEMS = [
+  { label: "Profile", active: true },
+  { label: "Notifications" },
+  { label: "Security" },
+  { label: "Billing" },
+];
+
+const FORM_ROWS = [
+  [{ label: "Full name", defaultValue: CURRENT_USER.name }, { label: "Email", defaultValue: CURRENT_USER.email }],
+  [{ label: "Job title", defaultValue: CURRENT_USER.role }, { label: "Phone", defaultValue: "+1 (555) 000-0000" }],
+  [{ label: "Location", defaultValue: "San Francisco, CA" }, { label: "Time zone", defaultValue: "Pacific Time (UTC-8)" }],
 ];
 
 export default function Page() {
   return (
     <SettingsProfile
-      name={CURRENT_USER.name}
-      initials={CURRENT_USER.initials}
-      avatar={CURRENT_USER.avatar}
-      avatarBg="tag-orange-bg"
-      avatarText="tag-orange-text"
-      photoHint="Click to change photo"
-      tabs={TABS}
-      fieldRows={FIELD_ROWS}
-      bioLabel="Bio"
-      bioPlaceholder="Write something about yourself..."
-      saveLabel="Save changes"
+      title="Profile"
+      navItems={NAV_ITEMS}
+      avatarSrc={CURRENT_USER.avatar}
+      userName={CURRENT_USER.name}
+      avatarHint="Click to change photo"
+      formRows={FORM_ROWS}
+      bioField={{ label: "Bio", placeholder: "Write something about yourself..." }}
+      submitLabel="Save changes"
     />
   );
 }

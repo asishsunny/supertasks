@@ -1,7 +1,7 @@
 "use client";
 
 import type { Task, Member } from "@/types";
-import { TaskDetailsModal, type InfoRow, type ActivityEntry } from "@/components/blocks/TaskDetailsModal";
+import { TaskDetailsModal, type TaskInfoRow, type TaskActivity } from "@/components/blocks/TaskDetailsModal";
 import { PRIORITY_COLOR, STATUS_LABEL, STATUS_COLOR } from "@/lib/constants";
 import { formatDueDate, isOverdue } from "@/lib/utils";
 
@@ -47,38 +47,42 @@ export function TaskDetailDrawer({ task, member, activity, open, onClose, onComp
   const statusColor = STATUS_COLOR[task.status];
   const priorityColor = PRIORITY_COLOR[task.priority];
 
-  const info: InfoRow[] = [
+  const infoRows: TaskInfoRow[] = [
     {
-      type: "badge",
+      type: "status",
       label: "Status",
-      badgeLabel: STATUS_LABEL[task.status],
-      badgeBg: TAG_BG[statusColor] ?? TAG_BG.grey,
-      badgeBorder: TAG_BORDER[statusColor] ?? TAG_BORDER.grey,
-      badgeText: TAG_TEXT[statusColor] ?? TAG_TEXT.grey,
+      value: STATUS_LABEL[task.status],
+      statusColor: {
+        bg: TAG_BG[statusColor] ?? TAG_BG.grey,
+        border: TAG_BORDER[statusColor] ?? TAG_BORDER.grey,
+        text: TAG_TEXT[statusColor] ?? TAG_TEXT.grey,
+      },
     },
     {
-      type: "badge",
+      type: "status",
       label: "Priority",
-      badgeLabel: task.priority.charAt(0).toUpperCase() + task.priority.slice(1),
-      badgeBg: TAG_BG[priorityColor] ?? TAG_BG.grey,
-      badgeBorder: TAG_BORDER[priorityColor] ?? TAG_BORDER.grey,
-      badgeText: TAG_TEXT[priorityColor] ?? TAG_TEXT.grey,
+      value: task.priority.charAt(0).toUpperCase() + task.priority.slice(1),
+      statusColor: {
+        bg: TAG_BG[priorityColor] ?? TAG_BG.grey,
+        border: TAG_BORDER[priorityColor] ?? TAG_BORDER.grey,
+        text: TAG_TEXT[priorityColor] ?? TAG_TEXT.grey,
+      },
     },
     {
-      type: "avatar",
+      type: "assignee",
       label: "Assignee",
+      value: member.name,
       member,
-      name: member.name,
     },
     {
       type: "text",
       label: "Due Date",
       value: formatDueDate(task.due),
-      error: isOverdue(task.due),
+      isError: isOverdue(task.due),
     },
   ];
 
-  const activityEntries: ActivityEntry[] = activity.map((a) => ({
+  const activities: TaskActivity[] = activity.map((a) => ({
     member: a.member,
     name: a.member.name,
     time: a.time,
@@ -92,13 +96,13 @@ export function TaskDetailDrawer({ task, member, activity, open, onClose, onComp
       {/* Drawer panel */}
       <div className="relative w-full max-w-[440px] h-full bg-ui-bg-base">
         <TaskDetailsModal
-          heading="Task details"
+          headerTitle="Task details"
           title={task.title}
-          desc={task.desc}
-          infoLabel="Details"
-          info={info}
-          activityLabel="Activity"
-          activity={activityEntries}
+          description={task.desc}
+          infoHeading="Details"
+          infoRows={infoRows}
+          activityHeading="Activity"
+          activities={activities}
           primaryAction="Mark complete"
           secondaryAction="Delete task"
           onClose={onClose}

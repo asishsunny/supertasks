@@ -24,10 +24,7 @@ export function FormModal({ config, open, onClose, onSubmit }: FormModalProps) {
       {/* Modal */}
       <div className="relative w-full max-w-[520px] mx-4">
         <CreateTaskModal
-          title={config.title}
-          fields={config.fields}
-          primaryAction={config.actions.primary}
-          secondaryAction={config.actions.secondary}
+          config={config}
           onClose={onClose}
           onSubmit={onSubmit}
         />
