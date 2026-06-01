@@ -12,6 +12,7 @@ import {
   Users,
   ChartPie,
   CogSixTooth,
+  Component,
   SidebarLeft,
   Sun,
   Moon,
@@ -38,6 +39,7 @@ const NAV_ITEMS: NavItem[] = [
 
 const NAV_EXTENSIONS: NavItem[] = [
   { title: "Settings", icon: CogSixTooth, href: "/settings" },
+  { title: "Gallery", icon: Component, href: "/gallery" },
 ];
 
 interface PageHeaderConfig {

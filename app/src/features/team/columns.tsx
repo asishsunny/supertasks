@@ -2,7 +2,17 @@ import { AvatarCell } from "@/components/cells";
 import { EllipsisHorizontal } from "@medusajs/icons";
 import { IconButton } from "@medusajs/ui";
 import type { Column } from "@/components/views/TableView";
-import type { TeamRow } from "./TeamSection";
+export interface TeamRow {
+  id: number;
+  name: string;
+  initials: string;
+  email: string;
+  role: string;
+  avatarBg: string;
+  avatarText: string;
+  activeTasks: number;
+  overdueTasks: number;
+}
 
 export function getTeamColumns(onEdit: (member: TeamRow) => void): Column<TeamRow>[] {
   return [

@@ -8,7 +8,7 @@
  *   transform/helpers.mjs           — shared AST utilities
  */
 
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { parse } from "@babel/parser";
@@ -145,8 +145,13 @@ const warnings = getWarnings();
 if (warnings.length) warnings.forEach(w => process.stderr.write(w + "\n"));
 
 if (outputFile) {
-  writeFileSync(resolve(process.cwd(), outputFile), output);
-  console.log(`Written: ${outputFile}`);
+  const outPath = resolve(process.cwd(), outputFile);
+  if (existsSync(outPath) && readFileSync(outPath, "utf8") === output) {
+    console.log(`Unchanged: ${outputFile}`);
+  } else {
+    writeFileSync(outPath, output);
+    console.log(`Written: ${outputFile}`);
+  }
 } else {
   console.log(output);
 }

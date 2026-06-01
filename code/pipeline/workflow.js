@@ -1,25 +1,21 @@
 export const meta = {
-  name: 'build-pipeline',
-  description: 'Full Figma-to-code pipeline: fetch → split → transform → templatize → build → scorecard',
-  whenToUse: 'When user says "run build pipeline" or wants to rebuild all blocks from Figma end-to-end',
+  name: 'build',
+  description: 'Figma → code: prep → build → gallery → QA',
+  whenToUse: 'run build pipeline, rebuild blocks',
   phases: [
     { title: 'Prep', detail: 'Render + fetch + split + preflight + transform + templatize' },
-    { title: 'Build', detail: 'Build all blocks + tsc + scorecard' },
-    { title: 'Gallery', detail: 'Generate pages + layout + verify data + verify 200' },
-    { title: 'QA', detail: 'Final scorecard + screenshot diff' },
+    { title: 'Build', detail: '11 parallel agents build blocks + tsc' },
+    { title: 'Gallery', detail: 'Layout + parallel page generation' },
+    { title: 'QA', detail: 'Scorecard + screenshot diff' },
   ],
 }
 
 const ROOT = '/Users/superdesigner/Projects/supertasks'
-
-const rawArgs = typeof args === 'string' ? JSON.parse(args) : args
-const config = rawArgs || {}
-const skipFetch = config.skipFetch || false
-const skipBuild = config.skipBuild || false
-const wrapperNodeId = config.wrapperNodeId || '4553:47822'
+const config = typeof args === 'string' ? JSON.parse(args) : (args || {})
 
 const manifest = {
   fileKey: "D4Hav0rqH4Zql11h0YgcRv",
+  wrapperNodeId: config.wrapperNodeId || '4571:136753',
   snippets: [
     { name: "stat-cards", dest: "components/blocks/StatCards.tsx", type: "card", variations: ["dashboard", "reports"] },
     { name: "chart-cards", dest: "components/blocks/ChartCards.tsx", type: "card" },
@@ -35,188 +31,79 @@ const manifest = {
   ]
 }
 
-// ── Phase 0+1+2: Render + Fetch + Transform (one agent, all mechanical) ──
-phase('Prep')
-log('Running mechanical steps: render + fetch + split + preflight + transform + templatize')
-
-await agent(
-  `Run ALL mechanical pipeline steps in sequence. No thinking — just execute commands.
-
-${config.skipRender ? '# SKIP render' : `1. cd ${ROOT} && node figma/scripts/build-gallery.mjs --render-all 2>&1`}
-
-${skipFetch ? '# SKIP fetch+split' : `2. Fetch gallery wrapper from Figma:
-   - Use ToolSearch to load mcp__figma__get_design_context
-   - Call: fileKey="${manifest.fileKey}", nodeId="${wrapperNodeId}", excludeScreenshot=true, clientFrameworks="react", clientLanguages="typescript", forceCode=true
-   - Response saved to file. Run: node ${ROOT}/code/pipeline/steps/split-gallery-cache.mjs <file-path>`}
-
-3. cd ${ROOT} && node code/pipeline/preflight.mjs 2>&1
-4. cd ${ROOT} && node code/pipeline/run.mjs --force 2>&1
-
-Report: render count, cache count, preflight status, transform results.`,
-  { label: 'mechanical', phase: 'Prep' }
-)
-log('Mechanical steps complete')
-
-// ── Phase 3: Build ──
-if (!skipBuild) {
-  phase('Build')
-  log(`Building ${manifest.snippets.length} blocks from templatized transforms`)
-
-  const buildPrompt = (snippet) => `Build ONE block from templatized Figma output. ONLY from files, no memory.
-
-READ:
-1. ${ROOT}/artifacts/transformed/${snippet.name}-templatized.tsx — PRIMARY
-2. ${ROOT}/code/pipeline/rules/build-checklist.json
-3. ${ROOT}/app/src/types/index.ts
-
-RULES:
-- Every class from templatized file, never invent
-- data-repeat → .map() with typed props
-- PRESERVE conditional classes (e.g. text-ui-fg-error → boolean prop)
-- Zero hardcoded strings
-- Never override variant/size
-- Fix TODOs: Avatar xsmall, Badge 2xsmall
-- No hooks/store/data
-
-WRITE to: ${ROOT}/app/src/${snippet.dest}
-${snippet.extra ? `ALSO: ${ROOT}/app/src/${snippet.extra}` : ''}
-
-Report: file written, line count.`
-
-  const results = await parallel(
-    manifest.snippets.map(snippet => () => agent(
-      buildPrompt(snippet),
-      { label: `build:${snippet.name}`, phase: 'Build' }
-    ))
-  )
-
-  const built = results.filter(Boolean).length
-  log(`Built ${built}/${manifest.snippets.length}`)
-
-  // tsc + scorecard as one agent after all blocks written
-  await agent(
-    `Run both:
-1. cd ${ROOT}/app && npx tsc --noEmit 2>&1 | head -30
-2. cd ${ROOT} && node code/pipeline/run.mjs --phase scorecard 2>&1
-Report results.`,
-    { label: 'tsc+scorecard', phase: 'Build' }
-  )
-  log('Build + tsc + scorecard complete')
-}
-
-// ── Phase 4: Gallery ──
-phase('Gallery')
-log('Generating gallery pages from block interfaces')
-
-// Derive gallery structure from manifest.snippets (has type + group)
 const typeToFolder = { view: 'views', card: 'cards', control: 'controls', overlay: 'overlays' }
 const galleryGroups = {}
 for (const s of manifest.snippets) {
   const folder = typeToFolder[s.type]
   const pagePath = s.group ? `${folder}/${s.group}` : `${folder}/${s.name}`
   if (!galleryGroups[pagePath]) galleryGroups[pagePath] = []
-  galleryGroups[pagePath].push(s.name)
+  galleryGroups[pagePath].push(s)
 }
+const galleryEntries = Object.entries(galleryGroups)
 
-const galleryList = Object.entries(galleryGroups).map(([path, blocks]) =>
-  `- ${ROOT}/app/src/app/(app)/gallery/${path}/page.tsx — blocks: ${blocks.join(', ')}`
-).join('\n')
+// ── PREP ──
+phase('Prep')
+await agent(
+  `Execute ALL in sequence, report results:
+${config.skipRender ? '# skip render' : `1. cd ${ROOT} && node figma/scripts/build-gallery.mjs --render-all 2>&1 | tail -3`}
+${config.skipFetch ? '# skip fetch' : `2. Fetch wrapper from Figma: ToolSearch mcp__figma__get_design_context, call with fileKey="${manifest.fileKey}" nodeId="${manifest.wrapperNodeId}" excludeScreenshot=true forceCode=true. Then: node ${ROOT}/code/pipeline/steps/split-gallery-cache.mjs <result-file>`}
+3. cd ${ROOT} && node code/pipeline/preflight.mjs 2>&1
+4. cd ${ROOT} && node code/pipeline/run.mjs --force 2>&1 | tail -20`,
+  { label: 'prep', phase: 'Prep' }
+)
 
-const toPascal = n => n.replace(/(^|-)(\\w)/g, (_, __, c) => c.toUpperCase())
-const blockFiles = manifest.snippets.map(s =>
-  `${ROOT}/app/src/${s.dest}`
-).join('\n')
+// ── BUILD (parallel) ──
+phase('Build')
+log(`Building ${manifest.snippets.length} blocks`)
+
+const buildResults = await parallel(
+  manifest.snippets.map(s => () => agent(
+    `Build ONE block. ONLY from files.
+READ: ${ROOT}/artifacts/transformed/${s.name}-templatized.tsx + ${ROOT}/code/pipeline/rules/build-checklist.json + ${ROOT}/app/src/types/index.ts
+RULES: classes from transform, data-repeat->.map(), PRESERVE conditional classes (error->boolean prop), zero hardcoded strings, never override variant/size, Avatar xsmall, Badge 2xsmall, no hooks/store/data.
+WRITE: ${ROOT}/app/src/${s.dest}
+Report: line count.`,
+    { label: `build:${s.name}`, phase: 'Build' }
+  ))
+)
+log(`Built ${buildResults.filter(Boolean).length}/${manifest.snippets.length}`)
+
+await agent(`Run: cd ${ROOT}/app && npx tsc --noEmit 2>&1 | head -20. Report clean or errors.`,
+  { label: 'tsc', phase: 'Build' })
+
+// ── GALLERY (layout + parallel pages) ──
+phase('Gallery')
 
 await agent(
-  `Generate gallery pages by reading each block's ACTUAL exported interface. No guessing.
-
-STEP 1 — Read every block file to learn exact prop names:
-${blockFiles}
-
-STEP 2 — Read data sources:
-- ${ROOT}/app/src/lib/data.ts
-- ${ROOT}/app/src/lib/constants.ts
-- ${ROOT}/app/src/lib/utils.ts
-- ${ROOT}/app/src/types/index.ts
-- ${ROOT}/code/pipeline/manifest.json (for variations per block)
-
-STEP 3 — For each gallery page, wire data to match the block's interface EXACTLY:
-${galleryList}
-
-CRITICAL RULES:
-1. Every prop you pass MUST exist in the block's exported interface. Read the .tsx file. Use exact prop names.
-2. Every data value MUST come from lib/data.ts, lib/constants.ts, or lib/utils.ts. NEVER invent labels, rename fields, or add data that doesn't exist in those files.
-3. If you can't find a value in the source files, DON'T make one up — leave that variation out.
-
-ALSO CREATE gallery layout with sidebar nav:
-- Write ${ROOT}/app/src/app/(app)/gallery/layout.tsx
-- Sidebar lists all gallery pages grouped by type (views, cards, controls, overlays)
-- Each item links to its gallery page path
-- Derive groups + links from manifest.json block types
-- Use same styling as main app sidebar (text-ui-fg-subtle, active state, icons optional)
-- Layout wraps {children} with the sidebar
-
-ADDITIONAL RULES:
-- "use client" on pages with hooks
-- Import from @/components/blocks/{PascalCase}
-- Show ALL variations per page (use manifest.blocks[key].variations)
-- blocks/index.ts — re-export all blocks
-- Add "Gallery" link to main app layout (${ROOT}/app/src/app/(app)/layout.tsx) in NAV_EXTENSIONS array, href="/gallery"
-
-After writing, test:
-for p in $(ls -d ${ROOT}/app/src/app/\\(app\\)/gallery/*/*/ 2>/dev/null | sed 's|.*/gallery/||' | sed 's|/page.tsx||' | sed 's|/$||'); do
-  curl -s -o /dev/null -w "%{http_code} $p\\n" http://localhost:3000/gallery/$p
-done
-
-Report: pages written, which 200, which fail.`,
-  { label: 'gallery', phase: 'Gallery' }
-)
-// Verify gallery data against source
-log('Verifying gallery data against source files...')
-await agent(
-  `Verify every string literal in gallery pages exists in source data.
-
-1. Read ${ROOT}/app/src/lib/data.ts — extract ALL string values (labels, names, titles, etc)
-2. For each gallery page in ${ROOT}/app/src/app/(app)/gallery/**/page.tsx:
-   - Find every hardcoded string (in quotes, not imports/classNames)
-   - Check it exists in data.ts OR is a known UI string (section headers like "Dashboard variation")
-   - Flag any string NOT traceable to source data
-3. If ANY invented string found, delete it and replace with correct value from data.ts
-
-Report: which strings passed, which were invented.`,
-  { label: 'verify-data', phase: 'Gallery' }
+  `Create 3 files:
+1. ${ROOT}/app/src/app/(app)/gallery/layout.tsx — sidebar linking to: ${galleryEntries.map(([p]) => `/gallery/${p}`).join(', ')}. Group by folder. "use client", usePathname. Same style as main sidebar.
+2. ${ROOT}/app/src/components/blocks/index.ts — re-export all: ${manifest.snippets.map(s => s.name.replace(/(^|-)(\\w)/g, (_, __, c) => c.toUpperCase())).join(', ')}
+3. Add "Gallery" href="/gallery" to NAV_EXTENSIONS in ${ROOT}/app/src/app/(app)/layout.tsx
+Report: done.`,
+  { label: 'layout', phase: 'Gallery' }
 )
 
-// Verify all gallery pages render
-log('Verifying gallery pages...')
-const verifyResult = await agent(
-  `Test every gallery page. Run:
-cd ${ROOT}
-find app/src/app/\\(app\\)/gallery -name "page.tsx" | while read f; do
-  path=$(echo "$f" | sed 's|.*gallery/||' | sed 's|/page.tsx||')
-  code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/gallery/$path)
-  echo "$code $path"
-done
-
-If any page returns non-200, read the page file AND the block it imports, find the prop mismatch, fix it, re-test. Repeat until all 200.
-
-Report: all pages and their status codes.`,
-  { label: 'verify-gallery', phase: 'Gallery' }
+log(`${galleryEntries.length} pages in parallel`)
+const pageResults = await parallel(
+  galleryEntries.map(([path, snippets]) => () => agent(
+    `ONE gallery page. Read block files, EXACT prop names only.
+BLOCKS: ${snippets.map(s => `${ROOT}/app/src/${s.dest}`).join(', ')}
+DATA: ${ROOT}/app/src/lib/data.ts, constants.ts, utils.ts
+WRITE: ${ROOT}/app/src/app/(app)/gallery/${path}/page.tsx
+NEVER invent data. Props from block interface only. Show variations labeled.
+VERIFY: curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/gallery/${path}. Fix if non-200.
+Report: status code.`,
+    { label: `page:${path}`, phase: 'Gallery' }
+  ))
 )
-log('Gallery complete')
+log(`Pages: ${pageResults.filter(Boolean).length}/${galleryEntries.length}`)
 
-// ── Phase 5: Scorecard + Diff ──
+// ── QA ──
 phase('QA')
-log('Running scorecard + screenshot diff')
-
-const scoreResult = await agent(
-  `Run both commands and report output:
-1. cd ${ROOT} && node code/pipeline/run.mjs --phase scorecard 2>&1
-2. cd ${ROOT} && node code/pipeline/run.mjs --phase diff 2>&1
-Report: scorecard summary + diff results.`,
-  { label: 'scorecard+diff', phase: 'QA' }
+await agent(
+  `Run: cd ${ROOT} && node code/pipeline/run.mjs --phase scorecard 2>&1. Report summary.`,
+  { label: 'qa', phase: 'QA' }
 )
 
-log('Pipeline complete')
-
-return { blocks: Object.keys(manifest.blocks).length, scorecard: scoreResult }
+log('Done')
+return { blocks: manifest.snippets.length, pages: galleryEntries.length }

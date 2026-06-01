@@ -57,15 +57,15 @@ export function SettingsBilling({
   onTabChange,
 }: SettingsBillingProps) {
   return (
-    <div className="flex gap-6 items-start relative w-full h-full">
+    <div className="flex gap-6 items-start w-full h-full">
       {/* Settings Nav */}
-      <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 relative rounded-lg shadow-elevation-card-rest shrink-0 w-[200px]">
+      <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 rounded-lg shadow-elevation-card-rest shrink-0 w-[200px]">
         {navItems.map((item) => (
           <button
             key={item.label}
             type="button"
             onClick={() => onTabChange?.(item.label)}
-            className={`flex items-center px-4 py-2.5 relative shrink-0 w-full text-left ${
+            className={`flex items-center px-4 py-2.5 w-full text-left ${
               item.active
                 ? "bg-ui-bg-subtle border-ui-fg-base border-l-2 text-ui-fg-base txt-compact-small-plus"
                 : "text-ui-fg-subtle txt-compact-small"
@@ -77,21 +77,21 @@ export function SettingsBilling({
       </div>
 
       {/* Content Card */}
-      <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip relative rounded-lg shadow-elevation-card-rest">
+      <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip rounded-lg shadow-elevation-card-rest">
         {/* Card Header */}
-        <div className="flex flex-col px-6 py-3 relative shrink-0 w-full">
-          <p className="relative shrink-0 text-ui-fg-base txt-compact-medium-plus">
+        <div className="flex flex-col px-6 py-3 w-full">
+          <p className="text-ui-fg-base txt-compact-medium-plus">
             {title}
           </p>
         </div>
 
         {/* Divider */}
-        <div className="bg-ui-border-base h-px relative shrink-0 w-full" />
+        <div className="bg-ui-border-base h-px w-full" />
 
         {/* Card Body */}
-        <div className="flex flex-col gap-5 p-6 relative shrink-0 w-full">
+        <div className="flex flex-col gap-5 p-6 w-full">
           {/* Plan Card */}
-          <div className="bg-ui-bg-base flex flex-col gap-1 overflow-clip px-6 py-5 relative rounded-lg shadow-elevation-card-rest w-full">
+          <div className="bg-ui-bg-base flex flex-col gap-1 overflow-clip px-6 py-5 rounded-lg shadow-elevation-card-rest w-full">
             <div className="flex items-center justify-between w-full">
               <p className="text-ui-fg-base txt-compact-small-plus">
                 {plan.name}
@@ -109,7 +109,7 @@ export function SettingsBilling({
           </div>
 
           {/* Payment Method */}
-          <div className="flex items-center justify-between py-2 relative shrink-0 w-full">
+          <div className="flex items-center justify-between py-2 w-full">
             <div className="flex flex-col gap-1">
               <p className="text-ui-fg-base txt-compact-small-plus">
                 {payment.label}
@@ -128,7 +128,7 @@ export function SettingsBilling({
           </div>
 
           {/* Billing History */}
-          <div className="bg-ui-bg-base flex flex-col overflow-clip relative rounded-xl shadow-elevation-card-rest w-full">
+          <div className="bg-ui-bg-base flex flex-col overflow-clip rounded-xl shadow-elevation-card-rest w-full">
             <div className="flex items-start pb-4 pt-6 px-6 w-full">
               <p className="text-ui-fg-base txt-compact-medium-plus">
                 {historyTitle}

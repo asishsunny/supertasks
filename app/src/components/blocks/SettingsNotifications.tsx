@@ -27,30 +27,32 @@ export function SettingsNotifications({
       <div className="bg-ui-border-base h-px w-full" />
 
       {/* Card Body */}
-      <div className="flex flex-col p-6 w-full">
-        {toggles.map((toggle, i) => (
-          <div key={toggle.label}>
-            <div className="flex items-center justify-between py-4 w-full">
-              <div className="flex flex-col gap-0.5">
-                <p className="text-ui-fg-base txt-compact-small-plus">
-                  {toggle.label}
-                </p>
-                <p className="text-ui-fg-subtle txt-compact-small">
-                  {toggle.desc}
-                </p>
+      <div className="flex flex-col gap-5 p-6 w-full">
+        <div className="flex flex-col w-full">
+          {toggles.map((toggle, i) => (
+            <div key={toggle.label}>
+              <div className="flex items-center justify-between py-4 w-full">
+                <div className="flex flex-col gap-0.5">
+                  <p className="text-ui-fg-base txt-compact-small-plus">
+                    {toggle.label}
+                  </p>
+                  <p className="text-ui-fg-subtle txt-compact-small">
+                    {toggle.desc}
+                  </p>
+                </div>
+                <Switch
+                  size="small"
+                  checked={toggle.on}
+                  onCheckedChange={(val) => onToggle?.(i, val)}
+                />
               </div>
-              <Switch
-                size="small"
-                checked={toggle.on}
-                onCheckedChange={(val) => onToggle?.(i, val)}
-              />
+              {i < toggles.length - 1 && (
+                <div className="bg-ui-border-base h-px w-full" />
+              )}
             </div>
-            {i < toggles.length - 1 && (
-              <div className="bg-ui-border-base h-px w-full" />
-            )}
-          </div>
-        ))}
-        <div className="flex items-start justify-end pt-4 w-full">
+          ))}
+        </div>
+        <div className="flex items-start justify-end w-full">
           <Button variant="primary" size="small" onClick={onSave}>
             {saveLabel}
           </Button>

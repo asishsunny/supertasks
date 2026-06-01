@@ -11,7 +11,7 @@
  * Usage: node templatize.mjs <transformed.tsx> [--out output.tsx]
  */
 
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { parse } from "@babel/parser";
@@ -274,8 +274,13 @@ const input = readFileSync(resolve(process.cwd(), inputFile), "utf8");
 const output = templatize(input);
 
 if (outputFile) {
-  writeFileSync(resolve(process.cwd(), outputFile), output);
-  console.log(`Written: ${outputFile}`);
+  const outPath = resolve(process.cwd(), outputFile);
+  if (existsSync(outPath) && readFileSync(outPath, "utf8") === output) {
+    console.log(`Unchanged: ${outputFile}`);
+  } else {
+    writeFileSync(outPath, output);
+    console.log(`Written: ${outputFile}`);
+  }
 } else {
   console.log(output);
 }
