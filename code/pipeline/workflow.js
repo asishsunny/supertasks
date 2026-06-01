@@ -21,17 +21,17 @@ const wrapperNodeId = config.wrapperNodeId || '4553:47822'
 const manifest = {
   fileKey: "D4Hav0rqH4Zql11h0YgcRv",
   snippets: [
-    { name: "stat-cards", dest: "components/blocks/StatCards.tsx" },
-    { name: "chart-cards", dest: "components/blocks/ChartCards.tsx" },
-    { name: "controls", dest: "components/blocks/Controls.tsx" },
-    { name: "recent-tasks", dest: "components/blocks/RecentTasks.tsx" },
-    { name: "kanban-board", dest: "components/views/KanbanView.tsx", view: true, extra: "components/blocks/KanbanCard.tsx" },
-    { name: "create-task-modal", dest: "components/blocks/CreateTaskModal.tsx" },
-    { name: "task-details-modal", dest: "components/blocks/TaskDetailsModal.tsx" },
-    { name: "settings-profile", dest: "components/blocks/SettingsProfile.tsx" },
-    { name: "settings-notifications", dest: "components/blocks/SettingsNotifications.tsx" },
-    { name: "settings-security", dest: "components/blocks/SettingsSecurity.tsx" },
-    { name: "settings-billing", dest: "components/blocks/SettingsBilling.tsx" },
+    { name: "stat-cards", dest: "components/blocks/StatCards.tsx", type: "card", variations: ["dashboard", "reports"] },
+    { name: "chart-cards", dest: "components/blocks/ChartCards.tsx", type: "card" },
+    { name: "controls", dest: "components/blocks/Controls.tsx", type: "control", variations: ["tasks", "reports"] },
+    { name: "recent-tasks", dest: "components/blocks/RecentTasks.tsx", type: "view" },
+    { name: "kanban-board", dest: "components/blocks/KanbanBoard.tsx", type: "view" },
+    { name: "create-task-modal", dest: "components/blocks/CreateTaskModal.tsx", type: "overlay", variations: ["create-task", "invite-member", "generate-report"] },
+    { name: "task-details-modal", dest: "components/blocks/TaskDetailsModal.tsx", type: "overlay" },
+    { name: "settings-profile", dest: "components/blocks/SettingsProfile.tsx", type: "view", group: "settings" },
+    { name: "settings-notifications", dest: "components/blocks/SettingsNotifications.tsx", type: "view", group: "settings" },
+    { name: "settings-security", dest: "components/blocks/SettingsSecurity.tsx", type: "view", group: "settings" },
+    { name: "settings-billing", dest: "components/blocks/SettingsBilling.tsx", type: "view", group: "settings" },
   ]
 }
 
@@ -53,7 +53,7 @@ ${skipFetch ? '# SKIP fetch+split' : `2. Fetch gallery wrapper from Figma:
 4. cd ${ROOT} && node code/pipeline/run.mjs --force 2>&1
 
 Report: render count, cache count, preflight status, transform results.`,
-  { label: 'mechanical', phase: 'Render' }
+  { label: 'mechanical', phase: 'Prep' }
 )
 log('Mechanical steps complete')
 
@@ -108,17 +108,14 @@ Report results.`,
 phase('Gallery')
 log('Generating gallery pages from block interfaces')
 
-// Derive gallery structure from manifest
+// Derive gallery structure from manifest.snippets (has type + group)
 const typeToFolder = { view: 'views', card: 'cards', control: 'controls', overlay: 'overlays' }
 const galleryGroups = {}
-for (const [key, block] of Object.entries(manifest.blocks)) {
-  const folder = typeToFolder[block.type]
-  // Group settings-* under one page, others get own page
-  const pagePath = block.figma === 'Settings Content'
-    ? `${folder}/settings`
-    : `${folder}/${key}`
+for (const s of manifest.snippets) {
+  const folder = typeToFolder[s.type]
+  const pagePath = s.group ? `${folder}/${s.group}` : `${folder}/${s.name}`
   if (!galleryGroups[pagePath]) galleryGroups[pagePath] = []
-  galleryGroups[pagePath].push(key)
+  galleryGroups[pagePath].push(s.name)
 }
 
 const galleryList = Object.entries(galleryGroups).map(([path, blocks]) =>
@@ -126,8 +123,8 @@ const galleryList = Object.entries(galleryGroups).map(([path, blocks]) =>
 ).join('\n')
 
 const toPascal = n => n.replace(/(^|-)(\\w)/g, (_, __, c) => c.toUpperCase())
-const blockFiles = Object.keys(manifest.blocks).map(key =>
-  `${ROOT}/app/src/components/blocks/${toPascal(key)}.tsx`
+const blockFiles = manifest.snippets.map(s =>
+  `${ROOT}/app/src/${s.dest}`
 ).join('\n')
 
 await agent(
@@ -217,7 +214,7 @@ const scoreResult = await agent(
 1. cd ${ROOT} && node code/pipeline/run.mjs --phase scorecard 2>&1
 2. cd ${ROOT} && node code/pipeline/run.mjs --phase diff 2>&1
 Report: scorecard summary + diff results.`,
-  { label: 'scorecard+diff', phase: 'Scorecard' }
+  { label: 'scorecard+diff', phase: 'QA' }
 )
 
 log('Pipeline complete')
