@@ -3,13 +3,10 @@ export const meta = {
   description: 'Full Figma-to-code pipeline: fetch → split → transform → templatize → build → scorecard',
   whenToUse: 'When user says "run build pipeline" or wants to rebuild all blocks from Figma end-to-end',
   phases: [
-    { title: 'Render', detail: 'Render 18 snippet variations in Figma via bridge' },
-    { title: 'Fetch+Split', detail: 'Fetch gallery wrapper from Figma MCP, split into 18 cache files' },
-    { title: 'Transform+Templatize', detail: 'AST transform + noise strip + dedup' },
-    { title: 'Build', detail: 'Claude adapts each templatized output into prop-based block' },
-    { title: 'Gallery', detail: 'Generate gallery pages from block interfaces + wire data' },
-    { title: 'Scorecard', detail: '14-rule quality check on all blocks' },
-    { title: 'Diff', detail: 'Screenshot diff — browser vs Figma' },
+    { title: 'Prep', detail: 'Render + fetch + split + preflight + transform + templatize' },
+    { title: 'Build', detail: 'Build all blocks + tsc + scorecard' },
+    { title: 'Gallery', detail: 'Generate pages + layout + verify data + verify 200' },
+    { title: 'QA', detail: 'Final scorecard + screenshot diff' },
   ],
 }
 
@@ -39,7 +36,7 @@ const manifest = {
 }
 
 // ── Phase 0+1+2: Render + Fetch + Transform (one agent, all mechanical) ──
-phase('Render')
+phase('Prep')
 log('Running mechanical steps: render + fetch + split + preflight + transform + templatize')
 
 await agent(
@@ -65,43 +62,44 @@ if (!skipBuild) {
   phase('Build')
   log(`Building ${manifest.snippets.length} blocks from templatized transforms`)
 
-  const snippetList = manifest.snippets.map(s =>
-    `- ${s.name}: read ${ROOT}/artifacts/transformed/${s.name}-templatized.tsx → write ${ROOT}/app/src/${s.dest}${s.extra ? ` + ${ROOT}/app/src/${s.extra}` : ''}`
-  ).join('\n')
+  const buildPrompt = (snippet) => `Build ONE block from templatized Figma output. ONLY from files, no memory.
 
-  const buildResult = await agent(
-    `Build ALL of these blocks from templatized Figma output. One by one, sequentially.
-
-STRICT: Build ONLY from files. No training knowledge, no memory.
-
-BLOCKS TO BUILD:
-${snippetList}
-
-FOR EACH BLOCK:
-1. Read its templatized source (artifacts/transformed/{name}-templatized.tsx)
-2. Read ${ROOT}/code/pipeline/rules/build-checklist.json + wiring-rules.json
-3. Read ${ROOT}/app/src/types/index.ts
-4. Build the block following all rules
-5. Write to the destination path
-6. Move to the next block
+READ:
+1. ${ROOT}/artifacts/transformed/${snippet.name}-templatized.tsx — PRIMARY
+2. ${ROOT}/code/pipeline/rules/build-checklist.json
+3. ${ROOT}/app/src/types/index.ts
 
 RULES:
 - Every class from templatized file, never invent
-- data-repeat="N" → .map() with typed props
-- PRESERVE conditional classes: if transform has text-ui-fg-error on ONE sibling but not others, that becomes a boolean prop (e.g. error?: boolean) applied conditionally in .map()
-- Zero hardcoded strings — all text from props
-- Never override variant/size from transform
-- Fix TODOs: Avatar size="xsmall", Badge size="2xsmall"
-- Blocks: no hooks, no store, no data imports
-- Views: no state, accept wrapper props
-- Export COLUMN_CLASSES from KanbanView
+- data-repeat → .map() with typed props
+- PRESERVE conditional classes (e.g. text-ui-fg-error → boolean prop)
+- Zero hardcoded strings
+- Never override variant/size
+- Fix TODOs: Avatar xsmall, Badge 2xsmall
+- No hooks/store/data
 
-After ALL blocks written, run BOTH:
+WRITE to: ${ROOT}/app/src/${snippet.dest}
+${snippet.extra ? `ALSO: ${ROOT}/app/src/${snippet.extra}` : ''}
+
+Report: file written, line count.`
+
+  const results = await parallel(
+    manifest.snippets.map(snippet => () => agent(
+      buildPrompt(snippet),
+      { label: `build:${snippet.name}`, phase: 'Build' }
+    ))
+  )
+
+  const built = results.filter(Boolean).length
+  log(`Built ${built}/${manifest.snippets.length}`)
+
+  // tsc + scorecard as one agent after all blocks written
+  await agent(
+    `Run both:
 1. cd ${ROOT}/app && npx tsc --noEmit 2>&1 | head -30
 2. cd ${ROOT} && node code/pipeline/run.mjs --phase scorecard 2>&1
-
-Report: tsc result + scorecard output.`,
-    { label: 'build-all', phase: 'Build' }
+Report results.`,
+    { label: 'tsc+scorecard', phase: 'Build' }
   )
   log('Build + tsc + scorecard complete')
 }
