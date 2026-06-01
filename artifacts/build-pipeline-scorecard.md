@@ -1,12 +1,12 @@
 # Build Pipeline Scorecard
 
-Scored: 4/11 | Average: 9.5/10 | Passing: 4/4
+Scored: 5/11 | Average: 9.4/10 | Passing: 5/5
 
-**7 STALE blocks — agent failed to write**
+**6 STALE blocks — agent failed to write**
 
 - **stat-cards**: ❌ STALE — not written
 - **chart-cards**: ❌ STALE — not written
-- **controls**: ❌ STALE — not written
+- **controls**: 9/10
 - **recent-tasks**: ❌ STALE — not written
 - **kanban-board**: ❌ STALE — not written
 - **create-task-modal**: ❌ STALE — not written
