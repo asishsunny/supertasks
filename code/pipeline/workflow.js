@@ -206,7 +206,7 @@ Report: all pages and their status codes.`,
 log('Gallery complete')
 
 // ── Phase 5: Scorecard + Diff ──
-phase('Scorecard')
+phase('QA')
 log('Running scorecard + screenshot diff')
 
 const scoreResult = await agent(

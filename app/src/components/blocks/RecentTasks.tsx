@@ -3,25 +3,28 @@
 import { Table } from "@medusajs/ui";
 import type { ReactNode } from "react";
 
-export interface RecentTasksColumn {
+export interface RecentTasksColumn<T extends RecentTasksRow = RecentTasksRow> {
   key: string;
   header: string;
   width?: string;
-  render: (row: RecentTasksRow) => ReactNode;
+  render: (row: T) => ReactNode;
 }
 
 export interface RecentTasksRow {
   id: string | number;
-  [key: string]: unknown;
 }
 
-export interface RecentTasksProps {
+export interface RecentTasksProps<T extends RecentTasksRow = RecentTasksRow> {
   title: string;
-  columns: RecentTasksColumn[];
-  rows: RecentTasksRow[];
+  columns: RecentTasksColumn<T>[];
+  rows: T[];
 }
 
-export function RecentTasks({ title, columns, rows }: RecentTasksProps) {
+export function RecentTasks<T extends RecentTasksRow>({
+  title,
+  columns,
+  rows,
+}: RecentTasksProps<T>) {
   return (
     <div className="bg-ui-bg-base flex flex-col overflow-clip rounded-xl shadow-elevation-card-rest w-full h-full">
       <div className="flex items-start overflow-clip pb-4 pt-6 px-6 w-full">
@@ -31,10 +34,7 @@ export function RecentTasks({ title, columns, rows }: RecentTasksProps) {
         <Table.Header className="border-t-0">
           <Table.Row>
             {columns.map((col) => (
-              <Table.HeaderCell
-                key={col.key}
-                className={col.width ?? undefined}
-              >
+              <Table.HeaderCell key={col.key} className={col.width}>
                 {col.header}
               </Table.HeaderCell>
             ))}
@@ -44,7 +44,7 @@ export function RecentTasks({ title, columns, rows }: RecentTasksProps) {
           {rows.map((row) => (
             <Table.Row key={row.id}>
               {columns.map((col) => (
-                <Table.Cell key={col.key} className={col.width ?? undefined}>
+                <Table.Cell key={col.key} className={col.width}>
                   {col.render(row)}
                 </Table.Cell>
               ))}

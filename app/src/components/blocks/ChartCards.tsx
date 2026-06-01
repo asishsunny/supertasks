@@ -36,7 +36,7 @@ export function ChartCards({ charts }: ChartCardsProps) {
                   <p className="text-ui-fg-subtle w-[88px] txt-compact-small">
                     {row.label}
                   </p>
-                  <div className="bg-ui-border-base flex-1 h-2 min-w-[1px] overflow-clip rounded">
+                  <div className="bg-ui-border-base flex-1 h-2 min-w-[1px] overflow-clip relative rounded">
                     <div
                       className="absolute h-2 left-0 rounded top-0"
                       style={{
