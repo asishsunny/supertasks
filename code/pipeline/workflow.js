@@ -125,6 +125,7 @@ FOR EACH BLOCK:
 RULES:
 - Every class from templatized file, never invent
 - data-repeat="N" → .map() with typed props
+- PRESERVE conditional classes: if transform has text-ui-fg-error on ONE sibling but not others, that becomes a boolean prop (e.g. error?: boolean) applied conditionally in .map()
 - Zero hardcoded strings — all text from props
 - Never override variant/size from transform
 - Fix TODOs: Avatar size="xsmall", Badge size="2xsmall"
@@ -190,16 +191,25 @@ STEP 2 — Read data sources:
 STEP 3 — For each gallery page, wire data to match the block's interface EXACTLY:
 ${galleryList}
 
-CRITICAL RULE: Every prop you pass MUST exist in the block's exported interface.
-Read the block .tsx file. Find the Props interface. Use those exact prop names.
-If block exports "StatCards({ items })" you pass "items", not "cards".
-If block exports "Controls({ tabs, activeTab })" you pass "tabs" and "activeTab".
+CRITICAL RULES:
+1. Every prop you pass MUST exist in the block's exported interface. Read the .tsx file. Use exact prop names.
+2. Every data value MUST come from lib/data.ts, lib/constants.ts, or lib/utils.ts. NEVER invent labels, rename fields, or add data that doesn't exist in those files.
+3. If you can't find a value in the source files, DON'T make one up — leave that variation out.
+
+ALSO CREATE gallery layout with sidebar nav:
+- Write ${ROOT}/app/src/app/(app)/gallery/layout.tsx
+- Sidebar lists all gallery pages grouped by type (views, cards, controls, overlays)
+- Each item links to its gallery page path
+- Derive groups + links from manifest.json block types
+- Use same styling as main app sidebar (text-ui-fg-subtle, active state, icons optional)
+- Layout wraps {children} with the sidebar
 
 ADDITIONAL RULES:
 - "use client" on pages with hooks
 - Import from @/components/blocks/{PascalCase}
 - Show ALL variations per page (use manifest.blocks[key].variations)
 - blocks/index.ts — re-export all blocks
+- Add "Gallery" link to main app layout (${ROOT}/app/src/app/(app)/layout.tsx) in NAV_EXTENSIONS array, href="/gallery"
 
 After writing, test:
 for p in $(ls -d ${ROOT}/app/src/app/\\(app\\)/gallery/*/*/ 2>/dev/null | sed 's|.*/gallery/||' | sed 's|/page.tsx||' | sed 's|/$||'); do
@@ -209,6 +219,22 @@ done
 Report: pages written, which 200, which fail.`,
   { label: 'gallery', phase: 'Gallery' }
 )
+// Verify gallery data against source
+log('Verifying gallery data against source files...')
+await agent(
+  `Verify every string literal in gallery pages exists in source data.
+
+1. Read ${ROOT}/app/src/lib/data.ts — extract ALL string values (labels, names, titles, etc)
+2. For each gallery page in ${ROOT}/app/src/app/(app)/gallery/**/page.tsx:
+   - Find every hardcoded string (in quotes, not imports/classNames)
+   - Check it exists in data.ts OR is a known UI string (section headers like "Dashboard variation")
+   - Flag any string NOT traceable to source data
+3. If ANY invented string found, delete it and replace with correct value from data.ts
+
+Report: which strings passed, which were invented.`,
+  { label: 'verify-data', phase: 'Gallery' }
+)
+
 // Verify all gallery pages render
 log('Verifying gallery pages...')
 const verifyResult = await agent(

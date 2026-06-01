@@ -59,14 +59,14 @@
     {
       "id": "data-driven",
       "label": "Data Driven",
-      "rule": "Zero hardcoded content strings in blocks. All text (labels, titles, placeholders, button text) comes from props. Props come from data.yaml via lib/data.ts at the section/gallery level. Blocks never import data — they receive it.",
-      "fail": ["hardcoded user-visible string in block (e.g. 'Save changes', 'Click to change photo')", "block renders content not passed as prop", "section/gallery has inline strings that exist in data.yaml"]
+      "rule": "Zero hardcoded content strings in blocks. All text (labels, titles, placeholders, button text) comes from props. Props come from data.yaml via lib/data.ts at the section/gallery level. Blocks never import data — they receive it. Gallery pages MUST use exact values from data.yaml/lib/data.ts — NEVER invent labels, rename fields, or add data that doesn't exist in the source files.",
+      "fail": ["hardcoded user-visible string in block", "block renders content not passed as prop", "gallery page has labels not in data.yaml", "gallery page invented a field that doesn't exist in source data"]
     },
     {
       "id": "transform-fidelity",
       "label": "Transform Fidelity",
-      "rule": "Structure derived FROM transform output. Classes preserved unless noise. Repeated siblings → .map(). Hardcoded text → props. Never rebuild from memory. NEVER override component variant/size/props from transform — transform reads Figma directly and is more accurate than visual guessing.",
-      "fail": ["class names not in transform", "layout structure differs from transform", "invented markup", "changed variant/size that transform extracted from Figma"]
+      "rule": "Structure derived FROM transform output. Classes preserved unless noise. Repeated siblings → .map(). Hardcoded text → props. Never rebuild from memory. NEVER override component variant/size/props from transform. PRESERVE ALL conditional classes — if transform has different classes on different siblings (e.g. text-ui-fg-error on one card but not others), that becomes a boolean prop (e.g. error?: boolean) and the class is applied conditionally.",
+      "fail": ["class names not in transform", "layout structure differs from transform", "invented markup", "changed variant/size that transform extracted from Figma", "conditional class from transform dropped during .map() conversion"]
     },
     {
       "id": "typescript",
