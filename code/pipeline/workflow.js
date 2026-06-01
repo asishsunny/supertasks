@@ -38,64 +38,27 @@ const manifest = {
   ]
 }
 
-// ── Phase 0: Render Gallery in Figma ──
-if (!config.skipRender) {
-  phase('Render')
-  log('Rendering 18 snippet variations in Figma via bridge')
-  await agent(
-    `Run this command and report the output:
-cd ${ROOT} && node figma/scripts/build-gallery.mjs --render-all 2>&1
-Report: how many rendered, wrapper frame ID.`,
-    { label: 'render-gallery', phase: 'Render' }
-  )
-  log('Render complete')
-}
+// ── Phase 0+1+2: Render + Fetch + Transform (one agent, all mechanical) ──
+phase('Render')
+log('Running mechanical steps: render + fetch + split + preflight + transform + templatize')
 
-// ── Phase 1: Fetch + Split ──
-if (!skipFetch) {
-  phase('Fetch+Split')
-  log('Fetching gallery wrapper from Figma + splitting into cache files')
+await agent(
+  `Run ALL mechanical pipeline steps in sequence. No thinking — just execute commands.
 
-  const fetchResult = await agent(
-    `Fetch the Snippet Gallery wrapper frame from Figma and split into individual cache files.
+${config.skipRender ? '# SKIP render' : `1. cd ${ROOT} && node figma/scripts/build-gallery.mjs --render-all 2>&1`}
 
-1. Use ToolSearch to load mcp__figma__get_design_context schema
-2. Call mcp__figma__get_design_context with:
-   - fileKey: "${manifest.fileKey}"
-   - nodeId: "${wrapperNodeId}"
-   - excludeScreenshot: true
-   - clientFrameworks: "react"
-   - clientLanguages: "typescript"
-   - forceCode: true
-3. The response will be saved to a file (too large for inline). Find the saved file path.
-4. Run: node ${ROOT}/code/pipeline/steps/split-gallery-cache.mjs <saved-file-path>
-5. Verify: ls ${ROOT}/artifacts/cache/*.jsx | wc -l (should be 18+)
+${skipFetch ? '# SKIP fetch+split' : `2. Fetch gallery wrapper from Figma:
+   - Use ToolSearch to load mcp__figma__get_design_context
+   - Call: fileKey="${manifest.fileKey}", nodeId="${wrapperNodeId}", excludeScreenshot=true, clientFrameworks="react", clientLanguages="typescript", forceCode=true
+   - Response saved to file. Run: node ${ROOT}/code/pipeline/steps/split-gallery-cache.mjs <file-path>`}
 
-Report: number of cache files written, total size.`,
-    { label: 'fetch+split', phase: 'Fetch+Split' }
-  )
-  log('Fetch+Split complete')
-}
+3. cd ${ROOT} && node code/pipeline/preflight.mjs 2>&1
+4. cd ${ROOT} && node code/pipeline/run.mjs --force 2>&1
 
-// ── Preflight ──
-log('Running preflight check...')
-const preflight = await agent(
-  `Run: cd ${ROOT} && node code/pipeline/preflight.mjs 2>&1
-If it says "Preflight passed" report success. If it fails, report which blocks are missing.`,
-  { label: 'preflight', phase: 'Fetch+Split' }
+Report: render count, cache count, preflight status, transform results.`,
+  { label: 'mechanical', phase: 'Render' }
 )
-
-// ── Phase 2: Transform + Templatize ──
-phase('Transform+Templatize')
-log('Running AST transform + templatize on all cached snippets')
-
-const mechResult = await agent(
-  `Run this command and report the full output:
-cd ${ROOT} && node code/pipeline/run.mjs --force 2>&1
-Report the complete output.`,
-  { label: 'transform+templatize', phase: 'Transform+Templatize' }
-)
-log('Transform+Templatize complete')
+log('Mechanical steps complete')
 
 // ── Phase 3: Build ──
 if (!skipBuild) {
@@ -133,20 +96,14 @@ RULES:
 - Views: no state, accept wrapper props
 - Export COLUMN_CLASSES from KanbanView
 
-After ALL blocks written, run:
-cd ${ROOT} && node code/pipeline/run.mjs --phase scorecard 2>&1
+After ALL blocks written, run BOTH:
+1. cd ${ROOT}/app && npx tsc --noEmit 2>&1 | head -30
+2. cd ${ROOT} && node code/pipeline/run.mjs --phase scorecard 2>&1
 
-Report: scorecard output.`,
+Report: tsc result + scorecard output.`,
     { label: 'build-all', phase: 'Build' }
   )
-  // TypeScript check after build
-  log('Running TypeScript check...')
-  const tscResult = await agent(
-    `Run: cd ${ROOT}/app && npx tsc --noEmit 2>&1 | head -30
-If zero errors, report "tsc clean". If errors, report which files + error messages.`,
-    { label: 'tsc-check', phase: 'Build' }
-  )
-  log('Build + tsc complete')
+  log('Build + tsc + scorecard complete')
 }
 
 // ── Phase 4: Gallery ──
@@ -253,33 +210,18 @@ Report: all pages and their status codes.`,
 )
 log('Gallery complete')
 
-// ── Phase 5: Scorecard ──
+// ── Phase 5: Scorecard + Diff ──
 phase('Scorecard')
-log('Running 14-rule quality scorecard')
+log('Running scorecard + screenshot diff')
 
 const scoreResult = await agent(
-  `Run this command and report the full output:
-cd ${ROOT} && node code/pipeline/run.mjs --phase scorecard 2>&1
-Report the complete scorecard output including per-block scores and summary.`,
-  { label: 'scorecard', phase: 'Scorecard' }
-)
-
-// ── Phase 6: Screenshot Diff ──
-phase('Diff')
-log('Running screenshot diff — browser vs Figma')
-
-const diffResult = await agent(
-  `Run screenshot diff to compare browser renders against Figma screenshots.
-
-cd ${ROOT} && node code/pipeline/run.mjs --phase diff 2>&1
-
-If screenshot-diff requires Figma screenshots in artifacts/diffs/, check they exist first:
-ls ${ROOT}/artifacts/diffs/*-figma.png 2>/dev/null | wc -l
-
-Report: per-block mismatch percentages, any failures.`,
-  { label: 'screenshot-diff', phase: 'Diff' }
+  `Run both commands and report output:
+1. cd ${ROOT} && node code/pipeline/run.mjs --phase scorecard 2>&1
+2. cd ${ROOT} && node code/pipeline/run.mjs --phase diff 2>&1
+Report: scorecard summary + diff results.`,
+  { label: 'scorecard+diff', phase: 'Scorecard' }
 )
 
 log('Pipeline complete')
 
-return { blocks: Object.keys(manifest.blocks).length, scorecard: scoreResult, diff: diffResult }
+return { blocks: Object.keys(manifest.blocks).length, scorecard: scoreResult }
