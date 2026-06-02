@@ -1,9 +1,9 @@
-import RecentTasks from "@/components/blocks/RecentTasks";
+import { RecentTasks } from "@/components/blocks/RecentTasks";
 
 const columnsData = [
-    { key: "key-1 1", header: "Header 1", className: "className 1", render: (row: any) => row.id },
-    { key: "key-1 2", header: "Header 2", className: "className 2", render: (row: any) => row.id },
-    { key: "key-1 3", header: "Header 3", className: "className 3", render: (row: any) => row.id },
+    { key: "key-1 1", header: "Header 1", width: "w-[120px] 1", render: (row: any) => row.id },
+    { key: "key-1 2", header: "Header 2", width: "w-[120px] 2", render: (row: any) => row.id },
+    { key: "key-1 3", header: "Header 3", width: "w-[120px] 3", render: (row: any) => row.id },
   ];
 const rowsData = [
     { id: 1 },

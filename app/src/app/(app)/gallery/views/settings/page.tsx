@@ -1,3 +1,5 @@
+"use client";
+
 import { SettingsProfile } from "@/components/blocks/SettingsProfile";
 import { SettingsNotifications } from "@/components/blocks/SettingsNotifications";
 import { SettingsSecurity } from "@/components/blocks/SettingsSecurity";

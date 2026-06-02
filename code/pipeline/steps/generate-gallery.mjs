@@ -308,7 +308,10 @@ ${s.propsStr}
         />
       </section>`).join("\n");
 
-  return `${imports.join("\n")}\n${typeImportLine}
+  // Settings blocks always have onClick handlers
+  return `"use client";
+
+${imports.join("\n")}\n${typeImportLine}
 ${allDataLines.join("\n")}
 
 export default function Page() {
