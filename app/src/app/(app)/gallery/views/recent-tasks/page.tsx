@@ -1,3 +1,5 @@
+"use client";
+
 import { RecentTasks } from "@/components/blocks/RecentTasks";
 
 export default function Page() {

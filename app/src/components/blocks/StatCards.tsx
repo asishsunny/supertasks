@@ -1,36 +1,40 @@
 interface CardItem {
   label: string;
   value: string;
+  error?: boolean;
 }
 
 export interface StatCardsProps {
   cards?: CardItem[];
 }
 
-const DEFAULT_CARDS: CardItem[] = [
-  {
-    label: "Total Tasks",
-    value: "18"
-  },
-  {
-    label: "In Progress",
-    value: "5"
-  },
-  {
-    label: "Completed",
-    value: "3"
-  },
-  {
-    label: "Overdue",
-    value: "5"
-  }
-];
-
 export default function StatCards({
-  cards = DEFAULT_CARDS,
+  cards = [
+    { label: "Total Tasks", value: "18" },
+    { label: "In Progress", value: "5" },
+    { label: "Completed", value: "3" },
+    { label: "Overdue", value: "5", error: true },
+  ],
 }: StatCardsProps) {
   return (
-    // TODO: Agent fills from artifacts/transformed/stat-cards.tsx
-    <div>TODO</div>
+    <div className="flex gap-4 items-start w-full">
+      {cards.map((card, i) => (
+        <div
+          key={i}
+          className="bg-ui-bg-base flex flex-1 flex-col gap-4 min-w-[1px] overflow-clip p-6 rounded-xl shadow-elevation-card-rest"
+        >
+          <p className="text-ui-fg-base txt-compact-medium-plus">
+            {card.label}
+          </p>
+          <p
+            className={`text-[32px] leading-[44px] tracking-[-0.16px] font-normal ${
+              card.error ? "text-ui-fg-error" : "text-ui-fg-base"
+            }`}
+          >
+            {card.value}
+          </p>
+        </div>
+      ))}
+    </div>
   );
 }

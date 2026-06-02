@@ -1,3 +1,5 @@
+"use client";
+
 import StatCards from "@/components/blocks/StatCards";
 
 export default function Page() {

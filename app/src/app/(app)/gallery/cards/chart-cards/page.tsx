@@ -1,3 +1,5 @@
+"use client";
+
 import { ChartCards } from "@/components/blocks/ChartCards";
 
 export default function Page() {

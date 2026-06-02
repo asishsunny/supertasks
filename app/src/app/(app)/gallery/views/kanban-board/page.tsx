@@ -1,3 +1,5 @@
+"use client";
+
 import { KanbanBoard } from "@/components/blocks/KanbanBoard";
 
 export default function Page() {

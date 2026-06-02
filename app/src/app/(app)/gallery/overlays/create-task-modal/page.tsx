@@ -1,4 +1,6 @@
-import { CreateTaskModal } from "@/components/blocks/CreateTaskModal";
+"use client";
+
+import CreateTaskModal from "@/components/blocks/CreateTaskModal";
 
 export default function Page() {
   return (

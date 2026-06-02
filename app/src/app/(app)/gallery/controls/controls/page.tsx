@@ -1,3 +1,5 @@
+"use client";
+
 import { Controls } from "@/components/blocks/Controls";
 
 export default function Page() {

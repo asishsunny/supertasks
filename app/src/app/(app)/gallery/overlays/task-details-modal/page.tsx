@@ -1,3 +1,5 @@
+"use client";
+
 import TaskDetailsModal from "@/components/blocks/TaskDetailsModal";
 
 export default function Page() {
