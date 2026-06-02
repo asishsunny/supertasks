@@ -18,12 +18,10 @@
       {
         "label": "Billing",
         "active": false
-      },
-      {
-        "label": "Billing",
-        "active": false
       }
-    ]
+    ],
+    "title": "Profile",
+    "historyTitle": "Billing history"
   },
   "props": [
     {

@@ -18,12 +18,37 @@
       {
         "label": "Billing",
         "active": false
+      }
+    ],
+    "toggles": [
+      {
+        "label": "Two-factor authentication",
+        "desc": "Add an extra layer of security to your account",
+        "on": true
       },
       {
-        "label": "Security",
-        "active": false
+        "label": "Login alerts",
+        "desc": "Get notified when a new device signs in",
+        "on": false
+      },
+      {
+        "label": "Session timeout",
+        "desc": "Automatically sign out after 30 minutes of inactivity",
+        "on": true
+      },
+      {
+        "label": "Require password change",
+        "desc": "Force password update every 90 days",
+        "on": false
+      },
+      {
+        "label": "SSO enforcement",
+        "desc": "Require single sign-on for all team members",
+        "on": true
       }
-    ]
+    ],
+    "title": "Profile",
+    "saveLabel": "Save changes"
   },
   "props": [
     {

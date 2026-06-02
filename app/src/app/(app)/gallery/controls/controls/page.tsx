@@ -3,15 +3,29 @@
 import { Controls } from "@/components/blocks/Controls";
 
 const tabsData = [
-    { key: "key-1 1", label: "Label 1" },
-    { key: "key-1 2", label: "Label 2" },
-    { key: "key-1 3", label: "Label 3" },
-  ];
+  {
+    key: "kanban",
+    label: "Kanban"
+  },
+  {
+    key: "list",
+    label: "List"
+  }
+];
 const actionsData = [
-    { icon: null, label: "Label 1" },
-    { icon: null, label: "Label 2" },
-    { icon: null, label: "Label 3" },
-  ];
+  {
+    icon: null,
+    label: "Filter"
+  },
+  {
+    icon: null,
+    label: "Date"
+  },
+  {
+    icon: null,
+    label: "Columns"
+  }
+];
 
 export default function Page() {
   return (
@@ -20,7 +34,7 @@ export default function Page() {
         <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Tasks</h2>
         <Controls
           tabs={tabsData}
-          activeTab={"tab-1"}
+          activeTab={"kanban"}
           actions={actionsData}
           searchShortcut={"⌘K"}
           searchPlaceholder={"Search..."}
@@ -30,7 +44,7 @@ export default function Page() {
         <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Reports</h2>
         <Controls
           tabs={tabsData}
-          activeTab={"tab-1"}
+          activeTab={"kanban"}
           actions={actionsData}
           searchShortcut={"⌘K"}
           searchPlaceholder={"Search..."}

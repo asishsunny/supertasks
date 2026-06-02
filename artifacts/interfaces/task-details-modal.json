@@ -2,8 +2,13 @@
   "componentName": "TaskDetailsModal",
   "exportType": "default",
   "sampleData": {
-    "description": "Esc",
+    "title": "Task details",
+    "headerLabel": "Task details",
+    "description": "Revamp first-run experience for new users",
     "infoLabel": "Info",
+    "activityLabel": "Activity log",
+    "primaryAction": "Mark complete",
+    "secondaryAction": "Edit",
     "escLabel": "Esc"
   },
   "props": [

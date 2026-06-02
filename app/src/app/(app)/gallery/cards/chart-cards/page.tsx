@@ -3,10 +3,12 @@ import { ChartCards } from "@/components/blocks/ChartCards";
 const chartsData = [
   {
     title: "Tasks by Priority",
+    rows: [],
     total: 0
   },
   {
     title: "Tasks by Status",
+    rows: [],
     total: 0
   }
 ];

@@ -17,15 +17,15 @@ export default function Page() {
       <section className="flex flex-col gap-3">
         <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Default</h2>
         <TaskDetailsModal
-          title={"Title"}
-          headerLabel={"Header"}
-          description={"Esc"}
+          title={"Task details"}
+          headerLabel={"Task details"}
+          description={"Revamp first-run experience for new users"}
           infoLabel={"Info"}
           infoRows={infoRowsData}
-          activityLabel={"Activity"}
+          activityLabel={"Activity log"}
           activity={activityData}
-          primaryAction={"Confirm"}
-          secondaryAction={"Cancel"}
+          primaryAction={"Mark complete"}
+          secondaryAction={"Edit"}
           escLabel={"Esc"}
         />
       </section>

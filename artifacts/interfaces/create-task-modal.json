@@ -2,6 +2,8 @@
   "componentName": "CreateTaskModal",
   "exportType": "named",
   "sampleData": {
+    "primaryAction": "Create task",
+    "secondaryAction": "Cancel",
     "escLabel": "Esc"
   },
   "props": [

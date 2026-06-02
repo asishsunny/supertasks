@@ -43,12 +43,53 @@ const MEDUSA_ICONS = new Set(["XMark", "EllipsisHorizontal", "DescendingSorting"
 
 // ── Phase 1: Collect patterns ──
 
+function extractSampleTree(node) {
+  if (t.isJSXText(node)) {
+    const val = node.value.trim();
+    return val ? { type: "text", value: val } : null;
+  }
+  if (!t.isJSXElement(node)) return null;
+  const tag = getTagName(node.openingElement);
+  const cls = getAttr(node.openingElement?.attributes || [], "className") || "";
+  const repeat = getAttr(node.openingElement?.attributes || [], "data-repeat");
+  const children = (node.children || []).map(extractSampleTree).filter(Boolean);
+  if (!children.length && !tag) return null;
+  const entry = { tag: tag || "div" };
+  if (repeat) entry.repeat = parseInt(repeat);
+  if (children.length === 1 && children[0].type === "text") {
+    entry.text = children[0].value;
+  } else if (children.length > 0) {
+    entry.children = children;
+  }
+  // Track component type for context
+  if (["Switch", "Input", "Textarea", "Select", "Button", "IconButton", "Badge", "Kbd", "Avatar", "Table"].includes(tag)) {
+    entry.component = tag;
+    const variant = getAttr(node.openingElement?.attributes || [], "variant");
+    if (variant) entry.variant = variant;
+    const placeholder = getAttr(node.openingElement?.attributes || [], "placeholder");
+    if (placeholder) entry.placeholder = placeholder;
+    const checked = node.openingElement?.attributes?.some(a => t.isJSXAttribute(a) && a.name?.name === "checked" && a.value === null);
+    if (checked) entry.checked = true;
+  }
+  return entry;
+}
+
+function flattenTexts(tree, depth = 0) {
+  const results = [];
+  if (tree.text) results.push({ text: tree.text, depth, tag: tree.tag, component: tree.component });
+  for (const child of tree.children || []) {
+    results.push(...flattenTexts(child, depth + 1));
+  }
+  return results;
+}
+
 function collectPatterns(ast) {
   const patterns = new Set();
   const imports = { ui: new Set(), icons: new Set() };
   const topTexts = [];
-  const repeatBlocks = []; // { depth, hasNestedRepeat, hasBar, childTextCount }
+  const repeatBlocks = [];
   let secondaryButtonCount = 0;
+  let sampleTree = null;
 
   traverse(ast, {
     JSXElement(path) {
@@ -152,7 +193,21 @@ function collectPatterns(ast) {
   if (secondaryButtonCount >= 2 && !patterns.has("modal") && !patterns.has("billing"))
     patterns.add("action-buttons");
 
-  return { patterns, imports, topTexts, repeatBlocks };
+  // Extract full sample tree from root JSX
+  traverse(ast, {
+    ReturnStatement(path) {
+      if (path.node.argument && t.isJSXElement(path.node.argument)) {
+        sampleTree = extractSampleTree(path.node.argument);
+        path.stop();
+      } else if (path.node.argument && t.isJSXFragment(path.node.argument)) {
+        const children = path.node.argument.children.filter(c => t.isJSXElement(c)).map(extractSampleTree).filter(Boolean);
+        sampleTree = { tag: "fragment", children };
+        path.stop();
+      }
+    }
+  });
+
+  return { patterns, imports, topTexts, repeatBlocks, sampleTree };
 }
 
 function collectTextsFromNode(node, texts) {
@@ -370,54 +425,159 @@ function deriveProps(patterns, topTexts, repeatBlocks, componentName) {
     }
   }
 
-  // ── Build sample data from extracted text ──
-  const sampleData = {};
+  return { props, helperTypes };
+}
 
-  // Cards — each sibling has [label, value]
+// ── Sample data extraction from AST tree ──
+
+function extractSampleData(sampleTree, props, topTexts, repeatBlocks) {
+  if (!sampleTree) return {};
+  const data = {};
+  const allTexts = flattenTexts(sampleTree);
+
+  // Cards — siblings with repeat marker, each has [label, value]
   if (props.has("cards")) {
     const rb = repeatBlocks.find(r => r.depth <= 2 && !r.hasNestedRepeat);
     if (rb?.samples) {
-      sampleData.cards = rb.samples.map(texts => ({
+      data.cards = rb.samples.map(texts => ({
         label: texts[0] || "Label",
         value: texts[1] || "0"
       }));
     }
   }
 
-  // Charts — outer siblings have [title, ...rows], inner has [label, count]
+  // Charts — nested repeat with bar
   if (props.has("charts")) {
     const rb = repeatBlocks.find(r => r.depth <= 2 && r.hasNestedRepeat && r.hasBar);
     if (rb?.samples) {
-      sampleData.charts = rb.samples.map(texts => ({
+      data.charts = rb.samples.map(texts => ({
         title: texts[0] || "Chart",
+        rows: [],
         total: 0
       }));
     }
   }
 
-  // String props — use topTexts to fill in matching sample values
-  for (const [propName, info] of props) {
-    if (info.type === "string" && !sampleData[propName]) {
-      // Try to find a matching text from the JSX
-      const match = topTexts.find(t => {
-        const lower = t.toLowerCase();
-        const propLower = propName.toLowerCase();
-        return lower.includes(propLower) || propLower.includes(lower.replace(/\s/g, ""));
-      });
-      if (match) sampleData[propName] = match;
-    }
-  }
-
-  // NavItems — extract from nav sidebar text
+  // NavItems — find nav sidebar texts, deduplicated (first 4 unique matches)
   if (props.has("navItems")) {
-    const navTexts = topTexts.filter(t =>
-      ["Profile", "Notifications", "Security", "Billing"].includes(t));
-    if (navTexts.length >= 2) {
-      sampleData.navItems = navTexts.map((label, i) => ({ label, active: i === 0 }));
+    const navLabels = ["Profile", "Notifications", "Security", "Billing"];
+    const seen = new Set();
+    const found = [];
+    for (const t of topTexts) {
+      if (navLabels.includes(t) && !seen.has(t)) {
+        seen.add(t);
+        found.push(t);
+      }
+    }
+    if (found.length >= 2) {
+      data.navItems = found.map((label, i) => ({ label, active: i === 0 }));
     }
   }
 
-  return { props, helperTypes, sampleData };
+  // Toggles — find label+desc pairs by walking tree for Switch siblings
+  if (props.has("toggles")) {
+    const toggles = [];
+    function findToggles(node) {
+      const children = node.children || [];
+      for (const child of children) {
+        // Look for containers that have text children + a Switch sibling
+        if (child.children) {
+          const hasSwitch = child.children.some(c => c.tag === "Switch" || c.component === "Switch");
+          if (hasSwitch) {
+            // Find the text container sibling
+            const textContainer = child.children.find(c => c.children && c.children.some(gc => gc.text));
+            if (textContainer) {
+              const texts = (textContainer.children || []).filter(c => c.text).map(c => c.text);
+              if (texts.length >= 2) {
+                toggles.push({ label: texts[0], desc: texts[1], on: toggles.length % 2 === 0 });
+              } else if (texts.length === 1) {
+                toggles.push({ label: texts[0], desc: "", on: toggles.length % 2 === 0 });
+              }
+            }
+          }
+        }
+        findToggles(child);
+      }
+    }
+    findToggles(sampleTree);
+    if (toggles.length > 0) data.toggles = toggles;
+  }
+
+  // String props — match by name to text content
+  const stringPropMap = {
+    title: () => {
+      // Title is usually the first text in a card header
+      const headerTexts = allTexts.filter(t => t.depth <= 3 && t.text.length < 30);
+      return headerTexts[0]?.text;
+    },
+    heading: () => {
+      const h = allTexts.find(t => t.depth <= 3 && !["Profile", "Notifications", "Security", "Billing"].includes(t.text));
+      return h?.text;
+    },
+    headerLabel: () => allTexts.find(t => t.text === "Task details")?.text,
+    description: () => allTexts.find(t => t.text.length > 30)?.text,
+    infoLabel: () => allTexts.find(t => t.text === "Info")?.text,
+    activityLabel: () => allTexts.find(t => t.text.includes("Activity"))?.text,
+    primaryAction: () => {
+      const actions = allTexts.filter(t => t.component === "Button");
+      const primary = allTexts.find(t => ["Mark complete", "Create task", "Save changes", "Confirm", "Send invite", "Generate report"].some(a => t.text.includes(a)));
+      return primary?.text || actions[actions.length - 1]?.text;
+    },
+    secondaryAction: () => {
+      const secondary = allTexts.find(t => ["Cancel", "Edit"].includes(t.text));
+      return secondary?.text;
+    },
+    escLabel: () => allTexts.find(t => t.text === "Esc")?.text,
+    saveLabel: () => allTexts.find(t => t.text.includes("Save"))?.text,
+    searchPlaceholder: () => {
+      const input = allTexts.find(t => t.component === "Input");
+      return input?.text;
+    },
+    avatarHint: () => allTexts.find(t => t.text.includes("photo") || t.text.includes("JPG"))?.text,
+    userName: () => allTexts.find(t => t.text.includes(" ") && t.text.length < 20 && !t.text.includes("Save") && !t.text.includes("Task"))?.text,
+    bioLabel: () => allTexts.find(t => t.text === "Bio")?.text,
+    historyTitle: () => allTexts.find(t => t.text.includes("history") || t.text.includes("History"))?.text,
+  };
+
+  for (const [propName, info] of props) {
+    if (info.type !== "string" || data[propName]) continue;
+    const extractor = stringPropMap[propName];
+    if (extractor) {
+      const val = extractor();
+      if (val) data[propName] = val;
+    }
+  }
+
+  // Tabs — extract from segment control text
+  if (props.has("tabs")) {
+    const segTexts = allTexts.filter(t => t.tag === "button");
+    if (segTexts.length >= 2) {
+      data.tabs = segTexts.map((t, i) => ({ key: t.text.toLowerCase().replace(/\s/g, "-"), label: t.text }));
+      data.activeTab = data.tabs[0]?.key;
+    }
+  }
+
+  // Actions — extract text from Button nodes in tree
+  if (props.has("actions")) {
+    const buttons = [];
+    function findButtons(node) {
+      if (node.tag === "Button") {
+        const texts = [];
+        for (const c of node.children || []) {
+          if (c.type === "text") texts.push(c.value);
+          if (c.text) texts.push(c.text);
+        }
+        if (texts.length > 0) buttons.push({ icon: null, label: texts[0] });
+      }
+      for (const c of node.children || []) findButtons(c);
+    }
+    findButtons(sampleTree);
+    // Filter out primary/secondary footer buttons (Cancel, Confirm, etc) — those are modal actions
+    const filtered = buttons.filter(b => !["Cancel", "Confirm", "Save", "Save changes"].includes(b.label));
+    if (filtered.length > 0) data.actions = filtered;
+  }
+
+  return data;
 }
 
 // ── Helpers ──
@@ -437,11 +597,14 @@ function analyzeTemplate(name, source, manifestBlock) {
   const isDefault = manifestBlock?.export === "default";
   const ast = parse(source, { sourceType: "module", plugins: ["jsx", "typescript"] });
 
-  // Phase 1
-  const { patterns, imports, topTexts, repeatBlocks } = collectPatterns(ast);
+  // Phase 1: collect patterns + sample tree
+  const { patterns, imports, topTexts, repeatBlocks, sampleTree } = collectPatterns(ast);
 
-  // Phase 2
-  const { props, helperTypes, sampleData } = deriveProps(patterns, topTexts, repeatBlocks, componentName);
+  // Phase 2: derive props
+  const { props, helperTypes } = deriveProps(patterns, topTexts, repeatBlocks, componentName);
+
+  // Phase 3: extract sample data from tree
+  const sampleData = extractSampleData(sampleTree, props, topTexts, repeatBlocks);
 
   const propsArray = [...props.entries()].map(([name, info]) => ({
     name, type: info.type, ...(info.optional ? { optional: true } : {})

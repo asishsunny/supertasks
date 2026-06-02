@@ -18,12 +18,37 @@
       {
         "label": "Billing",
         "active": false
+      }
+    ],
+    "toggles": [
+      {
+        "label": "Email notifications",
+        "desc": "Receive email for task assignments",
+        "on": true
       },
       {
-        "label": "Notifications",
-        "active": false
+        "label": "Push notifications",
+        "desc": "Get push alerts for due dates",
+        "on": false
+      },
+      {
+        "label": "Weekly digest",
+        "desc": "",
+        "on": true
+      },
+      {
+        "label": "Mentions",
+        "desc": "Notify when someone mentions you",
+        "on": false
+      },
+      {
+        "label": "Overdue alerts",
+        "desc": "Alert when tasks pass their due date",
+        "on": true
       }
-    ]
+    ],
+    "title": "Profile",
+    "saveLabel": "Save changes"
   },
   "props": [
     {

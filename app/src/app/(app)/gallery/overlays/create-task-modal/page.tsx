@@ -14,7 +14,7 @@ export default function Page() {
         <CreateTaskModal
           title={"Title"}
           fields={fieldsData}
-          primaryAction={"Confirm"}
+          primaryAction={"Create task"}
           secondaryAction={"Cancel"}
           escLabel={"Esc"}
         />
@@ -24,7 +24,7 @@ export default function Page() {
         <CreateTaskModal
           title={"Title"}
           fields={fieldsData}
-          primaryAction={"Confirm"}
+          primaryAction={"Create task"}
           secondaryAction={"Cancel"}
           escLabel={"Esc"}
         />
@@ -34,7 +34,7 @@ export default function Page() {
         <CreateTaskModal
           title={"Title"}
           fields={fieldsData}
-          primaryAction={"Confirm"}
+          primaryAction={"Create task"}
           secondaryAction={"Cancel"}
           escLabel={"Esc"}
         />

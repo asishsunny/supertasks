@@ -1,7 +1,33 @@
 {
   "componentName": "Controls",
   "exportType": "named",
-  "sampleData": {},
+  "sampleData": {
+    "tabs": [
+      {
+        "key": "kanban",
+        "label": "Kanban"
+      },
+      {
+        "key": "list",
+        "label": "List"
+      }
+    ],
+    "activeTab": "kanban",
+    "actions": [
+      {
+        "icon": null,
+        "label": "Filter"
+      },
+      {
+        "icon": null,
+        "label": "Date"
+      },
+      {
+        "icon": null,
+        "label": "Columns"
+      }
+    ]
+  },
   "props": [
     {
       "name": "tabs",

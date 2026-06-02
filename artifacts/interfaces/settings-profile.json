@@ -2,9 +2,6 @@
   "componentName": "SettingsProfile",
   "exportType": "named",
   "sampleData": {
-    "title": "Job title",
-    "bioLabel": "Bio",
-    "bioPlaceholder": "Bio",
     "navItems": [
       {
         "label": "Profile",
@@ -21,12 +18,13 @@
       {
         "label": "Billing",
         "active": false
-      },
-      {
-        "label": "Profile",
-        "active": false
       }
-    ]
+    ],
+    "title": "Profile",
+    "userName": "Ludvig Rask",
+    "avatarHint": "Click to change photo",
+    "bioLabel": "Bio",
+    "saveLabel": "Save changes"
   },
   "props": [
     {

@@ -17,7 +17,7 @@ export default function Page() {
       <section className="flex flex-col gap-3">
         <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Default</h2>
         <RecentTasks
-          title={"Title"}
+          title={"Recent Tasks"}
           columns={columnsData}
           rows={rowsData}
         />

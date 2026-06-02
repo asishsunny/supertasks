@@ -1,7 +1,9 @@
 {
   "componentName": "RecentTasks",
   "exportType": "named",
-  "sampleData": {},
+  "sampleData": {
+    "title": "Recent Tasks"
+  },
   "props": [
     {
       "name": "title",
