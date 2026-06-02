@@ -20,11 +20,50 @@
         "active": false
       }
     ],
-    "title": "Bio",
+    "avatarFallback": "LR",
     "userName": "Ludvig Rask",
     "avatarHint": "Click to change photo",
     "bioLabel": "Bio",
-    "saveLabel": "Save changes"
+    "bioPlaceholder": "",
+    "saveLabel": "Save changes",
+    "fieldRows": [
+      {
+        "fields": [
+          {
+            "label": "Full name",
+            "value": ""
+          },
+          {
+            "label": "Email",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "fields": [
+          {
+            "label": "Job title",
+            "value": ""
+          },
+          {
+            "label": "Phone",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "fields": [
+          {
+            "label": "Location",
+            "value": ""
+          },
+          {
+            "label": "Time zone",
+            "value": ""
+          }
+        ]
+      }
+    ]
   },
   "props": [
     {

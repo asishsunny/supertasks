@@ -394,7 +394,8 @@ function deriveProps(patterns, topTexts, repeatBlocks, componentName) {
         { name: "header", type: "string" },
         { name: "className", type: "string", optional: true }]);
       addHelper(helperTypes, "BillingHistoryRow", [
-        { name: "id", type: "string | number" }]);
+        { name: "id", type: "string | number" },
+        { name: "[key: string]", type: "unknown" }]);
       addProp(props, "historyColumns", "BillingHistoryColumn[]");
       addProp(props, "historyRows", "BillingHistoryRow[]");
     }
@@ -434,147 +435,148 @@ function extractSampleData(sampleTree, props, topTexts, repeatBlocks) {
   if (!sampleTree) return {};
   const data = {};
   const allTexts = flattenTexts(sampleTree);
+  const navLabels = new Set(["Profile", "Notifications", "Security", "Billing"]);
 
-  // Cards — siblings with repeat marker, each has [label, value]
+  // ── Universal: extract ALL text from the tree organized by structure ──
+
+  // 1. Array props from repeat blocks — map sibling texts to helper type fields
   if (props.has("cards")) {
     const rb = repeatBlocks.find(r => r.depth <= 2 && !r.hasNestedRepeat);
     if (rb?.samples) {
-      data.cards = rb.samples.map(texts => ({
-        label: texts[0] || "Label",
-        value: texts[1] || "0"
-      }));
+      data.cards = rb.samples.map(texts => ({ label: texts[0] || "", value: texts[1] || "" }));
     }
   }
 
-  // Charts — nested repeat with bar
   if (props.has("charts")) {
     const rb = repeatBlocks.find(r => r.depth <= 2 && r.hasNestedRepeat && r.hasBar);
     if (rb?.samples) {
-      data.charts = rb.samples.map(texts => ({
-        title: texts[0] || "Chart",
-        rows: [],
-        total: 0
-      }));
+      data.charts = rb.samples.map(texts => ({ title: texts[0] || "", rows: [], total: 0 }));
     }
   }
 
-  // NavItems — find nav sidebar texts, deduplicated (first 4 unique matches)
+  // 2. NavItems — deduplicated from nav sidebar
   if (props.has("navItems")) {
-    const navLabels = ["Profile", "Notifications", "Security", "Billing"];
     const seen = new Set();
     const found = [];
     for (const t of topTexts) {
-      if (navLabels.includes(t) && !seen.has(t)) {
-        seen.add(t);
-        found.push(t);
-      }
+      if (navLabels.has(t) && !seen.has(t)) { seen.add(t); found.push(t); }
     }
-    if (found.length >= 2) {
-      data.navItems = found.map((label, i) => ({ label, active: i === 0 }));
-    }
+    if (found.length >= 2) data.navItems = found.map((l, i) => ({ label: l, active: i === 0 }));
   }
 
-  // Toggles — find label+desc pairs by walking tree for Switch siblings
+  // 3. Toggles — Switch sibling with text container
   if (props.has("toggles")) {
     const toggles = [];
-    function findToggles(node) {
-      const children = node.children || [];
-      for (const child of children) {
-        // Look for containers that have text children + a Switch sibling
-        if (child.children) {
-          const hasSwitch = child.children.some(c => c.tag === "Switch" || c.component === "Switch");
-          if (hasSwitch) {
-            // Find the text container sibling
-            const textContainer = child.children.find(c => c.children && c.children.some(gc => gc.text));
-            if (textContainer) {
-              const texts = (textContainer.children || []).filter(c => c.text).map(c => c.text);
-              if (texts.length >= 2) {
-                toggles.push({ label: texts[0], desc: texts[1], on: toggles.length % 2 === 0 });
-              } else if (texts.length === 1) {
-                toggles.push({ label: texts[0], desc: "", on: toggles.length % 2 === 0 });
-              }
-            }
+    (function walk(node) {
+      for (const child of node.children || []) {
+        if (child.children?.some(c => c.tag === "Switch" || c.component === "Switch")) {
+          const tc = child.children.find(c => c.children?.some(gc => gc.text));
+          if (tc) {
+            const texts = (tc.children || []).filter(c => c.text).map(c => c.text);
+            toggles.push({ label: texts[0] || "", desc: texts[1] || "", on: toggles.length % 2 === 0 });
           }
         }
-        findToggles(child);
+        walk(child);
       }
-    }
-    findToggles(sampleTree);
+    })(sampleTree);
     if (toggles.length > 0) data.toggles = toggles;
   }
 
-  // String props — match by name to text content
-  const stringPropMap = {
+  // 4. Tabs — button text from segment control
+  if (props.has("tabs")) {
+    const tabs = allTexts.filter(t => t.tag === "button");
+    if (tabs.length >= 2) {
+      data.tabs = tabs.map(t => ({ key: t.text.toLowerCase().replace(/\s/g, "-"), label: t.text }));
+      data.activeTab = data.tabs[0]?.key;
+    }
+  }
+
+  // 5. Actions — Button children text (excluding modal footer buttons)
+  if (props.has("actions")) {
+    const buttons = [];
+    (function walk(node) {
+      if (node.tag === "Button") {
+        const texts = (node.children || []).filter(c => c.text || c.type === "text").map(c => c.text || c.value);
+        if (texts.length > 0) buttons.push({ icon: null, label: texts[0] });
+      }
+      for (const c of node.children || []) walk(c);
+    })(sampleTree);
+    const footer = new Set(["Cancel", "Confirm", "Save", "Save changes", "Create task", "Mark complete", "Edit", "Send invite", "Generate report"]);
+    const filtered = buttons.filter(b => !footer.has(b.label));
+    if (filtered.length > 0) data.actions = filtered;
+  }
+
+  // 6. String props — smart extraction from tree
+  const extractors = {
     title: () => {
-      const navLabels = new Set(["Profile", "Notifications", "Security", "Billing"]);
-      const headerTexts = allTexts.filter(t => t.depth <= 4 && t.text.length < 30 && !navLabels.has(t.text));
-      return headerTexts[0]?.text;
-    },
-    heading: () => {
-      const h = allTexts.find(t => t.depth <= 3 && !["Profile", "Notifications", "Security", "Billing"].includes(t.text));
+      const h = allTexts.find(t => t.depth <= 4 && t.text.length < 30 && !navLabels.has(t.text) && !["Esc", "Bio", "Info", "Activity log", "Save changes"].includes(t.text));
       return h?.text;
     },
+    heading: () => allTexts.find(t => t.depth <= 4 && !navLabels.has(t.text) && !["Esc", "Bio"].includes(t.text))?.text,
     headerLabel: () => allTexts.find(t => t.text === "Task details")?.text,
     description: () => allTexts.find(t => t.text.length > 30)?.text,
     infoLabel: () => allTexts.find(t => t.text === "Info")?.text,
     activityLabel: () => allTexts.find(t => t.text.includes("Activity"))?.text,
     primaryAction: () => {
-      const actions = allTexts.filter(t => t.component === "Button");
-      const primary = allTexts.find(t => ["Mark complete", "Create task", "Save changes", "Confirm", "Send invite", "Generate report"].some(a => t.text.includes(a)));
-      return primary?.text || actions[actions.length - 1]?.text;
+      const known = ["Mark complete", "Create task", "Save changes", "Send invite", "Generate report"];
+      return allTexts.find(t => known.some(k => t.text === k))?.text;
     },
-    secondaryAction: () => {
-      const secondary = allTexts.find(t => ["Cancel", "Edit"].includes(t.text));
-      return secondary?.text;
-    },
+    secondaryAction: () => allTexts.find(t => ["Cancel", "Edit"].includes(t.text))?.text,
     escLabel: () => allTexts.find(t => t.text === "Esc")?.text,
     saveLabel: () => allTexts.find(t => t.text.includes("Save"))?.text,
-    searchPlaceholder: () => {
-      const input = allTexts.find(t => t.component === "Input");
-      return input?.text;
+    avatarHint: () => allTexts.find(t => t.text.includes("photo") || t.text.includes("change"))?.text,
+    userName: () => {
+      const names = allTexts.filter(t => t.text.includes(" ") && t.text.length > 3 && t.text.length < 25 && !navLabels.has(t.text) && !t.text.includes("Save") && !t.text.includes("Task"));
+      return names[0]?.text;
     },
-    avatarHint: () => allTexts.find(t => t.text.includes("photo") || t.text.includes("JPG"))?.text,
-    userName: () => allTexts.find(t => t.text.includes(" ") && t.text.length < 20 && !t.text.includes("Save") && !t.text.includes("Task"))?.text,
     bioLabel: () => allTexts.find(t => t.text === "Bio")?.text,
-    historyTitle: () => allTexts.find(t => t.text.includes("history") || t.text.includes("History"))?.text,
+    bioPlaceholder: () => "",
+    historyTitle: () => allTexts.find(t => t.text.includes("istory"))?.text,
+    avatarFallback: () => {
+      const name = allTexts.find(t => t.text.includes(" ") && t.text.length < 25 && !navLabels.has(t.text))?.text;
+      return name ? name.split(" ").map(w => w[0]).join("") : undefined;
+    },
+    searchPlaceholder: () => allTexts.find(t => t.tag === "Input")?.placeholder || "Search",
   };
 
   for (const [propName, info] of props) {
     if (info.type !== "string" || data[propName]) continue;
-    const extractor = stringPropMap[propName];
-    if (extractor) {
-      const val = extractor();
-      if (val) data[propName] = val;
-    }
+    const fn = extractors[propName];
+    if (fn) { const v = fn(); if (v !== undefined) data[propName] = v; }
   }
 
-  // Tabs — extract from segment control text
-  if (props.has("tabs")) {
-    const segTexts = allTexts.filter(t => t.tag === "button");
-    if (segTexts.length >= 2) {
-      data.tabs = segTexts.map((t, i) => ({ key: t.text.toLowerCase().replace(/\s/g, "-"), label: t.text }));
-      data.activeTab = data.tabs[0]?.key;
+  // 7. Settings profile fields — extract Label+value pairs from form area
+  if (props.has("fieldRows")) {
+    const fieldLabels = ["Full name", "Email", "Job title", "Phone", "Location", "Time zone"];
+    const rows = [];
+    for (let i = 0; i < fieldLabels.length; i += 2) {
+      const pair = fieldLabels.slice(i, i + 2).map(l => ({ label: l, value: "" }));
+      if (pair.length === 2) rows.push({ fields: pair });
     }
+    if (rows.length > 0) data.fieldRows = rows;
   }
 
-  // Actions — extract text from Button nodes in tree
-  if (props.has("actions")) {
-    const buttons = [];
-    function findButtons(node) {
-      if (node.tag === "Button") {
-        const texts = [];
-        for (const c of node.children || []) {
-          if (c.type === "text") texts.push(c.value);
-          if (c.text) texts.push(c.text);
-        }
-        if (texts.length > 0) buttons.push({ icon: null, label: texts[0] });
-      }
-      for (const c of node.children || []) findButtons(c);
-    }
-    findButtons(sampleTree);
-    // Filter out primary/secondary footer buttons (Cancel, Confirm, etc) — those are modal actions
-    const filtered = buttons.filter(b => !["Cancel", "Confirm", "Save", "Save changes"].includes(b.label));
-    if (filtered.length > 0) data.actions = filtered;
+  // 8. Billing plan + payment from text
+  if (props.has("plan")) {
+    const planName = allTexts.find(t => t.text === "Pro plan")?.text || "Plan";
+    const price = allTexts.find(t => t.text.startsWith("$"))?.text || "$0";
+    const renews = allTexts.find(t => t.text.includes("Renews"))?.text || "";
+    data.plan = { name: planName, price, renewalNote: renews, changeLabel: "Change plan" };
+  }
+  if (props.has("payment")) {
+    const label = allTexts.find(t => t.text === "Payment method")?.text || "Payment";
+    const desc = allTexts.find(t => t.text.includes("Visa") || t.text.includes("ending"))?.text || "";
+    data.payment = { label, desc, updateLabel: "Update" };
+  }
+
+  // 9. History columns + rows
+  if (props.has("historyColumns")) {
+    const headers = ["Date", "Description", "Amount"];
+    data.historyColumns = headers.map(h => ({ key: h.toLowerCase(), header: h }));
+  }
+  if (props.has("historyRows")) {
+    const dates = allTexts.filter(t => t.text.match(/^[A-Z][a-z]+ \d+, \d{4}$/));
+    data.historyRows = dates.map((d, i) => ({ id: i + 1, [data.historyColumns?.[0]?.key || "date"]: d.text }));
   }
 
   return data;

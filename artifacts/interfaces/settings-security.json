@@ -47,8 +47,8 @@
         "on": true
       }
     ],
-    "title": "Save changes",
-    "saveLabel": "Save changes"
+    "saveLabel": "Save changes",
+    "heading": "Save changes"
   },
   "props": [
     {

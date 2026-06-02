@@ -21,7 +21,46 @@
       }
     ],
     "title": "$12/month",
-    "historyTitle": "Billing history"
+    "historyTitle": "Billing history",
+    "plan": {
+      "name": "Pro plan",
+      "price": "$12/month",
+      "renewalNote": "Renews on Apr 15, 2026",
+      "changeLabel": "Change plan"
+    },
+    "payment": {
+      "label": "Payment method",
+      "desc": "Visa ending in 4242",
+      "updateLabel": "Update"
+    },
+    "historyColumns": [
+      {
+        "key": "date",
+        "header": "Date"
+      },
+      {
+        "key": "description",
+        "header": "Description"
+      },
+      {
+        "key": "amount",
+        "header": "Amount"
+      }
+    ],
+    "historyRows": [
+      {
+        "id": 1,
+        "date": "Mar 1, 2026"
+      },
+      {
+        "id": 2,
+        "date": "Feb 1, 2026"
+      },
+      {
+        "id": 3,
+        "date": "Jan 1, 2026"
+      }
+    ]
   },
   "props": [
     {
@@ -145,6 +184,10 @@
         {
           "name": "id",
           "type": "string | number"
+        },
+        {
+          "name": "[key: string]",
+          "type": "unknown"
         }
       ]
     }
