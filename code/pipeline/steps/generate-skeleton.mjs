@@ -139,6 +139,7 @@ function buildSkeleton(name, block, iface) {
     const varName = `DEFAULT_${prop.name.replace(/([A-Z])/g, "_$1").toUpperCase()}`;
     const code = defaultToCode(sample, prop.type);
     if (code) {
+      // Use explicit type annotation for arrays/objects to avoid readonly issues
       if (Array.isArray(sample) || typeof sample === "object") {
         parts.push(`const ${varName}: ${prop.type} = ${code};`);
       } else {
@@ -148,81 +149,6 @@ function buildSkeleton(name, block, iface) {
     }
   }
   if (Object.keys(defaultVars).length) parts.push("");
-
-  // 4b. Variation defaults — read from variation cache/transform files
-  const variations = block.variations || [];
-  const variationExports = [];
-  if (variations.length > 1) {
-    for (let vi = 0; vi < variations.length; vi++) {
-      const vName = variations[vi];
-      const vLabel = vName.replace(/-/g, "_").toUpperCase();
-
-      // Find variation data: either from numbered file or from fragment sections
-      let vTexts = [];
-      const vTransformPath = resolve(ROOT, `artifacts/transformed/${name}-${vi > 0 ? vi : ""}.tsx`.replace("-.", "."));
-      const vCachePath = resolve(ROOT, `artifacts/cache/${name}${vi > 0 ? `-${vi}` : ""}.jsx`);
-      const vTransformAlt = resolve(ROOT, `artifacts/transformed/${name}-${vi}.tsx`);
-
-      const filesToTry = [vTransformAlt, vTransformPath, vCachePath];
-      for (const fpath of filesToTry) {
-        if (existsSync(fpath)) {
-          const content = readFileSync(fpath, "utf8");
-          const re = />\s*\n?\s*([A-Za-z0-9][\w\s.\-+()@$/,;:#!?'%]*?)\s*\n?\s*<\//g;
-          let m;
-          while ((m = re.exec(content)) !== null) {
-            const t = m[1].trim();
-            if (t && t.length > 0 && t.length < 80) vTexts.push(t);
-          }
-          break;
-        }
-      }
-
-      if (vTexts.length === 0) continue;
-
-      // Build variation defaults based on block type
-      const varConsts = [];
-      // Card items (stat-cards pattern): pairs of [label, value]
-      if (defaultVars.cards && vTexts.length >= 2) {
-        const items = [];
-        for (let i = 0; i < vTexts.length; i += 2) {
-          if (i + 1 < vTexts.length) items.push({ label: vTexts[i], value: vTexts[i + 1] });
-        }
-        const exportName = `${vLabel}_CARDS`;
-        parts.push(`export const ${exportName}: ${iface.props.find(p=>p.name==="cards")?.type || "CardItem[]"} = ${defaultToCode(items)};`);
-        variationExports.push({ variation: vName, exportName });
-      }
-      // Tabs (controls pattern)
-      if (defaultVars.tabs) {
-        const tabTexts = vTexts.filter(t => t.length < 10 && !["Filter", "Date", "Columns", "Search"].includes(t));
-        if (tabTexts.length >= 2) {
-          const tabs = tabTexts.map(t => ({ key: t.toLowerCase().replace(/\s/g, "-"), label: t }));
-          const exportName = `${vLabel}_TABS`;
-          parts.push(`export const ${exportName}: ${iface.props.find(p=>p.name==="tabs")?.type || "ViewTab[]"} = ${defaultToCode(tabs)};`);
-          variationExports.push({ variation: vName, exportName, prop: "tabs" });
-        }
-      }
-      // Modal fields (create-task-modal pattern) — extract from fragment sections
-      if (defaultVars.title || iface.props.some(p => p.name === "fields")) {
-        // For modals, extract title + field labels from the variation section
-        const titleMatch = vTexts.find(t => !["Esc", "Cancel"].includes(t) && t.length < 30);
-        const actionMatch = vTexts[vTexts.length - 1];
-        const secondaryMatch = vTexts.find(t => t === "Cancel");
-        const fieldLabels = vTexts.filter(t => !["Esc", "Cancel", titleMatch, actionMatch].includes(t) && t.length < 30);
-
-        if (titleMatch && fieldLabels.length > 0) {
-          const exportName = `${vLabel}_DEFAULTS`;
-          const defaults = {
-            title: titleMatch,
-            primaryAction: actionMatch !== "Cancel" ? actionMatch : "Submit",
-            secondaryAction: secondaryMatch || "Cancel",
-          };
-          parts.push(`export const ${exportName} = ${defaultToCode(defaults)};`);
-          variationExports.push({ variation: vName, exportName });
-        }
-      }
-    }
-    if (variationExports.length) parts.push("");
-  }
 
   // 5. Export function with destructured props
   const propEntries = iface.props.map(p => {

@@ -1,6 +1,6 @@
 # Build Pipeline Scorecard
 
-Scored: 11/11 | Average: 7.9/10 | Passing: 0/11
+Scored: 11/11 | Average: 8.0/10 | Passing: 1/11
 
 - **stat-cards**: 8/10
 - **chart-cards**: 8/10
@@ -11,5 +11,5 @@ Scored: 11/11 | Average: 7.9/10 | Passing: 0/11
 - **task-details-modal**: 7/10
 - **settings-profile**: 8/10
 - **settings-notifications**: 8/10
-- **settings-security**: 8/10
+- **settings-security**: 9/10
 - **settings-billing**: 8/10

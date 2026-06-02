@@ -106,58 +106,58 @@ export function SettingsProfile({
   onSave,
 }: SettingsProfileProps) {
   return (
-    <div className="flex gap-6 items-start relative shrink-0 w-full">
-      <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 relative rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
-        {navItems.map((nav, i) => (
-          <div
-            key={i}
-            className={`flex items-center px-4 py-2.5 relative shrink-0 w-full cursor-pointer ${nav.active ? "bg-ui-bg-subtle border-ui-fg-base border-l-2" : ""}`}
-            onClick={() => onNavClick?.(nav.label)}
-          >
-            <p className={`relative shrink-0 ${nav.active ? "text-ui-fg-base txt-compact-small-plus" : "text-ui-fg-subtle txt-compact-small"}`}>
-              {nav.label}
-            </p>
-          </div>
-        ))}
-      </div>
-      <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip relative rounded-[8px] shadow-elevation-card-rest">
-        <div className="flex flex-col px-6 py-3 relative shrink-0 w-full">
-          <p className="relative shrink-0 text-ui-fg-base font-medium text-[14px] leading-[20px]">
-            {title ?? navItems.find((n) => n.active)?.label ?? "Profile"}
+<div className="flex gap-6 items-start relative shrink-0 w-full">
+  <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 relative rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
+    {navItems.map((navItem, i) => (
+      <button
+        key={navItem.label}
+        onClick={() => onNavClick?.(navItem.label)}
+        className={`${navItem.active ? "bg-ui-bg-subtle border-ui-fg-base border-l-2" : ""} flex items-center px-4 py-2.5 relative shrink-0 w-full text-left`}
+      >
+        <p className={`relative shrink-0 ${navItem.active ? "text-ui-fg-base txt-compact-small-plus" : "text-ui-fg-subtle txt-compact-small"}`}>
+          {navItem.label}
+        </p>
+      </button>
+    ))}
+  </div>
+  <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip relative rounded-[8px] shadow-elevation-card-rest">
+    <div className="flex flex-col px-6 py-3 relative shrink-0 w-full">
+      <p className="relative shrink-0 text-ui-fg-base font-medium text-[14px] leading-[20px]">
+        {title ?? navItems.find((n) => n.active)?.label ?? "Profile"}
+      </p>
+    </div>
+    <div className="h-px bg-ui-border-base" />
+    <div className="flex flex-col gap-5 p-6 relative shrink-0 w-full">
+      <div className="flex gap-3 items-center relative shrink-0 w-full">
+        <Avatar src={avatarSrc} fallback={avatarFallback} size="xlarge" />
+        <div className="flex flex-col gap-0.5 relative shrink-0 leading-[20px]">
+          <p className="relative shrink-0 text-ui-fg-base font-medium text-[14px]">
+            {userName}
+          </p>
+          <p className="relative shrink-0 text-ui-fg-subtle font-normal text-[13px]">
+            {avatarHint}
           </p>
         </div>
-        <div className="h-px bg-ui-border-base" />
-        <div className="flex flex-col gap-5 p-6 relative shrink-0 w-full">
-          <div className="flex gap-3 items-center relative shrink-0 w-full">
-            <Avatar src={avatarSrc} fallback={avatarFallback} size="xlarge" />
-            <div className="flex flex-col gap-0.5 relative shrink-0 leading-[20px]">
-              <p className="relative shrink-0 text-ui-fg-base font-medium text-[14px]">
-                {userName}
-              </p>
-              <p className="relative shrink-0 text-ui-fg-subtle font-normal text-[13px]">
-                {avatarHint}
-              </p>
-            </div>
-          </div>
-          {fieldRows.map((row, ri) => (
-            <div key={ri} className="flex gap-4 items-start relative shrink-0 w-full">
-              {row.fields.map((field, fi) => (
-                <div key={fi} className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
-                  <Label size="small">{field.label}</Label>
-                  <Input size="small" className="w-full" defaultValue={field.value} />
-                </div>
-              ))}
+      </div>
+      {fieldRows.map((row, rowIndex) => (
+        <div key={rowIndex} className="flex gap-4 items-start relative shrink-0 w-full">
+          {row.fields.map((field, fieldIndex) => (
+            <div key={fieldIndex} className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
+              <Label size="small">{field.label}</Label>
+              <Input size="small" className="w-full" defaultValue={field.value} />
             </div>
           ))}
-          <div className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
-            <Label size="small">{bioLabel}</Label>
-            <Textarea placeholder={bioPlaceholder} />
-          </div>
-          <div className="flex items-start justify-end relative shrink-0 w-full">
-            <Button variant="primary" size="small" onClick={onSave}>{saveLabel}</Button>
-          </div>
         </div>
+      ))}
+      <div className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
+        <Label size="small">{bioLabel}</Label>
+        <Textarea placeholder={bioPlaceholder ?? "Placeholder"} />
+      </div>
+      <div className="flex items-start justify-end relative shrink-0 w-full">
+        <Button variant="primary" size="small" onClick={onSave}>{saveLabel}</Button>
       </div>
     </div>
+  </div>
+</div>
   );
 }

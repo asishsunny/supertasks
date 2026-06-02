@@ -11,16 +11,16 @@
     },
     {
       "name": "columns",
-      "type": "TableColumn[]"
+      "type": "Column[]"
     },
     {
       "name": "rows",
-      "type": "TableRow[]"
+      "type": "Row[]"
     }
   ],
   "helperTypes": [
     {
-      "name": "TableColumn",
+      "name": "Column",
       "fields": [
         {
           "name": "key",
@@ -36,22 +36,17 @@
           "optional": true
         },
         {
-          "name": "type",
-          "type": "\"text\" | \"badge\" | \"avatar\" | \"date\"",
-          "optional": true
+          "name": "render",
+          "type": "(row: any) => ReactNode"
         }
       ]
     },
     {
-      "name": "TableRow",
+      "name": "Row",
       "fields": [
         {
           "name": "id",
           "type": "string | number"
-        },
-        {
-          "name": "[key: string]",
-          "type": "unknown"
         }
       ]
     }

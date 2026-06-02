@@ -207,9 +207,7 @@ function generatePage(name, block, iface) {
       </section>`;
   }).join("\n");
 
-  return `"use client";
-
-${importLine}
+  return `${importLine}
 
 export default function Page() {
   return (
@@ -238,9 +236,7 @@ function generateSettingsPage(settingsBlocks) {
       </section>`;
   }).join("\n");
 
-  return `"use client";
-
-${imports.join("\n")}
+  return `${imports.join("\n")}
 
 export default function Page() {
   return (
