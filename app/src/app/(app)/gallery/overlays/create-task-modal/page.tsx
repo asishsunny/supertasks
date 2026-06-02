@@ -1,3 +1,5 @@
+"use client";
+
 import { CreateTaskModal } from "@/components/blocks/CreateTaskModal";
 import type { ModalField } from "@/types";
 
@@ -12,7 +14,7 @@ export default function Page() {
       <section className="flex flex-col gap-3">
         <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Create Task</h2>
         <CreateTaskModal
-          title={"Title"}
+          title={"Create new task"}
           fields={fieldsData}
           primaryAction={"Create task"}
           secondaryAction={"Cancel"}
@@ -22,7 +24,7 @@ export default function Page() {
       <section className="flex flex-col gap-3">
         <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Invite Member</h2>
         <CreateTaskModal
-          title={"Title"}
+          title={"Create new task"}
           fields={fieldsData}
           primaryAction={"Create task"}
           secondaryAction={"Cancel"}
@@ -32,7 +34,7 @@ export default function Page() {
       <section className="flex flex-col gap-3">
         <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Generate Report</h2>
         <CreateTaskModal
-          title={"Title"}
+          title={"Create new task"}
           fields={fieldsData}
           primaryAction={"Create task"}
           secondaryAction={"Cancel"}

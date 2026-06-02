@@ -506,8 +506,8 @@ function extractSampleData(sampleTree, props, topTexts, repeatBlocks) {
   // String props — match by name to text content
   const stringPropMap = {
     title: () => {
-      // Title is usually the first text in a card header
-      const headerTexts = allTexts.filter(t => t.depth <= 3 && t.text.length < 30);
+      const navLabels = new Set(["Profile", "Notifications", "Security", "Billing"]);
+      const headerTexts = allTexts.filter(t => t.depth <= 4 && t.text.length < 30 && !navLabels.has(t.text));
       return headerTexts[0]?.text;
     },
     heading: () => {

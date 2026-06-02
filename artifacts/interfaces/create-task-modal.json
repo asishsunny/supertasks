@@ -2,6 +2,7 @@
   "componentName": "CreateTaskModal",
   "exportType": "named",
   "sampleData": {
+    "title": "Create new task",
     "primaryAction": "Create task",
     "secondaryAction": "Cancel",
     "escLabel": "Esc"

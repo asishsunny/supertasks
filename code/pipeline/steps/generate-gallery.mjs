@@ -22,12 +22,67 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
+import { parse } from "@babel/parser";
+import _traverse from "@babel/traverse";
+import * as t from "@babel/types";
+const traverse = _traverse.default || _traverse;
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../../..");
 const APP = resolve(ROOT, "app/src");
+const BLOCKS_DIR = resolve(APP, "components/blocks");
 const GALLERY = resolve(APP, "app/(app)/gallery");
 const MANIFEST = JSON.parse(readFileSync(resolve(ROOT, "code/pipeline/manifest.json"), "utf8"));
 const IFACE_DIR = resolve(ROOT, "artifacts/interfaces");
+
+// Read actual Props interface from built block file
+function readBlockInterface(blockPath) {
+  if (!existsSync(blockPath)) return null;
+  const source = readFileSync(blockPath, "utf8");
+  const ast = parse(source, { sourceType: "module", plugins: ["jsx", "typescript"] });
+
+  let propsInterface = null;
+  let exportType = "named";
+  const helperTypes = [];
+
+  traverse(ast, {
+    ExportDefaultDeclaration() { exportType = "default"; },
+    TSInterfaceDeclaration(path) {
+      const name = path.node.id.name;
+      const fields = path.node.body.body.map(member => {
+        if (!t.isTSPropertySignature(member)) return null;
+        const fieldName = member.key.name || member.key.value;
+        const optional = member.optional || false;
+        const typeStr = extractTypeString(member.typeAnnotation?.typeAnnotation);
+        return { name: fieldName, type: typeStr, optional };
+      }).filter(Boolean);
+
+      if (name.endsWith("Props")) {
+        propsInterface = { name, fields };
+      } else {
+        helperTypes.push({ name, fields });
+      }
+    },
+  });
+
+  return propsInterface ? { props: propsInterface, helperTypes, exportType } : null;
+}
+
+function extractTypeString(typeNode) {
+  if (!typeNode) return "any";
+  if (t.isTSStringKeyword(typeNode)) return "string";
+  if (t.isTSNumberKeyword(typeNode)) return "number";
+  if (t.isTSBooleanKeyword(typeNode)) return "boolean";
+  if (t.isTSArrayType(typeNode)) return extractTypeString(typeNode.elementType) + "[]";
+  if (t.isTSTypeReference(typeNode)) {
+    const name = typeNode.typeName.name || typeNode.typeName.right?.name || "any";
+    return name;
+  }
+  if (t.isTSFunctionType(typeNode)) return "() => void";
+  if (t.isTSUnionType(typeNode)) return typeNode.types.map(extractTypeString).join(" | ");
+  if (t.isTSTypeLiteral(typeNode)) return "object";
+  return "any";
+}
 
 const cliArgs = process.argv.slice(2);
 const snippetFilter = cliArgs.includes("--snippet") ? cliArgs[cliArgs.indexOf("--snippet") + 1] : null;
@@ -142,7 +197,7 @@ function generatePage(name, block, iface) {
     : `import { ${componentName} } from "${importPath}";`;
 
   const variations = block.variations || [null];
-  const needsClient = iface.props.some(p => p.name === "activeTab" || p.name === "onTabChange");
+  const needsClient = iface.props.some(p => p.type.includes("=>") || p.name.startsWith("on") || p.name === "activeTab");
 
   // Build prop data — use sampleData from interface when available, dummy otherwise
   const dataLines = [];
@@ -282,7 +337,22 @@ for (const [name, block] of filtered) {
     console.log(`  SKIP ${name} — no interface`);
     continue;
   }
-  const iface = JSON.parse(readFileSync(ifacePath, "utf8"));
+  const ifaceJson = JSON.parse(readFileSync(ifacePath, "utf8"));
+
+  // Read actual block interface — source of truth for types
+  const blockPath = resolve(BLOCKS_DIR, `${toPascal(name)}.tsx`);
+  const blockIface = readBlockInterface(blockPath);
+
+  // Merge: block types + JSON sample data + JSON export type
+  const iface = {
+    componentName: ifaceJson.componentName,
+    exportType: blockIface?.exportType || ifaceJson.exportType,
+    props: blockIface?.props?.fields?.map(f => ({
+      name: f.name, type: f.type, optional: f.optional
+    })) || ifaceJson.props,
+    helperTypes: blockIface?.helperTypes || ifaceJson.helperTypes,
+    sampleData: ifaceJson.sampleData || {},
+  };
 
   if (name.startsWith("settings-")) {
     settingsBlocks.push([name, block, iface]);
@@ -296,12 +366,8 @@ for (const [name, block] of filtered) {
   const content = generatePage(name, block, iface);
   const pagePath = resolve(pageDir, "page.tsx");
 
-  if (existsSync(pagePath) && readFileSync(pagePath, "utf8") === content) {
-    console.log(`  ○ ${name} — unchanged`);
-  } else {
-    writeFileSync(pagePath, content);
-    console.log(`  ✓ ${name} → gallery/${folder}/${name}/page.tsx`);
-  }
+  writeFileSync(pagePath, content);
+  console.log(`  ✓ ${name} → gallery/${folder}/${name}/page.tsx`);
   written++;
 }
 
@@ -311,12 +377,8 @@ if (settingsBlocks.length > 0) {
   const content = generateSettingsPage(settingsBlocks);
   const pagePath = resolve(pageDir, "page.tsx");
 
-  if (existsSync(pagePath) && readFileSync(pagePath, "utf8") === content) {
-    console.log(`  ○ settings (${settingsBlocks.length} tabs) — unchanged`);
-  } else {
-    writeFileSync(pagePath, content);
-    console.log(`  ✓ settings (${settingsBlocks.length} tabs) → gallery/views/settings/page.tsx`);
-  }
+  writeFileSync(pagePath, content);
+  console.log(`  ✓ settings (${settingsBlocks.length} tabs) → gallery/views/settings/page.tsx`);
   written++;
 }
 
