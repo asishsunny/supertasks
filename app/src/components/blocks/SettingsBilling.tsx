@@ -115,85 +115,100 @@ export function SettingsBilling({
   historyRows = DEFAULT_HISTORY_ROWS,
 }: SettingsBillingProps) {
   return (
-<div className="flex gap-6 items-start relative shrink-0 w-full">
-  <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 relative rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
-    {navItems.map((item, i) => (
-      <div
-        key={item.label}
-        className={`flex items-center px-4 py-2.5 relative shrink-0 w-full${item.active ? " bg-ui-bg-subtle border-ui-fg-base border-l-2" : ""}`}
-        onClick={() => onNavClick?.(item.label)}
-        style={{ cursor: onNavClick ? "pointer" : undefined }}
-      >
-        <p className={`relative shrink-0 ${item.active ? "text-ui-fg-base txt-compact-small-plus" : "text-ui-fg-subtle txt-compact-small"}`}>
-          {item.label}
-        </p>
+    <div className="flex gap-6 items-start relative shrink-0 w-full">
+      <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 relative rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
+        {navItems.map((item) => (
+          <div
+            key={item.label}
+            className={
+              item.active
+                ? "bg-ui-bg-subtle border-ui-fg-base border-l-2 flex items-center px-4 py-2.5 relative shrink-0 w-full"
+                : "flex items-center px-4 py-2.5 relative shrink-0 w-full"
+            }
+            onClick={() => onNavClick?.(item.label)}
+          >
+            <p
+              className={
+                item.active
+                  ? "relative shrink-0 text-ui-fg-base txt-compact-small-plus"
+                  : "relative shrink-0 text-ui-fg-subtle txt-compact-small"
+              }
+            >
+              {item.label}
+            </p>
+          </div>
+        ))}
       </div>
-    ))}
-  </div>
-  <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip relative rounded-[8px] shadow-elevation-card-rest">
-    <div className="flex flex-col px-6 py-3 relative shrink-0 w-full">
-      <p className="relative shrink-0 text-ui-fg-base font-medium text-[14px] leading-[20px]">
-        Billing
-      </p>
-    </div>
-    <div className="h-px bg-ui-border-base" />
-    <div className="flex flex-col gap-5 p-6 relative shrink-0 w-full">
-      <div className="bg-ui-bg-base flex flex-col gap-1 overflow-clip px-6 py-5 relative rounded-[8px] shadow-elevation-card-rest shrink-0 w-full">
-        <div className="flex items-center justify-between relative shrink-0 w-full">
-          <p className="relative shrink-0 text-ui-fg-base txt-compact-small-plus">
-            {plan.name}
-          </p>
-          <Button variant="secondary" size="small" onClick={onChangePlan}>{plan.changeLabel}</Button>
-        </div>
-        <p className="relative shrink-0 text-ui-fg-base font-medium text-[18px] leading-[28px]">
-          {plan.price}
-        </p>
-        <p className="relative shrink-0 text-ui-fg-subtle txt-compact-small">
-          {plan.renewalNote}
-        </p>
-      </div>
-      <div className="flex items-center justify-between py-2 relative shrink-0 w-full">
-        <div className="flex flex-col gap-1 relative shrink-0 text-[13px] leading-[20px]">
-          <p className="relative shrink-0 text-ui-fg-base font-medium">
-            {payment.label}
-          </p>
-          <p className="relative shrink-0 text-ui-fg-subtle font-normal">
-            {payment.desc}
+      <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip relative rounded-[8px] shadow-elevation-card-rest">
+        <div className="flex flex-col px-6 py-3 relative shrink-0 w-full">
+          <p className="relative shrink-0 text-ui-fg-base font-medium text-[14px] leading-[20px]">
+            Billing
           </p>
         </div>
-        <Button variant="secondary" size="small" onClick={onUpdatePayment}>{payment.updateLabel}</Button>
-      </div>
-      <div className="bg-ui-bg-base flex flex-col overflow-clip relative rounded-[12px] shadow-elevation-card-rest shrink-0 w-full">
-        <div className="flex items-start pb-4 pt-6 px-6 relative shrink-0 w-full">
-          <p className="relative shrink-0 text-ui-fg-base txt-compact-medium-plus">
-            {historyTitle}
-          </p>
-        </div>
-        <Table>
-          <Table.Header className="border-t-0">
-            <Table.Row>
-              {historyColumns.map((col) => (
-                <Table.HeaderCell key={col.key} className={col.className}>{col.header}</Table.HeaderCell>
-              ))}
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {historyRows.map((row) => (
-              <Table.Row key={row.id}>
-                {historyColumns.map((col) => (
-                  <Table.Cell key={col.key} className={col.className}>
-                    <p className={`relative shrink-0 txt-compact-small ${col.key === "description" ? "text-ui-fg-base" : "text-ui-fg-subtle"}`}>
-                      {String(row[col.key] ?? "")}
-                    </p>
-                  </Table.Cell>
+        <div className="h-px bg-ui-border-base" />
+        <div className="flex flex-col gap-5 p-6 relative shrink-0 w-full">
+          <div className="bg-ui-bg-base flex flex-col gap-1 overflow-clip px-6 py-5 relative rounded-[8px] shadow-elevation-card-rest shrink-0 w-full">
+            <div className="flex items-center justify-between relative shrink-0 w-full">
+              <p className="relative shrink-0 text-ui-fg-base txt-compact-small-plus">
+                {plan.name}
+              </p>
+              <Button variant="secondary" size="small" onClick={onChangePlan}>
+                {plan.changeLabel}
+              </Button>
+            </div>
+            <p className="relative shrink-0 text-ui-fg-base font-medium text-[18px] leading-[28px]">
+              {plan.price}
+            </p>
+            <p className="relative shrink-0 text-ui-fg-subtle txt-compact-small">
+              {plan.renewalNote}
+            </p>
+          </div>
+          <div className="flex items-center justify-between py-2 relative shrink-0 w-full">
+            <div className="flex flex-col gap-1 relative shrink-0 text-[13px] leading-[20px]">
+              <p className="relative shrink-0 text-ui-fg-base font-medium">
+                {payment.label}
+              </p>
+              <p className="relative shrink-0 text-ui-fg-subtle font-normal">
+                {payment.desc}
+              </p>
+            </div>
+            <Button variant="secondary" size="small" onClick={onUpdatePayment}>
+              {payment.updateLabel}
+            </Button>
+          </div>
+          <div className="bg-ui-bg-base flex flex-col overflow-clip relative rounded-[12px] shadow-elevation-card-rest shrink-0 w-full">
+            <div className="flex items-start pb-4 pt-6 px-6 relative shrink-0 w-full">
+              <p className="relative shrink-0 text-ui-fg-base txt-compact-medium-plus">
+                {historyTitle}
+              </p>
+            </div>
+            <Table>
+              <Table.Header className="border-t-0">
+                <Table.Row>
+                  {historyColumns.map((col) => (
+                    <Table.HeaderCell key={col.key} className={col.className}>
+                      {col.header}
+                    </Table.HeaderCell>
+                  ))}
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {historyRows.map((row) => (
+                  <Table.Row key={row.id}>
+                    {historyColumns.map((col) => (
+                      <Table.Cell key={col.key} className={col.className}>
+                        <p className="relative shrink-0 text-ui-fg-subtle txt-compact-small">
+                          {String(row[col.key] ?? "")}
+                        </p>
+                      </Table.Cell>
+                    ))}
+                  </Table.Row>
                 ))}
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
+              </Table.Body>
+            </Table>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
   );
 }

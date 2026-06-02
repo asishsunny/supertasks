@@ -27,34 +27,36 @@ export function RecentTasks({
   rows,
 }: RecentTasksProps) {
   return (
-<div className="bg-ui-bg-base flex flex-col gap-0 overflow-clip p-0 relative rounded-xl shadow-elevation-card-rest shrink-0 w-full">
-  <div className="flex items-start overflow-clip pb-4 pt-6 px-6 relative shrink-0 w-full">
-    <p className="relative shrink-0 text-ui-fg-base txt-compact-medium-plus">
-      {title}
-    </p>
-  </div>
-  <Table>
-    <Table.Header className="border-t-0">
-      <Table.Row>
-        {columns?.map((col) => (
-          <Table.HeaderCell key={col.key} style={col.width ? { width: col.width } : undefined}>
-            {col.header}
-          </Table.HeaderCell>
-        ))}
-      </Table.Row>
-    </Table.Header>
-    <Table.Body>
-      {rows?.map((row) => (
-        <Table.Row key={row.id}>
-          {columns?.map((col) => (
-            <Table.Cell key={col.key} style={col.width ? { width: col.width } : undefined}>
-              {col.render(row)}
-            </Table.Cell>
-          ))}
-        </Table.Row>
-      ))}
-    </Table.Body>
-  </Table>
-</div>
+    <div className="bg-ui-bg-base flex flex-col gap-0 overflow-clip p-0 relative rounded-xl shadow-elevation-card-rest shrink-0 w-full">
+      <div className="flex items-start overflow-clip pb-4 pt-6 px-6 relative shrink-0 w-full">
+        <p className="relative shrink-0 text-ui-fg-base txt-compact-medium-plus">
+          {title}
+        </p>
+      </div>
+      {columns && rows && (
+        <Table>
+          <Table.Header className="border-t-0">
+            <Table.Row>
+              {columns.map((col) => (
+                <Table.HeaderCell key={col.key} className={col.width ? `w-[${col.width}]` : undefined}>
+                  {col.header}
+                </Table.HeaderCell>
+              ))}
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {rows.map((row) => (
+              <Table.Row key={row.id}>
+                {columns.map((col) => (
+                  <Table.Cell key={col.key} className={col.width ? `w-[${col.width}]` : undefined}>
+                    {col.render(row)}
+                  </Table.Cell>
+                ))}
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      )}
+    </div>
   );
 }

@@ -106,58 +106,84 @@ export function SettingsProfile({
   onSave,
 }: SettingsProfileProps) {
   return (
-<div className="flex gap-6 items-start relative shrink-0 w-full">
-  <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 relative rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
-    {navItems.map((navItem, i) => (
-      <button
-        key={i}
-        onClick={() => onNavClick?.(navItem.label)}
-        className={`flex items-center px-4 py-2.5 relative shrink-0 w-full text-left ${navItem.active ? "bg-ui-bg-subtle border-ui-fg-base border-l-2" : ""}`}
-      >
-        <p className={`relative shrink-0 ${navItem.active ? "text-ui-fg-base txt-compact-small-plus" : "text-ui-fg-subtle txt-compact-small"}`}>
-          {navItem.label}
-        </p>
-      </button>
-    ))}
-  </div>
-  <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip relative rounded-[8px] shadow-elevation-card-rest">
-    <div className="flex flex-col px-6 py-3 relative shrink-0 w-full">
-      <p className="relative shrink-0 text-ui-fg-base font-medium text-[14px] leading-[20px]">
-        {title ?? navItems.find((n) => n.active)?.label ?? "Profile"}
-      </p>
-    </div>
-    <div className="h-px bg-ui-border-base" />
-    <div className="flex flex-col gap-5 p-6 relative shrink-0 w-full">
-      <div className="flex gap-3 items-center relative shrink-0 w-full">
-        <Avatar src={avatarSrc} fallback={avatarFallback} size="xlarge" />
-        <div className="flex flex-col gap-0.5 relative shrink-0 leading-[20px]">
-          <p className="relative shrink-0 text-ui-fg-base font-medium text-[14px]">
-            {userName}
-          </p>
-          <p className="relative shrink-0 text-ui-fg-subtle font-normal text-[13px]">
-            {avatarHint}
+    <div className="flex gap-6 items-start relative shrink-0 w-full">
+      <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 relative rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
+        {navItems.map((item, i) => (
+          <button
+            key={i}
+            onClick={() => onNavClick?.(item.label)}
+            className={`flex items-center px-4 py-2.5 relative shrink-0 w-full text-left ${
+              item.active
+                ? "bg-ui-bg-subtle border-ui-fg-base border-l-2"
+                : ""
+            }`}
+          >
+            <p
+              className={`relative shrink-0 ${
+                item.active
+                  ? "text-ui-fg-base txt-compact-small-plus"
+                  : "text-ui-fg-subtle txt-compact-small"
+              }`}
+            >
+              {item.label}
+            </p>
+          </button>
+        ))}
+      </div>
+      <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip relative rounded-[8px] shadow-elevation-card-rest">
+        <div className="flex flex-col px-6 py-3 relative shrink-0 w-full">
+          <p className="relative shrink-0 text-ui-fg-base font-medium text-[14px] leading-[20px]">
+            {title ?? navItems.find((n) => n.active)?.label ?? "Profile"}
           </p>
         </div>
-      </div>
-      {fieldRows.map((row, ri) => (
-        <div key={ri} className="flex gap-4 items-start relative shrink-0 w-full">
-          {row.fields.map((field, fi) => (
-            <div key={fi} className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
-              <Label size="small">{field.label}</Label>
-              <Input size="small" className="w-full" defaultValue={field.value} />
+        <div className="h-px bg-ui-border-base" />
+        <div className="flex flex-col gap-5 p-6 relative shrink-0 w-full">
+          <div className="flex gap-3 items-center relative shrink-0 w-full">
+            <Avatar
+              src={avatarSrc}
+              fallback={avatarFallback}
+              size="xsmall"
+            />
+            <div className="flex flex-col gap-0.5 relative shrink-0 leading-[20px]">
+              <p className="relative shrink-0 text-ui-fg-base font-medium text-[14px]">
+                {userName}
+              </p>
+              <p className="relative shrink-0 text-ui-fg-subtle font-normal text-[13px]">
+                {avatarHint}
+              </p>
+            </div>
+          </div>
+          {fieldRows.map((row, ri) => (
+            <div
+              key={ri}
+              className="flex gap-4 items-start relative shrink-0 w-full"
+            >
+              {row.fields.map((field, fi) => (
+                <div
+                  key={fi}
+                  className="flex flex-1 flex-col gap-1.5 min-w-[1px]"
+                >
+                  <Label size="small">{field.label}</Label>
+                  <Input
+                    size="small"
+                    className="w-full"
+                    defaultValue={field.value}
+                  />
+                </div>
+              ))}
             </div>
           ))}
+          <div className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
+            <Label size="small">{bioLabel}</Label>
+            <Textarea placeholder={bioPlaceholder ?? "Placeholder"} />
+          </div>
+          <div className="flex items-start justify-end relative shrink-0 w-full">
+            <Button variant="primary" size="small" onClick={onSave}>
+              {saveLabel}
+            </Button>
+          </div>
         </div>
-      ))}
-      <div className="flex flex-1 flex-col gap-1.5 min-w-[1px]">
-        <Label size="small">{bioLabel}</Label>
-        <Textarea placeholder={bioPlaceholder} />
-      </div>
-      <div className="flex items-start justify-end relative shrink-0 w-full">
-        <Button variant="primary" size="small" onClick={onSave}>{saveLabel}</Button>
       </div>
     </div>
-  </div>
-</div>
   );
 }

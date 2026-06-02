@@ -76,51 +76,58 @@ export function SettingsSecurity({
   heading = DEFAULT_HEADING,
 }: SettingsSecurityProps) {
   return (
-<div className="flex gap-6 items-start relative shrink-0 w-full">
-  <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 relative rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
-    {navItems.map((item, i) => (
-      <button
-        key={item.label}
-        onClick={() => onNavClick?.(item.label)}
-        className={`flex items-center px-4 py-2.5 relative shrink-0 w-full text-left ${item.active ? "bg-ui-bg-subtle border-ui-fg-base border-l-2" : ""}`}
-      >
-        <p className={`relative shrink-0 ${item.active ? "text-ui-fg-base txt-compact-small-plus" : "text-ui-fg-subtle txt-compact-small"}`}>
-          {item.label}
-        </p>
-      </button>
-    ))}
-  </div>
-  <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip relative rounded-[8px] shadow-elevation-card-rest">
-    <div className="flex flex-col px-6 py-3 relative shrink-0 w-full">
-      <p className="relative shrink-0 text-ui-fg-base font-medium text-[14px] leading-[20px]">
-        {heading}
-      </p>
-    </div>
-    <div className="h-px bg-ui-border-base" />
-    <div className="flex flex-col gap-5 p-6 relative shrink-0 w-full">
-      <div className="flex flex-col gap-3 relative shrink-0 w-full">
-        {toggles.map((toggle, i) => (
-          <div key={i}>
-            {i > 0 && <div className="h-px bg-ui-border-base" />}
-            <div className="flex items-center justify-between relative shrink-0 w-full">
-              <div className="flex flex-col gap-1 relative shrink-0 text-[13px] leading-[20px]">
-                <p className="relative shrink-0 text-ui-fg-base font-medium">
-                  {toggle.label}
-                </p>
-                <p className="relative shrink-0 text-ui-fg-subtle font-normal">
-                  {toggle.desc}
-                </p>
-              </div>
-              <Switch checked={toggle.on} onCheckedChange={(val) => onToggle?.(i, val)} className="h-5 relative shrink-0 w-[32px]" />
-            </div>
+    <div className="flex gap-6 items-start relative shrink-0 w-full">
+      <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 relative rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
+        {navItems.map((item) => (
+          <div
+            key={item.label}
+            className={`flex items-center px-4 py-2.5 relative shrink-0 w-full${item.active ? " bg-ui-bg-subtle border-ui-fg-base border-l-2" : ""}`}
+            onClick={() => onNavClick?.(item.label)}
+            style={{ cursor: onNavClick ? "pointer" : undefined }}
+          >
+            <p className={`relative shrink-0 ${item.active ? "text-ui-fg-base txt-compact-small-plus" : "text-ui-fg-subtle txt-compact-small"}`}>
+              {item.label}
+            </p>
           </div>
         ))}
       </div>
-      <div className="flex items-start justify-end pt-2 relative shrink-0 w-full">
-        <Button variant="primary" size="small" onClick={onSave}>{saveLabel}</Button>
+      <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip relative rounded-[8px] shadow-elevation-card-rest">
+        <div className="flex flex-col px-6 py-3 relative shrink-0 w-full">
+          <p className="relative shrink-0 text-ui-fg-base font-medium text-[14px] leading-[20px]">
+            {heading}
+          </p>
+        </div>
+        <div className="h-px bg-ui-border-base" />
+        <div className="flex flex-col gap-5 p-6 relative shrink-0 w-full">
+          <div className="flex flex-col gap-3 relative shrink-0 w-full">
+            {toggles.map((toggle, index) => (
+              <div key={index}>
+                {index > 0 && <div className="h-px bg-ui-border-base" />}
+                <div className="flex items-center justify-between relative shrink-0 w-full">
+                  <div className="flex flex-col gap-1 relative shrink-0 text-[13px] leading-[20px]">
+                    <p className="relative shrink-0 text-ui-fg-base font-medium">
+                      {toggle.label}
+                    </p>
+                    <p className="relative shrink-0 text-ui-fg-subtle font-normal">
+                      {toggle.desc}
+                    </p>
+                  </div>
+                  <Switch
+                    checked={toggle.on}
+                    onCheckedChange={(value) => onToggle?.(index, value)}
+                    className="h-5 relative shrink-0 w-[32px]"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-start justify-end pt-2 relative shrink-0 w-full">
+            <Button variant="primary" size="small" onClick={onSave}>
+              {saveLabel}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
   );
 }
