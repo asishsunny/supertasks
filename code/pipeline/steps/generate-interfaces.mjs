@@ -269,15 +269,24 @@ function deriveProps(patterns, topTexts, repeatBlocks, componentName) {
   if (isModal || isSettings || isToggle || isTable || isBilling)
     addProp(props, "title", "string");
 
-  // ── Kanban ──
+  // ── Kanban — derive card fields from AST class/component patterns ──
   if (isKanban) {
-    addHelper(helperTypes, "KanbanColumn", [
+    addHelper(helperTypes, "KanbanCardData", [
+      { name: "title", type: "string" },
+      { name: "desc", type: "string" },
+      { name: "member", type: "{ initials: string; avatarBg: string; avatarText: string }" },
+      { name: "firstName", type: "string" },
+      { name: "dueDate", type: "string" },
+      { name: "overdue", type: "boolean", optional: true },
+      { name: "priorityLabel", type: "string" },
+      { name: "priorityColor", type: "string" }]);
+    addHelper(helperTypes, "KanbanColumnData", [
       { name: "status", type: "string" },
       { name: "label", type: "string" },
       { name: "count", type: "number" },
-      { name: "statusIcon", type: "ReactNode" },
-      { name: "cards", type: "ReactNode[]" }]);
-    addProp(props, "columns", "KanbanColumn[]");
+      { name: "statusColor", type: "string" },
+      { name: "cards", type: "KanbanCardData[]" }]);
+    addProp(props, "columns", "KanbanColumnData[]");
   }
 
   // ── Table (non-settings) ──
@@ -431,7 +440,7 @@ function deriveProps(patterns, topTexts, repeatBlocks, componentName) {
 
 // ── Sample data extraction from AST tree ──
 
-function extractSampleData(sampleTree, props, topTexts, repeatBlocks) {
+function extractSampleData(sampleTree, props, topTexts, repeatBlocks, patterns) {
   if (!sampleTree) return {};
   const data = {};
   const allTexts = flattenTexts(sampleTree);
@@ -451,6 +460,82 @@ function extractSampleData(sampleTree, props, topTexts, repeatBlocks) {
     const rb = repeatBlocks.find(r => r.depth <= 2 && r.hasNestedRepeat && r.hasBar);
     if (rb?.samples) {
       data.charts = rb.samples.map(texts => ({ title: texts[0] || "", rows: [], total: 0 }));
+    }
+  }
+
+  // 1b. Kanban columns — walk sampleTree for kanban-column children
+  if (props.has("columns") && patterns.has("kanban") && sampleTree) {
+    // Find kanban-column containers by walking the tree for nodes with repeat children
+    const columnNodes = [];
+    function findColumns(node) {
+      if (!node.children) return;
+      // A column has data-repeat children (cards) — look for parent that contains repeat items
+      const hasRepeatChild = node.children.some(c => c.repeat);
+      if (hasRepeatChild && node.children.length >= 2) {
+        columnNodes.push(node);
+        return;
+      }
+      for (const c of node.children) findColumns(c);
+    }
+    findColumns(sampleTree);
+
+    if (columnNodes.length > 0) {
+      // Extract text from each column's children
+      const colSamples = columnNodes.map(col => {
+        const texts = [];
+        function collectText(n) {
+          if (n.text) texts.push(n.text);
+          if (n.type === "text") texts.push(n.value);
+          for (const c of n.children || []) collectText(c);
+        }
+        collectText(col);
+        return texts;
+      });
+      // Now process like repeatBlocks samples
+      const outerSamples = colSamples;
+    if (outerSamples.length > 0) {
+      // Column siblings: [label, count, card_fields...]
+      // Card fields detected by context: title (short heading), desc (long text), name (short after avatar), date (Mon DD), priority (Low/Med/High/Critical)
+      const priorityColors = { Low: "grey", Medium: "orange", High: "red", Critical: "purple" };
+      const statusMap = { "To Do": { key: "todo", color: "bg-ui-tag-neutral-icon" }, "In Progress": { key: "in_progress", color: "bg-ui-tag-blue-icon" }, "In Review": { key: "in_review", color: "bg-ui-tag-orange-icon" }, "Done": { key: "done", color: "bg-ui-tag-green-icon" } };
+
+      data.columns = outerSamples.map(texts => {
+        const label = texts[0] || "";
+        const count = parseInt(texts[1]) || 0;
+        const cardTexts = texts.slice(2);
+        const cards = [];
+
+        // Classify each text by pattern
+        let currentCard = null;
+        for (const text of cardTexts) {
+          const isPriority = ["Low", "Medium", "High", "Critical"].includes(text);
+          const isDate = /^[A-Z][a-z]{2} \d/.test(text);
+          const isDesc = text.length > 25;
+          const isName = text.length < 12 && !isPriority && !isDate && !isDesc;
+
+          if (!currentCard && !isPriority && !isDate && !isDesc) {
+            // First short text = title, starts a new card
+            currentCard = { title: text, desc: "", member: { initials: "?", avatarBg: "tag-blue-bg", avatarText: "tag-blue-text" }, firstName: "", dueDate: "", priorityLabel: "", priorityColor: "grey" };
+          } else if (currentCard) {
+            if (isDesc && !currentCard.desc) currentCard.desc = text;
+            else if (isName && !currentCard.firstName) { currentCard.firstName = text; currentCard.member.initials = text[0]; }
+            else if (isDate && !currentCard.dueDate) currentCard.dueDate = text;
+            else if (isPriority) {
+              currentCard.priorityLabel = text;
+              currentCard.priorityColor = priorityColors[text] || "grey";
+              cards.push(currentCard);
+              currentCard = null;
+            } else if (!currentCard.title) {
+              currentCard.title = text;
+            }
+          }
+        }
+        if (currentCard) cards.push(currentCard);
+
+        const sm = statusMap[label] || { key: label.toLowerCase().replace(/\s/g, "_"), color: "bg-ui-tag-neutral-icon" };
+        return { status: sm.key, label, count, statusColor: sm.color, cards };
+      });
+    }
     }
   }
 
@@ -606,7 +691,7 @@ function analyzeTemplate(name, source, manifestBlock) {
   const { props, helperTypes } = deriveProps(patterns, topTexts, repeatBlocks, componentName);
 
   // Phase 3: extract sample data from tree
-  const sampleData = extractSampleData(sampleTree, props, topTexts, repeatBlocks);
+  const sampleData = extractSampleData(sampleTree, props, topTexts, repeatBlocks, patterns);
 
   const propsArray = [...props.entries()].map(([name, info]) => ({
     name, type: info.type, ...(info.optional ? { optional: true } : {})
