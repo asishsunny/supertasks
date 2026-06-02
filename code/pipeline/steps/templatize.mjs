@@ -81,7 +81,7 @@ function stripAndResolve(classStr) {
   });
 
   // Replace fixed widths (e.g. w-[1136px] → w-full)
-  classes = classes.map(c => REPLACE_WIDTHS[c] || c);
+  classes = classes.map(c => c in REPLACE_WIDTHS ? REPLACE_WIDTHS[c] : c).filter(Boolean);
 
   return classes.join(" ");
 }
@@ -103,10 +103,15 @@ function structuralSig(node) {
         c => !(t.isJSXText(c) && !c.value.trim())
       );
     },
-    // Normalize text content
-    JSXText(p) { p.node.value = "_"; },
-    // Normalize all string literals (including classNames)
-    StringLiteral(p) { p.node.value = "_"; },
+    // KEEP text content — elements with different text are NOT duplicates
+    // Only normalize classNames (structural, not content)
+    StringLiteral(p) {
+      // Normalize className values but keep other strings (e.g. text in attributes)
+      const parent = p.parent;
+      if (t.isJSXAttribute(parent) && parent.name?.name === "className") {
+        p.node.value = "_cls";
+      }
+    },
     NumericLiteral(p) { p.node.value = 0; },
     // Normalize JSX element names (SquareGreySolid → _Component)
     JSXIdentifier(p) {

@@ -1,0 +1,167 @@
+{
+  "componentName": "SettingsBilling",
+  "exportType": "named",
+  "sampleData": {
+    "navItems": [
+      {
+        "label": "Profile",
+        "active": true
+      },
+      {
+        "label": "Notifications",
+        "active": false
+      },
+      {
+        "label": "Security",
+        "active": false
+      },
+      {
+        "label": "Billing",
+        "active": false
+      },
+      {
+        "label": "Billing",
+        "active": false
+      }
+    ]
+  },
+  "props": [
+    {
+      "name": "navItems",
+      "type": "NavItem[]"
+    },
+    {
+      "name": "onNavClick",
+      "type": "(label: string) => void",
+      "optional": true
+    },
+    {
+      "name": "title",
+      "type": "string"
+    },
+    {
+      "name": "plan",
+      "type": "BillingPlan"
+    },
+    {
+      "name": "payment",
+      "type": "PaymentMethod"
+    },
+    {
+      "name": "onChangePlan",
+      "type": "() => void",
+      "optional": true
+    },
+    {
+      "name": "onUpdatePayment",
+      "type": "() => void",
+      "optional": true
+    },
+    {
+      "name": "historyTitle",
+      "type": "string"
+    },
+    {
+      "name": "historyColumns",
+      "type": "BillingHistoryColumn[]"
+    },
+    {
+      "name": "historyRows",
+      "type": "BillingHistoryRow[]"
+    }
+  ],
+  "helperTypes": [
+    {
+      "name": "NavItem",
+      "fields": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "BillingPlan",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "price",
+          "type": "string"
+        },
+        {
+          "name": "renewalNote",
+          "type": "string"
+        },
+        {
+          "name": "changeLabel",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "PaymentMethod",
+      "fields": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "desc",
+          "type": "string"
+        },
+        {
+          "name": "updateLabel",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "BillingHistoryColumn",
+      "fields": [
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "header",
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "BillingHistoryRow",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string | number"
+        }
+      ]
+    }
+  ],
+  "imports": {
+    "ui": [
+      "Button",
+      "Table"
+    ],
+    "icons": []
+  },
+  "patterns": [
+    "nav-sidebar",
+    "billing",
+    "table",
+    "data-repeat"
+  ]
+}

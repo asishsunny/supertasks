@@ -281,7 +281,7 @@ export function createDetector(componentMap, data) {
         const shortcut = texts.find(tx => tx.includes("⌘")) || "⌘K";
         const placeholder = texts.find(tx => tx !== shortcut && tx !== "⌘K" && tx.length > 0) || "Search";
         const input = makeJSXElement("Input", { type: "search", size: detectSize(cls), placeholder }, [], true);
-        const kbd = makeJSXElement("Kbd", {}, [t.jsxText(shortcut)], false);
+        const kbd = makeJSXElement("Kbd", { className: "absolute right-1.5 top-1/2 -translate-y-1/2" }, [t.jsxText(shortcut)], false);
         const wrapper = makeJSXElement("div", { className: "relative" }, [input, kbd], false);
         path.replaceWith(wrapper);
         return true;
@@ -299,12 +299,15 @@ export function createDetector(componentMap, data) {
     // 5c. Segment Control
     if (dataName === "Segment Control") {
       const items = el.children.filter(c => t.isJSXElement(c));
-      const tabs = items.map(item => {
+      const tabElements = items.map(item => {
         const texts = getTextChildren(item);
-        return texts[0] || "";
-      }).filter(Boolean);
-      const tabElements = tabs.map(label => {
-        return makeJSXElement("button", { className: "segment-tab" }, [t.jsxText(label)], false);
+        const label = texts[0] || "";
+        const cls = getAttr(item.openingElement?.attributes || [], "className") || "";
+        const isActive = cls.includes("bg-") && cls.includes("shadow-");
+        const tabClass = isActive
+          ? "bg-ui-bg-base text-ui-fg-base shadow-elevation-card-rest px-2.5 py-1 rounded-md txt-compact-small cursor-pointer"
+          : "text-ui-fg-subtle px-2.5 py-1 rounded-md txt-compact-small cursor-pointer";
+        return makeJSXElement("button", { className: tabClass }, [t.jsxText(label)], false);
       });
       const result = makeJSXElement("div", { className: "bg-ui-bg-segment-control flex gap-0.5 items-center p-0.5 rounded-lg shrink-0" }, tabElements, false);
       path.replaceWith(result);

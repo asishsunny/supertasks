@@ -1,0 +1,52 @@
+{
+  "componentName": "StatCards",
+  "exportType": "default",
+  "sampleData": {
+    "cards": [
+      {
+        "label": "Total Tasks",
+        "value": "18"
+      },
+      {
+        "label": "In Progress",
+        "value": "5"
+      },
+      {
+        "label": "Completed",
+        "value": "3"
+      },
+      {
+        "label": "Overdue",
+        "value": "5"
+      }
+    ]
+  },
+  "props": [
+    {
+      "name": "cards",
+      "type": "CardItem[]"
+    }
+  ],
+  "helperTypes": [
+    {
+      "name": "CardItem",
+      "fields": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "imports": {
+    "ui": [],
+    "icons": []
+  },
+  "patterns": [
+    "data-repeat"
+  ]
+}

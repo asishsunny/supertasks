@@ -1,6 +1,6 @@
+import { ReactNode } from "react";
 import { Button, IconButton, Input, Kbd } from "@medusajs/ui";
 import { DescendingSorting } from "@medusajs/icons";
-import { type ReactNode } from "react";
 
 interface ViewTab {
   key: string;
@@ -8,7 +8,7 @@ interface ViewTab {
 }
 
 interface ActionButton {
-  icon: ReactNode;
+  icon?: ReactNode;
   label: string;
 }
 
@@ -17,8 +17,8 @@ export interface ControlsProps {
   activeTab: string;
   onTabChange?: (key: string) => void;
   actions: ActionButton[];
-  searchPlaceholder?: string;
   searchShortcut?: string;
+  searchPlaceholder?: string;
   onSearch?: (query: string) => void;
   onSort?: () => void;
 }
@@ -28,27 +28,23 @@ export function Controls({
   activeTab,
   onTabChange,
   actions,
-  searchPlaceholder,
-  searchShortcut,
+  searchShortcut = "⌘K",
+  searchPlaceholder = "Search",
   onSearch,
   onSort,
 }: ControlsProps) {
   return (
-    <div className="flex gap-0 items-center w-full h-full">
+    <div className="flex gap-0 h-8 items-center w-full">
       <div className="bg-ui-bg-segment-control flex gap-0.5 items-center p-0.5 rounded-lg shrink-0">
         {tabs.map((tab) => (
           <button
             key={tab.key}
-            type="button"
-            role="tab"
-            aria-selected={activeTab === tab.key}
-            tabIndex={0}
-            onClick={() => onTabChange?.(tab.key)}
             className={`px-2.5 py-1 rounded-md txt-compact-small cursor-pointer ${
-              activeTab === tab.key
+              tab.key === activeTab
                 ? "bg-ui-bg-base text-ui-fg-base shadow-elevation-card-rest"
                 : "text-ui-fg-subtle"
             }`}
+            onClick={() => onTabChange?.(tab.key)}
           >
             {tab.label}
           </button>
@@ -67,8 +63,8 @@ export function Controls({
         <IconButton
           size="small"
           variant="primary"
+          onClick={() => onSort?.()}
           aria-label="Sort"
-          onClick={onSort}
         >
           <DescendingSorting />
         </IconButton>
@@ -79,7 +75,9 @@ export function Controls({
             placeholder={searchPlaceholder}
             onChange={(e) => onSearch?.(e.target.value)}
           />
-          {searchShortcut && <Kbd>{searchShortcut}</Kbd>}
+          <Kbd className="absolute right-1.5 top-1/2 -translate-y-1/2">
+            {searchShortcut}
+          </Kbd>
         </div>
       </div>
     </div>

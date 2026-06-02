@@ -101,6 +101,11 @@ export function createTokenResolver(MAPS) {
       return resolved;
     }
 
+    // Fixed width overrides (must check before raw pixel conversion)
+    if (cls in (noiseConfig.replace_fixed_widths || {})) {
+      return noiseConfig.replace_fixed_widths[cls] || null;
+    }
+
     // Raw pixel → spacing (tokens first, then px/4 math for standard Tailwind values)
     const rawPxMatch = cls.match(/^(.+?-)\[(\d+)px\]$/);
     if (rawPxMatch) {
@@ -114,9 +119,6 @@ export function createTokenResolver(MAPS) {
     }
 
     if (cls in ARBITRARY_MAP) return ARBITRARY_MAP[cls];
-
-    const fixedW = noiseConfig.replace_fixed_widths?.[cls];
-    if (fixedW) return fixedW;
 
     return cls;
   }

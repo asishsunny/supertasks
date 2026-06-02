@@ -1,0 +1,67 @@
+{
+  "componentName": "RecentTasks",
+  "exportType": "named",
+  "sampleData": {},
+  "props": [
+    {
+      "name": "title",
+      "type": "string"
+    },
+    {
+      "name": "columns",
+      "type": "Column[]"
+    },
+    {
+      "name": "rows",
+      "type": "Row[]"
+    }
+  ],
+  "helperTypes": [
+    {
+      "name": "Column",
+      "fields": [
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "header",
+          "type": "string"
+        },
+        {
+          "name": "width",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "render",
+          "type": "(row: any) => ReactNode"
+        }
+      ]
+    },
+    {
+      "name": "Row",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string | number"
+        }
+      ]
+    }
+  ],
+  "imports": {
+    "ui": [
+      "Table",
+      "Badge",
+      "IconButton"
+    ],
+    "icons": [
+      "EllipsisHorizontal"
+    ]
+  },
+  "patterns": [
+    "table",
+    "data-repeat",
+    "avatar"
+  ]
+}

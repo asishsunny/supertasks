@@ -1,16 +1,44 @@
-"use client";
-
 import { CreateTaskModal } from "@/components/blocks/CreateTaskModal";
-import { MODAL_CONFIGS } from "@/lib/data";
+import type { ModalField } from "@/types";
 
-const c = MODAL_CONFIGS.create_task;
+const fieldsData = [
+    { label: "Task name", type: "input" as const, placeholder: "Enter..." },
+    { label: "Description", type: "textarea" as const, placeholder: "Describe..." },
+  ];
 
 export default function Page() {
   return (
-    <div className="p-6">
-      <div className="max-w-[480px]">
-        <CreateTaskModal title={c.title} fields={c.fields} primaryAction={c.actions.primary} secondaryAction={c.actions.secondary} />
-      </div>
+    <div className="flex flex-col gap-8 p-6">
+      <section className="flex flex-col gap-3">
+        <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Create Task</h2>
+        <CreateTaskModal
+          title={"Title"}
+          fields={fieldsData}
+          primaryAction={"Confirm"}
+          secondaryAction={"Cancel"}
+          escLabel={"Esc"}
+        />
+      </section>
+      <section className="flex flex-col gap-3">
+        <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Invite Member</h2>
+        <CreateTaskModal
+          title={"Title"}
+          fields={fieldsData}
+          primaryAction={"Confirm"}
+          secondaryAction={"Cancel"}
+          escLabel={"Esc"}
+        />
+      </section>
+      <section className="flex flex-col gap-3">
+        <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Generate Report</h2>
+        <CreateTaskModal
+          title={"Title"}
+          fields={fieldsData}
+          primaryAction={"Confirm"}
+          secondaryAction={"Cancel"}
+          escLabel={"Esc"}
+        />
+      </section>
     </div>
   );
 }

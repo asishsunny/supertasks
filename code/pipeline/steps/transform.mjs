@@ -39,7 +39,22 @@ const { detectAndSwap, patternDetectAndSwap, getWarnings } = createDetector(MAPS
 // ── AST transform pipeline ──
 function transformAST(code) {
   const startsWithJSX = code.trim().startsWith("<");
-  const wrapped = startsWithJSX ? `<>${code}</>` : code;
+  // Wrap multi-root returns: return (\n    <div>...</div>\n    <div>...</div>\n)
+  let processed = code;
+  if (!startsWithJSX) {
+    processed = processed.replace(
+      /return\s*\(\s*\n(\s*<(?!>)[\s\S]*?)\n\s*\)/g,
+      (match, inner) => {
+        // Check if inner has adjacent root elements (multiple top-level tags)
+        const trimmed = inner.trim();
+        try { parse(`<>${trimmed}</>`, { plugins: ["jsx"] }); } catch { return match; }
+        // Only wrap if direct parse fails
+        try { parse(`(${trimmed})`, { plugins: ["jsx"] }); return match; } catch {}
+        return `return (\n    <>${inner}</>\n  )`;
+      }
+    );
+  }
+  const wrapped = startsWithJSX ? `<>${processed}</>` : processed;
   const ast = parse(wrapped, { sourceType: "module", plugins: ["jsx", "typescript"] });
 
   // ── Pass 1: Strip Figma scaffolding (component defs, asset URLs, decorative elements) ──
@@ -107,6 +122,70 @@ function transformAST(code) {
         path.node.value = t.stringLiteral(classes.join(" "));
       }
     },
+    noScope: true,
+  });
+
+  // ── Pass 5: Mark structural siblings with data-repeat (no removal) ──
+  // Siblings with identical structure (same tags, same nesting) but different text
+  // get data-repeat="N" on the first one. All items stay — sample data for gallery.
+  const MIN_SIBLING_DEPTH = 3;
+
+  function structuralSig(node) {
+    if (!t.isJSXElement(node)) return null;
+    const clone = t.cloneNode(node, true);
+    const miniAst = t.file(t.program([t.expressionStatement(clone)]));
+    traverse(miniAst, {
+      JSXText(p) { p.node.value = "_"; },
+      StringLiteral(p) {
+        if (t.isJSXAttribute(p.parent) && p.parent.name?.name === "className") p.node.value = "_cls";
+      },
+      NumericLiteral(p) { p.node.value = 0; },
+      JSXExpressionContainer(p) {
+        if (!t.isJSXEmptyExpression(p.node.expression)) p.node.expression = t.identifier("_");
+      },
+      noScope: true,
+    });
+    return generate(clone, { compact: true }).code.replace(/\s+/g, " ");
+  }
+
+  function markSiblings(parentNode) {
+    const children = parentNode.children;
+    if (!children || children.length < 2) return;
+
+    const elements = [];
+    for (let i = 0; i < children.length; i++) {
+      if (!t.isJSXElement(children[i])) continue;
+      let nested = 0;
+      const mini = t.file(t.program([t.expressionStatement(t.cloneNode(children[i], false))]));
+      traverse(mini, { JSXElement() { nested++; }, noScope: true });
+      if (nested >= MIN_SIBLING_DEPTH) {
+        elements.push({ idx: i, node: children[i], sig: structuralSig(children[i]) });
+      }
+    }
+
+    const groups = {};
+    for (const el of elements) {
+      if (!el.sig) continue;
+      if (!groups[el.sig]) groups[el.sig] = [];
+      groups[el.sig].push(el);
+    }
+
+    for (const group of Object.values(groups)) {
+      if (group.length < 2) continue;
+      const first = group[0].node;
+      const already = first.openingElement.attributes.some(
+        a => t.isJSXAttribute(a) && a.name?.name === "data-repeat"
+      );
+      if (!already) {
+        first.openingElement.attributes.push(
+          t.jsxAttribute(t.jsxIdentifier("data-repeat"), t.stringLiteral(String(group.length)))
+        );
+      }
+    }
+  }
+
+  traverse(ast, {
+    JSXElement: { exit(path) { markSiblings(path.node); } },
     noScope: true,
   });
 

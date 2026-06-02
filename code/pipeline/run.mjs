@@ -4,19 +4,17 @@
  *
  * Steps:
  *   1. cache       — Fetch from Figma MCP (via workflow, not this script)
- *   2. transform   — AST: raw JSX → resolved tokens + detected components
- *   3. templatize  — AST: noise strip + dedup repeated siblings (data-repeat)
- *   4. build       — Claude: templatized → prop-based block (via subagent, not this script)
- *   5. scorecard   — 12-rule quality check against build-checklist.json
- *   6. diff        — Screenshot browser vs Figma
+ *   2. transform   — AST: tokens + components + noise + width + sibling markers
+ *   3. build       — Claude: transform output → prop-based block (via subagent)
+ *   4. scorecard   — quality check against build-checklist.json
+ *   5. diff        — Screenshot browser vs Figma
  *
  * Usage:
- *   node build-pipeline.mjs                          (run steps 2+3+5)
+ *   node build-pipeline.mjs                          (run steps 2+4)
  *   node build-pipeline.mjs --phase transform        (step 2 only)
- *   node build-pipeline.mjs --phase templatize       (step 3 only)
- *   node build-pipeline.mjs --phase scorecard        (step 5 only)
- *   node build-pipeline.mjs --phase diff             (step 6 only)
- *   node build-pipeline.mjs --phase all              (steps 2+3+5)
+ *   node build-pipeline.mjs --phase scorecard        (step 4 only)
+ *   node build-pipeline.mjs --phase diff             (step 5 only)
+ *   node build-pipeline.mjs --phase all              (steps 2+4)
  *   node build-pipeline.mjs --snippet controls       (single snippet)
  *   node build-pipeline.mjs --force                  (overwrite existing)
  */
@@ -29,7 +27,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
-const manifest = JSON.parse(readFileSync(resolve(ROOT, "artifacts/pipeline-x.json"), "utf8"));
+const manifest = JSON.parse(readFileSync(resolve(ROOT, "code/pipeline/manifest.json"), "utf8"));
 
 const cliArgs = process.argv.slice(2);
 const phaseIdx = cliArgs.indexOf("--phase");
@@ -41,9 +39,10 @@ function toPascal(name) {
   return name.replace(/-(\w)/g, (_, c) => c.toUpperCase()).replace(/^(\w)/, (_, c) => c.toUpperCase());
 }
 
+const allSnippets = manifest.snippets || Object.entries(manifest.blocks).map(([name, v]) => ({ name, ...v }));
 const snippets = snippetFilter
-  ? manifest.snippets.filter(s => s.name === snippetFilter)
-  : manifest.snippets;
+  ? allSnippets.filter(s => s.name === snippetFilter)
+  : allSnippets;
 
 // ── Step 2: Transform ──
 function runTransform() {
@@ -88,48 +87,9 @@ function runTransform() {
   return results;
 }
 
-// ── Step 3: Templatize ──
-function runTemplatize() {
-  console.log("=== Step 3: Templatize ===\n");
-  const results = [];
-
-  for (const s of snippets) {
-    const inPath = resolve(ROOT, `artifacts/transformed/${s.name}.tsx`);
-    const outPath = resolve(ROOT, `artifacts/transformed/${s.name}-templatized.tsx`);
-
-    if (!existsSync(inPath)) {
-      results.push({ name: s.name, status: "SKIP", reason: "no transform" });
-      continue;
-    }
-
-    if (!force && existsSync(outPath)) {
-      results.push({ name: s.name, status: "SKIP", reason: "exists", size: `${(readFileSync(outPath).length / 1024).toFixed(1)}KB` });
-      continue;
-    }
-
-    try {
-      execSync(`node ${resolve(__dirname, "steps/templatize.mjs")} "${inPath}" --out "${outPath}"`, { cwd: ROOT, stdio: ["pipe", "pipe", "pipe"], maxBuffer: 10 * 1024 * 1024 });
-      const inSize = readFileSync(inPath).length;
-      const outSize = readFileSync(outPath).length;
-      const reduction = Math.round((1 - outSize / inSize) * 100);
-      results.push({ name: s.name, status: "OK", size: `${(outSize / 1024).toFixed(1)}KB`, reduction: `${reduction}%` });
-    } catch (e) {
-      results.push({ name: s.name, status: "FAIL", reason: (e.stderr?.toString() || e.message).slice(0, 200) });
-    }
-  }
-
-  console.log("| Snippet | Status | Size | Reduction |");
-  console.log("|---------|--------|------|-----------|");
-  for (const r of results) {
-    console.log(`| ${r.name} | ${r.status} | ${r.size || ""} | ${r.reduction || r.reason || ""} |`);
-  }
-  console.log();
-  return results;
-}
-
-// ── Step 5: Scorecard ──
+// ── Step 4: Scorecard ──
 function runScorecard() {
-  console.log("=== Step 5: Scorecard ===\n");
+  console.log("=== Step 4: Scorecard ===\n");
   const blocksDir = resolve(ROOT, "app/src/components/blocks");
   const viewsDir = resolve(ROOT, "app/src/components/views");
   const checklist = JSON.parse(readFileSync(resolve(ROOT, "code/rules/build-checklist.json"), "utf8"));
@@ -160,9 +120,9 @@ function runScorecard() {
     }
 
     // staleness — block content must differ from raw template (agent actually transformed it)
-    const templatizedPath = resolve(ROOT, `artifacts/transformed/${s.name}-templatized.tsx`);
-    if (existsSync(templatizedPath)) {
-      const templateContent = readFileSync(templatizedPath, "utf8");
+    const transformPath = resolve(ROOT, `artifacts/transformed/${s.name}.tsx`);
+    if (existsSync(transformPath)) {
+      const templateContent = readFileSync(transformPath, "utf8");
       const blockHash = createHash("md5").update(content).digest("hex");
       const templateHash = createHash("md5").update(templateContent).digest("hex");
       if (blockHash === templateHash) {
@@ -213,10 +173,10 @@ function runScorecard() {
     results["data-driven"] = hardcoded.length === 0;
 
     // transform-fidelity — check block uses components that transform uses
-    const transformPath = resolve(ROOT, `artifacts/transformed/${s.name}.tsx`);
+    const fidelityPath = resolve(ROOT, `artifacts/transformed/${s.name}.tsx`);
     let fidelityOk = true;
-    if (existsSync(transformPath)) {
-      const transformContent = readFileSync(transformPath, "utf8");
+    if (existsSync(fidelityPath)) {
+      const transformContent = readFileSync(fidelityPath, "utf8");
       const expectedComponents = ["Badge", "ColorAvatar", "Table", "IconButton", "Button", "Input", "Select", "Textarea"];
       const transformUses = expectedComponents.filter(c => transformContent.includes(c));
       const blockMissing = transformUses.filter(c => !content.includes(c));
@@ -370,13 +330,12 @@ function runDiff() {
 // ── Run ──
 console.log("╔══════════════════════════════════╗");
 console.log("║       BUILD PIPELINE             ║");
-console.log("║  cache → transform → templatize  ║");
-console.log("║  → build → scorecard → diff      ║");
+console.log("║  cache → transform → build       ║");
+console.log("║  → scorecard → diff              ║");
 console.log("╚══════════════════════════════════╝\n");
 console.log(`Snippets: ${snippets.map(s => s.name).join(", ")}\n`);
 
 if (phase === "transform" || phase === "all") runTransform();
-if (phase === "templatize" || phase === "all") runTemplatize();
 if (phase === "scorecard" || phase === "all") runScorecard();
 if (phase === "diff") runDiff();
 
@@ -384,7 +343,7 @@ if (phase === "all") {
   console.log("─────────────────────────────────");
   console.log("Steps 1 (cache) and 4 (build) run via Claude.");
   console.log("  Cache:  /pipeline-x or workflow");
-  console.log("  Build:  Claude reads templatized → writes block");
+  console.log("  Build:  Claude reads transform output → writes block");
   console.log("  Diff:   node build-pipeline.mjs --phase diff");
   console.log("─────────────────────────────────");
 }

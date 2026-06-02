@@ -1,0 +1,92 @@
+{
+  "componentName": "Controls",
+  "exportType": "named",
+  "sampleData": {},
+  "props": [
+    {
+      "name": "tabs",
+      "type": "ViewTab[]"
+    },
+    {
+      "name": "activeTab",
+      "type": "string"
+    },
+    {
+      "name": "onTabChange",
+      "type": "(key: string) => void",
+      "optional": true
+    },
+    {
+      "name": "actions",
+      "type": "ActionButton[]"
+    },
+    {
+      "name": "searchShortcut",
+      "type": "string",
+      "optional": true
+    },
+    {
+      "name": "searchPlaceholder",
+      "type": "string",
+      "optional": true
+    },
+    {
+      "name": "onSearch",
+      "type": "(query: string) => void",
+      "optional": true
+    },
+    {
+      "name": "onSort",
+      "type": "() => void",
+      "optional": true
+    }
+  ],
+  "helperTypes": [
+    {
+      "name": "ViewTab",
+      "fields": [
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "label",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ActionButton",
+      "fields": [
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "optional": true
+        },
+        {
+          "name": "label",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "imports": {
+    "ui": [
+      "Button",
+      "IconButton",
+      "Input",
+      "Kbd"
+    ],
+    "icons": [
+      "Funnel",
+      "CalendarMini",
+      "Adjustments",
+      "DescendingSorting"
+    ]
+  },
+  "patterns": [
+    "segment-control",
+    "kbd-shortcut",
+    "action-buttons"
+  ]
+}

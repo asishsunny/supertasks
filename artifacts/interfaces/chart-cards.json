@@ -1,0 +1,65 @@
+{
+  "componentName": "ChartCards",
+  "exportType": "named",
+  "sampleData": {
+    "charts": [
+      {
+        "title": "Tasks by Priority",
+        "total": 0
+      },
+      {
+        "title": "Tasks by Status",
+        "total": 0
+      }
+    ]
+  },
+  "props": [
+    {
+      "name": "charts",
+      "type": "ChartCard[]"
+    }
+  ],
+  "helperTypes": [
+    {
+      "name": "BarRow",
+      "fields": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "count",
+          "type": "number"
+        },
+        {
+          "name": "color",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ChartCard",
+      "fields": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "rows",
+          "type": "BarRow[]"
+        },
+        {
+          "name": "total",
+          "type": "number"
+        }
+      ]
+    }
+  ],
+  "imports": {
+    "ui": [],
+    "icons": []
+  },
+  "patterns": [
+    "data-repeat"
+  ]
+}

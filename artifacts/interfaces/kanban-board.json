@@ -1,0 +1,49 @@
+{
+  "componentName": "KanbanBoard",
+  "exportType": "named",
+  "sampleData": {},
+  "props": [
+    {
+      "name": "columns",
+      "type": "KanbanColumn[]"
+    }
+  ],
+  "helperTypes": [
+    {
+      "name": "KanbanColumn",
+      "fields": [
+        {
+          "name": "status",
+          "type": "string"
+        },
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "count",
+          "type": "number"
+        },
+        {
+          "name": "statusIcon",
+          "type": "ReactNode"
+        },
+        {
+          "name": "cards",
+          "type": "ReactNode[]"
+        }
+      ]
+    }
+  ],
+  "imports": {
+    "ui": [
+      "Badge"
+    ],
+    "icons": []
+  },
+  "patterns": [
+    "kanban",
+    "data-repeat",
+    "avatar"
+  ]
+}

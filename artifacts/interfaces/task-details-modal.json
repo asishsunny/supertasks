@@ -1,0 +1,141 @@
+{
+  "componentName": "TaskDetailsModal",
+  "exportType": "default",
+  "sampleData": {
+    "description": "Esc",
+    "infoLabel": "Info",
+    "escLabel": "Esc"
+  },
+  "props": [
+    {
+      "name": "title",
+      "type": "string"
+    },
+    {
+      "name": "headerLabel",
+      "type": "string"
+    },
+    {
+      "name": "description",
+      "type": "string"
+    },
+    {
+      "name": "infoLabel",
+      "type": "string"
+    },
+    {
+      "name": "infoRows",
+      "type": "InfoRow[]"
+    },
+    {
+      "name": "activityLabel",
+      "type": "string"
+    },
+    {
+      "name": "activity",
+      "type": "ActivityEntry[]"
+    },
+    {
+      "name": "primaryAction",
+      "type": "string"
+    },
+    {
+      "name": "secondaryAction",
+      "type": "string"
+    },
+    {
+      "name": "escLabel",
+      "type": "string"
+    },
+    {
+      "name": "onClose",
+      "type": "() => void",
+      "optional": true
+    },
+    {
+      "name": "onEdit",
+      "type": "() => void",
+      "optional": true
+    },
+    {
+      "name": "onComplete",
+      "type": "() => void",
+      "optional": true
+    },
+    {
+      "name": "onMore",
+      "type": "() => void",
+      "optional": true
+    }
+  ],
+  "helperTypes": [
+    {
+      "name": "InfoRow",
+      "fields": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        },
+        {
+          "name": "type",
+          "type": "\"status\" | \"assignee\" | \"date\""
+        },
+        {
+          "name": "overdue",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "statusColor",
+          "type": "{ bg: string; border: string; text: string }",
+          "optional": true
+        },
+        {
+          "name": "member",
+          "type": "Pick<Member, \"initials\" | \"avatarBg\" | \"avatarText\">",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "ActivityEntry",
+      "fields": [
+        {
+          "name": "member",
+          "type": "Pick<Member, \"initials\" | \"avatarBg\" | \"avatarText\">"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "time",
+          "type": "string"
+        },
+        {
+          "name": "text",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "imports": {
+    "ui": [
+      "Kbd",
+      "IconButton",
+      "Button"
+    ],
+    "icons": [
+      "XMark"
+    ]
+  },
+  "patterns": [
+    "modal",
+    "data-repeat",
+    "avatar"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "componentName": "CreateTaskModal",
+  "exportType": "named",
+  "sampleData": {
+    "escLabel": "Esc"
+  },
+  "props": [
+    {
+      "name": "title",
+      "type": "string"
+    },
+    {
+      "name": "fields",
+      "type": "ModalField[]"
+    },
+    {
+      "name": "primaryAction",
+      "type": "string"
+    },
+    {
+      "name": "secondaryAction",
+      "type": "string"
+    },
+    {
+      "name": "escLabel",
+      "type": "string"
+    },
+    {
+      "name": "onClose",
+      "type": "() => void",
+      "optional": true
+    },
+    {
+      "name": "onSubmit",
+      "type": "() => void",
+      "optional": true
+    }
+  ],
+  "helperTypes": [],
+  "imports": {
+    "ui": [
+      "Kbd",
+      "IconButton",
+      "Label",
+      "Select",
+      "Input",
+      "Textarea",
+      "Button"
+    ],
+    "icons": [
+      "XMark"
+    ]
+  },
+  "patterns": [
+    "modal",
+    "data-repeat",
+    "form-fields"
+  ]
+}

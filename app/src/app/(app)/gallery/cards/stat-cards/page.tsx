@@ -1,17 +1,39 @@
-"use client";
-
 import StatCards from "@/components/blocks/StatCards";
-import { INITIAL_TASKS } from "@/lib/data";
-import { STATUS_LABEL } from "@/lib/constants";
-import type { Status } from "@/types";
 
-const STATUSES: Status[] = ['todo', 'in_progress', 'in_review', 'done'];
-const cards = STATUSES.map(s => ({ label: STATUS_LABEL[s], value: String(INITIAL_TASKS.filter(t => t.status === s).length) }));
+const cardsData = [
+  {
+    label: "Total Tasks",
+    value: "18"
+  },
+  {
+    label: "In Progress",
+    value: "5"
+  },
+  {
+    label: "Completed",
+    value: "3"
+  },
+  {
+    label: "Overdue",
+    value: "5"
+  }
+];
 
 export default function Page() {
   return (
-    <div className="p-6">
-      <StatCards cards={cards} />
+    <div className="flex flex-col gap-8 p-6">
+      <section className="flex flex-col gap-3">
+        <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Dashboard</h2>
+        <StatCards
+          cards={cardsData}
+        />
+      </section>
+      <section className="flex flex-col gap-3">
+        <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Reports</h2>
+        <StatCards
+          cards={cardsData}
+        />
+      </section>
     </div>
   );
 }

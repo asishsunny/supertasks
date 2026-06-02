@@ -1,17 +1,18 @@
 {
-  "__doc": "Single source of truth. Everything derived from blocks + fileKey.",
+  "__doc": "Single source of truth for the build pipeline. All scripts read this.",
   "fileKey": "D4Hav0rqH4Zql11h0YgcRv",
+  "wrapperNodeId": "4593:7091",
   "blocks": {
-    "stat-cards":              { "figma": "Stat Cards",        "type": "card",    "variations": ["dashboard", "reports"] },
-    "chart-cards":             { "figma": "Chart Cards",       "type": "card" },
-    "controls":                { "figma": "Controls",          "type": "control", "variations": ["tasks", "reports"] },
-    "recent-tasks":            { "figma": "Recent Tasks",      "type": "view" },
-    "kanban-board":            { "figma": "Kanban Board",      "type": "view" },
-    "create-task-modal":       { "figma": "Create Task Modal", "type": "overlay", "variations": ["create-task", "invite-member", "generate-report"] },
-    "task-details-modal":      { "figma": "Task Details Modal","type": "overlay" },
-    "settings-profile":        { "figma": "Settings Content",  "type": "view", "figmaIndex": 0 },
-    "settings-notifications":  { "figma": "Settings Content",  "type": "view", "figmaIndex": 1 },
-    "settings-security":       { "figma": "Settings Content",  "type": "view", "figmaIndex": 2 },
-    "settings-billing":        { "figma": "Settings Content",  "type": "view", "figmaIndex": 3 }
+    "stat-cards":              { "figma": "Stat Cards",        "dest": "components/blocks/StatCards.tsx",              "export": "default", "type": "card",    "variations": ["dashboard", "reports"] },
+    "chart-cards":             { "figma": "Chart Cards",       "dest": "components/blocks/ChartCards.tsx",             "export": "named",   "type": "card" },
+    "controls":                { "figma": "Controls",          "dest": "components/blocks/Controls.tsx",               "export": "named",   "type": "control", "variations": ["tasks", "reports"] },
+    "recent-tasks":            { "figma": "Recent Tasks",      "dest": "components/blocks/RecentTasks.tsx",            "export": "named",   "type": "view" },
+    "kanban-board":            { "figma": "Kanban Board",      "dest": "components/blocks/KanbanBoard.tsx",            "export": "named",   "type": "view" },
+    "create-task-modal":       { "figma": "Create Task Modal", "dest": "components/blocks/CreateTaskModal.tsx",        "export": "named",   "type": "overlay", "variations": ["create-task", "invite-member", "generate-report"] },
+    "task-details-modal":      { "figma": "Task Details Modal","dest": "components/blocks/TaskDetailsModal.tsx",       "export": "default", "type": "overlay" },
+    "settings-profile":        { "figma": "Settings Content",  "dest": "components/blocks/SettingsProfile.tsx",        "export": "named",   "type": "view", "figmaIndex": 0 },
+    "settings-notifications":  { "figma": "Settings Content",  "dest": "components/blocks/SettingsNotifications.tsx",  "export": "named",   "type": "view", "figmaIndex": 1 },
+    "settings-security":       { "figma": "Settings Content",  "dest": "components/blocks/SettingsSecurity.tsx",       "export": "named",   "type": "view", "figmaIndex": 2 },
+    "settings-billing":        { "figma": "Settings Content",  "dest": "components/blocks/SettingsBilling.tsx",        "export": "named",   "type": "view", "figmaIndex": 3 }
   }
 }

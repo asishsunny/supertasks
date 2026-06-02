@@ -1,32 +1,26 @@
-// source: artifacts/transformed/recent-tasks-templatized.tsx
-
 import { Table } from "@medusajs/ui";
 import type { ReactNode } from "react";
 
-export interface RecentTasksColumn<T extends RecentTasksRow = RecentTasksRow> {
+interface Column {
   key: string;
   header: string;
-  width?: string;
-  render: (row: T) => ReactNode;
+  className?: string;
+  render: (row: any) => ReactNode;
 }
 
-export interface RecentTasksRow {
+interface Row {
   id: string | number;
 }
 
-export interface RecentTasksProps<T extends RecentTasksRow = RecentTasksRow> {
+export interface RecentTasksProps {
   title: string;
-  columns: RecentTasksColumn<T>[];
-  rows: T[];
+  columns: Column[];
+  rows: Row[];
 }
 
-export function RecentTasks<T extends RecentTasksRow>({
-  title,
-  columns,
-  rows,
-}: RecentTasksProps<T>) {
+export function RecentTasks({ title, columns, rows }: RecentTasksProps) {
   return (
-    <div className="bg-ui-bg-base flex flex-col overflow-clip rounded-xl shadow-elevation-card-rest w-full h-full">
+    <div className="bg-ui-bg-base flex flex-col gap-0 overflow-clip p-0 rounded-xl shadow-elevation-card-rest w-full">
       <div className="flex items-start overflow-clip pb-4 pt-6 px-6 w-full">
         <p className="text-ui-fg-base txt-compact-medium-plus">{title}</p>
       </div>
@@ -34,7 +28,7 @@ export function RecentTasks<T extends RecentTasksRow>({
         <Table.Header className="border-t-0">
           <Table.Row>
             {columns.map((col) => (
-              <Table.HeaderCell key={col.key} className={col.width}>
+              <Table.HeaderCell key={col.key} className={col.className}>
                 {col.header}
               </Table.HeaderCell>
             ))}
@@ -44,7 +38,7 @@ export function RecentTasks<T extends RecentTasksRow>({
           {rows.map((row) => (
             <Table.Row key={row.id}>
               {columns.map((col) => (
-                <Table.Cell key={col.key} className={col.width}>
+                <Table.Cell key={col.key} className={col.className}>
                   {col.render(row)}
                 </Table.Cell>
               ))}
@@ -55,3 +49,5 @@ export function RecentTasks<T extends RecentTasksRow>({
     </div>
   );
 }
+
+export default RecentTasks;

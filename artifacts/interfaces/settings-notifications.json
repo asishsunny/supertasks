@@ -1,0 +1,93 @@
+{
+  "componentName": "SettingsNotifications",
+  "exportType": "named",
+  "sampleData": {
+    "navItems": [
+      {
+        "label": "Profile",
+        "active": true
+      },
+      {
+        "label": "Notifications",
+        "active": false
+      },
+      {
+        "label": "Security",
+        "active": false
+      },
+      {
+        "label": "Billing",
+        "active": false
+      },
+      {
+        "label": "Notifications",
+        "active": false
+      }
+    ]
+  },
+  "props": [
+    {
+      "name": "navItems",
+      "type": "NavItem[]"
+    },
+    {
+      "name": "onNavClick",
+      "type": "(label: string) => void",
+      "optional": true
+    },
+    {
+      "name": "title",
+      "type": "string"
+    },
+    {
+      "name": "toggles",
+      "type": "SettingsToggle[]"
+    },
+    {
+      "name": "saveLabel",
+      "type": "string"
+    },
+    {
+      "name": "onSave",
+      "type": "() => void",
+      "optional": true
+    },
+    {
+      "name": "onToggle",
+      "type": "(index: number, value: boolean) => void",
+      "optional": true
+    },
+    {
+      "name": "heading",
+      "type": "string"
+    }
+  ],
+  "helperTypes": [
+    {
+      "name": "NavItem",
+      "fields": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "imports": {
+    "ui": [
+      "Switch",
+      "Button"
+    ],
+    "icons": []
+  },
+  "patterns": [
+    "nav-sidebar",
+    "data-repeat",
+    "toggles"
+  ]
+}

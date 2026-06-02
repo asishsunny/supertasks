@@ -1,0 +1,137 @@
+{
+  "componentName": "SettingsProfile",
+  "exportType": "named",
+  "sampleData": {
+    "title": "Job title",
+    "bioLabel": "Bio",
+    "bioPlaceholder": "Bio",
+    "navItems": [
+      {
+        "label": "Profile",
+        "active": true
+      },
+      {
+        "label": "Notifications",
+        "active": false
+      },
+      {
+        "label": "Security",
+        "active": false
+      },
+      {
+        "label": "Billing",
+        "active": false
+      },
+      {
+        "label": "Profile",
+        "active": false
+      }
+    ]
+  },
+  "props": [
+    {
+      "name": "navItems",
+      "type": "NavItem[]"
+    },
+    {
+      "name": "onNavClick",
+      "type": "(label: string) => void",
+      "optional": true
+    },
+    {
+      "name": "title",
+      "type": "string"
+    },
+    {
+      "name": "avatarSrc",
+      "type": "string",
+      "optional": true
+    },
+    {
+      "name": "avatarFallback",
+      "type": "string"
+    },
+    {
+      "name": "userName",
+      "type": "string"
+    },
+    {
+      "name": "avatarHint",
+      "type": "string"
+    },
+    {
+      "name": "fieldRows",
+      "type": "ProfileFieldRow[]"
+    },
+    {
+      "name": "bioLabel",
+      "type": "string"
+    },
+    {
+      "name": "bioPlaceholder",
+      "type": "string"
+    },
+    {
+      "name": "saveLabel",
+      "type": "string"
+    },
+    {
+      "name": "onSave",
+      "type": "() => void",
+      "optional": true
+    }
+  ],
+  "helperTypes": [
+    {
+      "name": "NavItem",
+      "fields": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "ProfileField",
+      "fields": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "ProfileFieldRow",
+      "fields": [
+        {
+          "name": "fields",
+          "type": "ProfileField[]"
+        }
+      ]
+    }
+  ],
+  "imports": {
+    "ui": [
+      "Avatar",
+      "Label",
+      "Input",
+      "Textarea",
+      "Button"
+    ],
+    "icons": []
+  },
+  "patterns": [
+    "nav-sidebar",
+    "avatar",
+    "form-fields"
+  ]
+}

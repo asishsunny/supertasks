@@ -1,10 +1,11 @@
-export interface StatCardItem {
+interface CardItem {
   label: string;
   value: string;
+  error?: boolean;
 }
 
 export interface StatCardsProps {
-  cards: StatCardItem[];
+  cards: CardItem[];
 }
 
 export default function StatCards({ cards }: StatCardsProps) {
@@ -13,10 +14,18 @@ export default function StatCards({ cards }: StatCardsProps) {
       {cards.map((card, i) => (
         <div
           key={i}
-          className="bg-ui-bg-base flex flex-1 flex-col gap-4 min-w-[1px] overflow-clip p-6 rounded-xl shadow-elevation-card-rest text-ui-fg-base"
+          className={`bg-ui-bg-base flex flex-1 flex-col gap-4 min-w-[1px] overflow-clip p-6 rounded-xl shadow-elevation-card-rest${
+            card.error ? "" : " text-ui-fg-base"
+          }`}
         >
-          <p className="txt-compact-medium-plus">{card.label}</p>
-          <p className="text-[32px] leading-[44px] tracking-[-0.16px] font-normal">
+          <p className={`txt-compact-medium-plus${card.error ? " text-ui-fg-base" : ""}`}>
+            {card.label}
+          </p>
+          <p
+            className={`text-[32px] leading-[44px] tracking-[-0.16px] font-normal${
+              card.error ? " text-ui-fg-error" : ""
+            }`}
+          >
             {card.value}
           </p>
         </div>

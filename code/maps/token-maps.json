@@ -618,17 +618,18 @@
       "text-\\[length:var\\(--font/size.*?\\)\\]",
       "leading-\\[20px\\]",
       "leading-\\[1\\.5\\]",
-      "-translate-x-1/2",
-      "-translate-y-1/2"
+      "-translate-x-1/2"
     ],
     "replace_fixed_widths": {
       "w-[1200px]": "w-full",
       "w-[1136px]": "w-full",
       "w-[1440px]": "w-full",
+      "w-[960px]": "w-full",
       "w-[933px]": "w-full",
       "w-[800px]": "w-full",
       "w-[480px]": "max-w-[480px] w-full",
       "w-[280px]": "w-full",
+      "w-[100px]": "",
       "h-[900px]": "h-full",
       "h-[767px]": "flex-1"
     },

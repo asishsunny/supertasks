@@ -13,7 +13,7 @@ import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = resolve(__dirname, "../..");
+const ROOT = resolve(__dirname, "../../..");
 const CACHE = resolve(ROOT, "artifacts/cache");
 
 const inputFile = process.argv[2];
@@ -25,7 +25,7 @@ const code = raw.find(item => item.type === "text")?.text || "";
 if (!code) { console.error("No code found in MCP result"); process.exit(1); }
 
 // Derive NAME_MAP from manifest.json — single source of truth
-const manifest = JSON.parse(readFileSync(resolve(__dirname, "manifest.json"), "utf8"));
+const manifest = JSON.parse(readFileSync(resolve(__dirname, "../manifest.json"), "utf8"));
 const NAME_MAP = {};
 for (const [key, block] of Object.entries(manifest.blocks)) {
   const figmaName = block.figma;
