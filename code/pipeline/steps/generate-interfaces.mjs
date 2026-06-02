@@ -269,28 +269,39 @@ function deriveProps(patterns, topTexts, repeatBlocks, componentName) {
   if (isModal || isSettings || isToggle || isTable || isBilling)
     addProp(props, "title", "string");
 
-  // ── Kanban ──
+  // ── Kanban — data props, block renders cards internally ──
   if (isKanban) {
-    addHelper(helperTypes, "KanbanColumn", [
+    addHelper(helperTypes, "KanbanCardData", [
+      { name: "id", type: "string | number" },
+      { name: "title", type: "string" },
+      { name: "desc", type: "string" },
+      { name: "member", type: '{ initials: string; avatarBg: string; avatarText: string }' },
+      { name: "firstName", type: "string" },
+      { name: "dueDate", type: "string" },
+      { name: "overdue", type: "boolean", optional: true },
+      { name: "priorityLabel", type: "string" },
+      { name: "priorityColor", type: "string" }]);
+    addHelper(helperTypes, "KanbanColumnData", [
       { name: "status", type: "string" },
       { name: "label", type: "string" },
       { name: "count", type: "number" },
-      { name: "statusIcon", type: "ReactNode" },
-      { name: "cards", type: "ReactNode[]" }]);
-    addProp(props, "columns", "KanbanColumn[]");
+      { name: "statusColor", type: "string" },
+      { name: "cards", type: "KanbanCardData[]" }]);
+    addProp(props, "columns", "KanbanColumnData[]");
   }
 
-  // ── Table (non-settings) ──
+  // ── Table — data props, block renders cells by column type ──
   if (isTable && !isBilling) {
-    addHelper(helperTypes, "Column", [
+    addHelper(helperTypes, "TableColumn", [
       { name: "key", type: "string" },
       { name: "header", type: "string" },
       { name: "width", type: "string", optional: true },
-      { name: "render", type: "(row: any) => ReactNode" }]);
-    addHelper(helperTypes, "Row", [
-      { name: "id", type: "string | number" }]);
-    addProp(props, "columns", "Column[]");
-    addProp(props, "rows", "Row[]");
+      { name: "type", type: '"text" | "badge" | "avatar" | "date"', optional: true }]);
+    addHelper(helperTypes, "TableRow", [
+      { name: "id", type: "string | number" },
+      { name: "[key: string]", type: "unknown" }]);
+    addProp(props, "columns", "TableColumn[]");
+    addProp(props, "rows", "TableRow[]");
   }
 
   // ── Modal ──

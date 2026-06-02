@@ -5,12 +5,54 @@
   "props": [
     {
       "name": "columns",
-      "type": "KanbanColumn[]"
+      "type": "KanbanColumnData[]"
     }
   ],
   "helperTypes": [
     {
-      "name": "KanbanColumn",
+      "name": "KanbanCardData",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string | number"
+        },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "desc",
+          "type": "string"
+        },
+        {
+          "name": "member",
+          "type": "{ initials: string; avatarBg: string; avatarText: string }"
+        },
+        {
+          "name": "firstName",
+          "type": "string"
+        },
+        {
+          "name": "dueDate",
+          "type": "string"
+        },
+        {
+          "name": "overdue",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "priorityLabel",
+          "type": "string"
+        },
+        {
+          "name": "priorityColor",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "KanbanColumnData",
       "fields": [
         {
           "name": "status",
@@ -25,12 +67,12 @@
           "type": "number"
         },
         {
-          "name": "statusIcon",
-          "type": "ReactNode"
+          "name": "statusColor",
+          "type": "string"
         },
         {
           "name": "cards",
-          "type": "ReactNode[]"
+          "type": "KanbanCardData[]"
         }
       ]
     }

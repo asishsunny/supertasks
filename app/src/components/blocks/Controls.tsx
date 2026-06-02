@@ -1,11 +1,6 @@
-import { type ReactNode } from "react";
 import { Button, IconButton, Input, Kbd } from "@medusajs/ui";
-import {
-  Funnel,
-  CalendarMini,
-  Adjustments,
-  DescendingSorting,
-} from "@medusajs/icons";
+import { Funnel, CalendarMini, Adjustments, DescendingSorting } from "@medusajs/icons";
+import type { ReactNode } from "react";
 
 interface ViewTab {
   key: string;
@@ -28,46 +23,84 @@ export interface ControlsProps {
   onSort?: () => void;
 }
 
+const DEFAULT_TABS: ViewTab[] = [
+  {
+    key: "kanban",
+    label: "Kanban"
+  },
+  {
+    key: "list",
+    label: "List"
+  }
+];
+const DEFAULT_ACTIVE_TAB = "kanban";
+const DEFAULT_ACTIONS: ActionButton[] = [
+  {
+    icon: null,
+    label: "Filter"
+  },
+  {
+    icon: null,
+    label: "Date"
+  },
+  {
+    icon: null,
+    label: "Columns"
+  }
+];
+const DEFAULT_SEARCH_PLACEHOLDER = "Search";
+
+export const TASKS_TABS: ViewTab[] = [
+  {
+    key: "kanban",
+    label: "Kanban"
+  },
+  {
+    key: "list",
+    label: "List"
+  }
+];
+export const REPORTS_TABS: ViewTab[] = [
+  {
+    key: "90d",
+    label: "90d"
+  },
+  {
+    key: "30d",
+    label: "30d"
+  },
+  {
+    key: "7d",
+    label: "7d"
+  }
+];
+
 export function Controls({
-  tabs = [
-    { key: "kanban", label: "Kanban" },
-    { key: "list", label: "List" },
-  ],
-  activeTab = "list",
+  tabs = DEFAULT_TABS,
+  activeTab = DEFAULT_ACTIVE_TAB,
   onTabChange,
-  actions = [
-    { icon: <Funnel className="w-[15px] h-[15px]" />, label: "Filter" },
-    { icon: <CalendarMini className="w-[15px] h-[15px]" />, label: "Date" },
-    {
-      icon: <Adjustments className="w-[15px] h-[15px]" />,
-      label: "Columns",
-    },
-  ],
-  searchShortcut = "⌘K",
-  searchPlaceholder = "Search",
+  actions = DEFAULT_ACTIONS,
+  searchShortcut,
+  searchPlaceholder = DEFAULT_SEARCH_PLACEHOLDER,
   onSearch,
   onSort,
 }: ControlsProps) {
   return (
-    <div className="flex gap-0 h-8 items-center w-full">
-      <div className="bg-ui-bg-segment-control flex gap-0.5 items-center p-0.5 rounded-lg">
+    <div className="flex gap-0 h-8 items-center relative shrink-0 w-full">
+      <div className="bg-ui-bg-segment-control flex gap-0.5 items-center p-0.5 rounded-lg shrink-0">
         {tabs.map((tab) => (
           <button
             key={tab.key}
-            className={`px-2.5 py-1 rounded-md txt-compact-small cursor-pointer ${
-              tab.key === activeTab
-                ? "bg-ui-bg-base text-ui-fg-base shadow-elevation-card-rest"
-                : "text-ui-fg-subtle"
-            }`}
+            className={`${tab.key === activeTab ? "bg-ui-bg-base text-ui-fg-base shadow-elevation-card-rest" : "text-ui-fg-subtle"} px-2.5 py-1 rounded-md txt-compact-small cursor-pointer`}
             onClick={() => onTabChange?.(tab.key)}
           >
             {tab.label}
           </button>
         ))}
       </div>
-      <div className="flex-1 h-full min-w-[1px]" />
-      <div className="flex gap-2 items-center">
-        <div className="flex gap-2 items-center">
+      <div className="flex-1 h-full min-w-[1px] relative" />
+      <div className="flex gap-2 items-center relative shrink-0">
+        <div className="flex gap-2 items-center relative shrink-0">
           {actions.map((action) => (
             <Button key={action.label} variant="secondary" size="small">
               {action.icon}
@@ -75,7 +108,7 @@ export function Controls({
             </Button>
           ))}
         </div>
-        <IconButton size="small" variant="primary" onClick={onSort}>
+        <IconButton size="small" variant="primary" onClick={() => onSort?.()}>
           <DescendingSorting />
         </IconButton>
         <div className="relative">
@@ -85,9 +118,9 @@ export function Controls({
             placeholder={searchPlaceholder}
             onChange={(e) => onSearch?.(e.target.value)}
           />
-          <Kbd className="absolute right-1.5 top-1/2 -translate-y-1/2">
-            {searchShortcut}
-          </Kbd>
+          {searchShortcut && (
+            <Kbd className="absolute right-1.5 top-1/2 -translate-y-1/2">{searchShortcut}</Kbd>
+          )}
         </div>
       </div>
     </div>
