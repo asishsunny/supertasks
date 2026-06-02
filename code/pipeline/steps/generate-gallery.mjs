@@ -197,57 +197,17 @@ function generatePage(name, block, iface) {
     : `import { ${componentName} } from "${importPath}";`;
 
   const variations = block.variations || [null];
-  const needsClient = iface.props.some(p => p.type.includes("=>") || p.name.startsWith("on") || p.name === "activeTab");
 
-  // Build prop data — use sampleData from interface when available, dummy otherwise
-  const dataLines = [];
-  const propAssignments = [];
-  const samples = iface.sampleData || {};
-
-  for (const prop of iface.props) {
-    if (prop.type.includes("=>")) continue;
-
-    // Check for extracted sample data first
-    let val;
-    if (samples[prop.name]) {
-      val = JSON.stringify(samples[prop.name], null, 2).replace(/"([^"]+)":/g, '$1:');
-    } else if (prop.type === "string" && samples[prop.name] !== undefined) {
-      val = JSON.stringify(samples[prop.name]);
-    } else {
-      val = dummyForType(prop.type, prop.name, iface.helperTypes);
-    }
-    if (val === null) continue;
-
-    if (prop.type.includes("[]") || prop.type.startsWith("{") || prop.type.includes("Pick<")) {
-      dataLines.push(`const ${prop.name}Data = ${val};`);
-      propAssignments.push({ prop: prop.name, ref: `${prop.name}Data` });
-    } else {
-      propAssignments.push({ prop: prop.name, val });
-    }
-  }
-
-  const propsStr = propAssignments
-    .map(p => p.ref ? `          ${p.prop}={${p.ref}}` : `          ${p.prop}={${p.val}}`)
-    .join("\n");
-
-  // Type imports
-  const typeImports = [];
-  if (iface.props.some(p => p.type.includes("ModalField"))) typeImports.push("ModalField");
-  if (iface.props.some(p => p.type.includes("SettingsToggle"))) typeImports.push("SettingsToggle");
-  const typeImportLine = typeImports.length ? `import type { ${typeImports.join(", ")} } from "@/types";\n` : "";
-
-  const varSections = variations.map((v, i) => {
+  // Blocks have Figma data as default props — gallery just mounts with no props
+  const varSections = variations.map((v) => {
     const label = v ? v.split("-").map(w => w[0].toUpperCase() + w.slice(1)).join(" ") : "Default";
     return `      <section className="flex flex-col gap-3">
         <h2 className="txt-compact-medium-plus text-ui-fg-subtle">${label}</h2>
-        <${componentName}
-${propsStr}
-        />
+        <${componentName} />
       </section>`;
   }).join("\n");
 
-  return `${needsClient ? '"use client";\n\n' : ""}${importLine}\n${typeImportLine}
-${dataLines.join("\n")}
+  return `${importLine}
 
 export default function Page() {
   return (
@@ -262,57 +222,21 @@ ${varSections}
 // ── Settings grouped page ──
 
 function generateSettingsPage(settingsBlocks) {
-  const imports = [];
-  const allDataLines = [];
-  const sections = [];
-
-  for (const [name, block, iface] of settingsBlocks) {
+  const imports = settingsBlocks.map(([name, block, iface]) => {
     const cn = iface.componentName;
-    const importPath = `@/components/blocks/${cn}`;
-    imports.push(iface.exportType === "default"
-      ? `import ${cn} from "${importPath}";`
-      : `import { ${cn} } from "${importPath}";`);
+    const path = `@/components/blocks/${cn}`;
+    return iface.exportType === "default" ? `import ${cn} from "${path}";` : `import { ${cn} } from "${path}";`;
+  });
 
-    const prefix = name.replace(/-/g, "_");
-    const propLines = [];
+  const body = settingsBlocks.map(([name, block, iface]) => {
+    const label = toPascal(name).replace("Settings", "Settings — ");
+    return `      <section className="flex flex-col gap-3">
+        <h2 className="txt-compact-medium-plus text-ui-fg-subtle">${label}</h2>
+        <${iface.componentName} />
+      </section>`;
+  }).join("\n");
 
-    for (const prop of iface.props) {
-      if (prop.type.includes("=>")) continue;
-      const val = dummyForType(prop.type, prop.name, iface.helperTypes);
-      if (val === null) continue;
-
-      if (prop.type.includes("[]") || prop.type.startsWith("{") || prop.type.includes("Pick<")) {
-        const varName = `${prefix}_${prop.name}`;
-        allDataLines.push(`const ${varName} = ${val};`);
-        propLines.push(`          ${prop.name}={${varName}}`);
-      } else {
-        propLines.push(`          ${prop.name}={${val}}`);
-      }
-    }
-
-    sections.push({ cn, propsStr: propLines.join("\n"), label: toPascal(name).replace("Settings", "Settings — ") });
-  }
-
-  // Check type imports
-  const needsModalField = settingsBlocks.some(([_, __, i]) => i.props.some(p => p.type.includes("ModalField")));
-  const needsToggle = settingsBlocks.some(([_, __, i]) => i.props.some(p => p.type.includes("SettingsToggle")));
-  const typeImports = [];
-  if (needsModalField) typeImports.push("ModalField");
-  if (needsToggle) typeImports.push("SettingsToggle");
-  const typeImportLine = typeImports.length ? `import type { ${typeImports.join(", ")} } from "@/types";\n` : "";
-
-  const body = sections.map(s => `      <section className="flex flex-col gap-3">
-        <h2 className="txt-compact-medium-plus text-ui-fg-subtle">${s.label}</h2>
-        <${s.cn}
-${s.propsStr}
-        />
-      </section>`).join("\n");
-
-  // Settings blocks always have onClick handlers
-  return `"use client";
-
-${imports.join("\n")}\n${typeImportLine}
-${allDataLines.join("\n")}
+  return `${imports.join("\n")}
 
 export default function Page() {
   return (

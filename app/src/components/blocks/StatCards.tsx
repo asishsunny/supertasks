@@ -5,10 +5,17 @@ interface CardItem {
 }
 
 export interface StatCardsProps {
-  cards: CardItem[];
+  cards?: CardItem[];
 }
 
-export default function StatCards({ cards }: StatCardsProps) {
+const defaultCards: CardItem[] = [
+  { label: "Total Tasks", value: "18" },
+  { label: "In Progress", value: "5" },
+  { label: "Completed", value: "3" },
+  { label: "Overdue", value: "5", error: true },
+];
+
+export default function StatCards({ cards = defaultCards }: StatCardsProps) {
   return (
     <div className="flex gap-4 items-start w-full">
       {cards.map((card, i) => (
@@ -18,7 +25,11 @@ export default function StatCards({ cards }: StatCardsProps) {
             card.error ? "" : " text-ui-fg-base"
           }`}
         >
-          <p className={`txt-compact-medium-plus${card.error ? " text-ui-fg-base" : ""}`}>
+          <p
+            className={`txt-compact-medium-plus${
+              card.error ? " text-ui-fg-base" : ""
+            }`}
+          >
             {card.label}
           </p>
           <p
