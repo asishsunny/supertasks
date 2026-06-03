@@ -189,6 +189,8 @@ function transformAST(code) {
     noScope: true,
   });
 
+  // Pass 6+7 removed — dedup handled by templatize.mjs
+
   // Extract output. Only when the source was a bare JSX fragment do we unwrap
   // the top-level wrapper `<>…</>`; otherwise emit the whole module. Detection
   // passes can inject their own nested fragments (TODO-comment wrappers), so we
