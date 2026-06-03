@@ -11,7 +11,7 @@ export default function KanbanBoard() {
               6
             </p>
           </div>
-          <div className="bg-ui-bg-base shadow-elevation-card-rest flex flex-col gap-3 p-3 relative rounded-lg shrink-0 w-full" data-repeat="6" data-repeat="2">
+          <div className="bg-ui-bg-base shadow-elevation-card-rest flex flex-col gap-3 p-3 relative rounded-lg shrink-0 w-full" data-repeat="6">
             <p className="relative shrink-0 text-ui-fg-base txt-compact-small-plus">
               Customer interviews
             </p>

@@ -11,7 +11,7 @@ export default function KanbanBoard() {
               6
             </p>
           </div>
-          <div className="bg-ui-bg-base shadow-elevation-card-rest flex flex-col gap-3 p-3 relative rounded-lg shrink-0 w-full" data-repeat="6">
+          <div className="bg-ui-bg-base shadow-elevation-card-rest flex flex-col gap-3 p-3 relative rounded-lg shrink-0 w-full">
             <p className="relative shrink-0 text-ui-fg-base txt-compact-small-plus">
               Customer interviews
             </p>
@@ -161,7 +161,7 @@ export default function KanbanBoard() {
               5
             </p>
           </div>
-          <div className="bg-ui-bg-base shadow-elevation-card-rest flex flex-col gap-3 p-3 relative rounded-lg shrink-0 w-full" data-repeat="5">
+          <div className="bg-ui-bg-base shadow-elevation-card-rest flex flex-col gap-3 p-3 relative rounded-lg shrink-0 w-full">
             <p className="relative shrink-0 text-ui-fg-base txt-compact-small-plus">
               Update onboarding flow
             </p>
@@ -288,7 +288,7 @@ export default function KanbanBoard() {
               4
             </p>
           </div>
-          <div className="bg-ui-bg-base shadow-elevation-card-rest flex flex-col gap-3 p-3 relative rounded-lg shrink-0 w-full" data-repeat="4">
+          <div className="bg-ui-bg-base shadow-elevation-card-rest flex flex-col gap-3 p-3 relative rounded-lg shrink-0 w-full">
             <p className="relative shrink-0 text-ui-fg-base txt-compact-small-plus">
               Q2 roadmap review
             </p>
@@ -392,7 +392,7 @@ export default function KanbanBoard() {
               3
             </p>
           </div>
-          <div className="bg-ui-bg-base shadow-elevation-card-rest flex flex-col gap-3 p-3 relative rounded-lg shrink-0 w-full" data-repeat="3">
+          <div className="bg-ui-bg-base shadow-elevation-card-rest flex flex-col gap-3 p-3 relative rounded-lg shrink-0 w-full">
             <p className="relative shrink-0 text-ui-fg-base txt-compact-small-plus">
               Fix login bug
             </p>
