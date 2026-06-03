@@ -1,6 +1,7 @@
 import { Badge } from "@medusajs/ui";
 import { SquareGreySolid } from "@medusajs/icons";
-import type { ComponentType, SVGAttributes } from "react";
+import type { ForwardRefExoticComponent, RefAttributes } from "react";
+import type { IconProps } from "@medusajs/icons/dist/types";
 import { ColorAvatar } from "@/components/ColorAvatar";
 import type { Member } from "@/types";
 
@@ -24,7 +25,7 @@ export interface KanbanCard {
 export interface KanbanColumn {
   label: string;
   count?: number;
-  icon: ComponentType<SVGAttributes<SVGSVGElement>>;
+  icon: ForwardRefExoticComponent<IconProps & RefAttributes<SVGSVGElement>>;
   cards: KanbanCard[];
 }
 
@@ -37,9 +38,9 @@ export interface KanbanBoardProps {
 /* ------------------------------------------------------------------ */
 
 const defaultAssignee: Pick<Member, "initials" | "avatarBg" | "avatarText"> = {
-  initials: "LA",
-  avatarBg: "tag-neutral-bg",
-  avatarText: "tag-neutral-text",
+  initials: "L",
+  avatarBg: "tag-green-bg",
+  avatarText: "tag-green-text",
 };
 
 const DEFAULT_COLUMNS: KanbanColumn[] = [

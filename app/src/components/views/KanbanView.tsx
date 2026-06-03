@@ -1,12 +1,13 @@
+import { Badge } from "@medusajs/ui";
 import { StatusDot } from "@/components/shared/StatusDot";
-import { KanbanCard } from "@/components/blocks/KanbanCard";
-import type { KanbanCardProps } from "@/components/blocks/KanbanCard";
+import { ColorAvatar } from "@/components/ColorAvatar";
+import type { KanbanCard } from "@/components/blocks/KanbanBoard";
 import type { Status } from "@/types";
 
 export interface KanbanColumn {
   status: Status;
   label: string;
-  cards: KanbanCardProps[];
+  cards: KanbanCard[];
 }
 
 interface KanbanViewProps {
@@ -32,7 +33,40 @@ export function KanbanView({ columns }: KanbanViewProps) {
             </p>
           </div>
           {col.cards.map((card, i) => (
-            <KanbanCard key={i} {...card} />
+            <div
+              key={i}
+              className="bg-ui-bg-base shadow-elevation-card-rest flex flex-col gap-3 p-3 rounded-lg shrink-0 w-full"
+            >
+              <p className="shrink-0 text-ui-fg-base txt-compact-small-plus">
+                {card.title}
+              </p>
+              <p className="min-w-full overflow-hidden shrink-0 text-ui-fg-muted text-ellipsis txt-compact-small">
+                {card.description}
+              </p>
+              <div className="flex gap-1.5 items-center shrink-0 w-full">
+                <ColorAvatar member={card.assignee} size="xsmall" />
+                <p className="shrink-0 text-ui-fg-subtle txt-compact-xsmall">
+                  {card.assigneeName}
+                </p>
+                <div className="flex-1 h-px min-w-[1px]" />
+                <p
+                  className={`shrink-0 txt-compact-xsmall ${
+                    card.dueDateOverdue
+                      ? "text-ui-fg-error"
+                      : "text-ui-fg-subtle"
+                  }`}
+                >
+                  {card.due}
+                </p>
+                <Badge
+                  color={card.priorityColor}
+                  size="2xsmall"
+                  rounded="full"
+                >
+                  {card.priority}
+                </Badge>
+              </div>
+            </div>
           ))}
         </div>
       ))}
