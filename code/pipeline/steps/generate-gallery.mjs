@@ -84,13 +84,15 @@ function settingsPage(settingsBlocks) {
       ? `import ${cn} from "@/components/blocks/${cn}";`
       : `import { ${cn} } from "@/components/blocks/${cn}";`;
   });
+  imports.push('import { GALLERY } from "@/lib/gallery";');
 
   const sections = settingsBlocks.map(([name]) => {
     const cn = toPascal(name);
+    const camel = toCamel(name);
     const label = cn.replace("Settings", "");
     return `      <section>
         <h2 className="txt-compact-medium-plus text-ui-fg-subtle mb-3">${label}</h2>
-        <${cn} />
+        <${cn} {...GALLERY.${camel}} />
       </section>`;
   });
 
@@ -109,7 +111,11 @@ ${sections.join("\n")}
 }
 
 // Blocks with GALLERY data (simple spread)
-const HAS_GALLERY = new Set(["stat-cards", "controls"]);
+// ALL blocks use GALLERY data — no defaults, no agents
+const HAS_GALLERY = new Set([
+  "stat-cards", "chart-cards", "controls", "recent-tasks", "kanban-board",
+  "create-task-modal", "task-details-modal",
+]);
 
 // ── Main ──
 const blocks = Object.entries(MANIFEST.blocks);
