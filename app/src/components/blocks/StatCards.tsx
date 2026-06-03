@@ -1,29 +1,20 @@
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
+import React from "react";
 
-export interface StatCardItem {
+interface StatCardItem {
   label: string;
-  value: string | number;
+  value: string;
 }
 
 export interface StatCardsProps {
   cards?: StatCardItem[];
 }
 
-/* ------------------------------------------------------------------ */
-/*  Default Figma data (one representative item from template)         */
-/* ------------------------------------------------------------------ */
-
-const DEFAULT_CARDS: StatCardItem[] = [
-  { label: "Total Tasks", value: 18 },
+const defaultCards: StatCardItem[] = [
+  { label: "Total Tasks", value: "18" },
+  { label: "Total Tasks", value: "18" },
 ];
 
-/* ------------------------------------------------------------------ */
-/*  Component                                                          */
-/* ------------------------------------------------------------------ */
-
-export default function StatCards({ cards = DEFAULT_CARDS }: StatCardsProps) {
+export default function StatCards({ cards = defaultCards }: StatCardsProps) {
   return (
     <div className="flex gap-4 items-start relative shrink-0 w-full">
       {cards.map((card, i) => (

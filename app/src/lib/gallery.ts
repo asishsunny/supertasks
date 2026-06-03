@@ -1,4 +1,5 @@
-// Auto-generated from views.yaml — prop names match built blocks
+// Auto-generated from views.yaml + generate-interfaces
+// Prop names derived mechanically from AST — single source of truth
 
 export const GALLERY = {
   statCards: {
@@ -10,7 +11,7 @@ export const GALLERY = {
     ],
   },
   controls: {
-    views: [
+    tabs: [
       { key: "kanban", label: "Kanban" },
       { key: "list", label: "List" },
     ],

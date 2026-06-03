@@ -1,3 +1,4 @@
+import React, { type ReactNode } from "react";
 import { Button, IconButton, Input, Kbd } from "@medusajs/ui";
 import {
   Funnel,
@@ -6,130 +7,75 @@ import {
   DescendingSorting,
 } from "@medusajs/icons";
 
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
-
-type IconComponent = typeof Funnel;
-
-export interface ViewTab {
+interface ViewTab {
   key: string;
   label: string;
-  active?: boolean;
 }
 
-export interface ActionButton {
+interface ActionButton {
+  icon?: ReactNode;
   label: string;
-  icon: IconComponent;
 }
 
 export interface ControlsProps {
-  /** Segment-control tabs (left side) */
-  views?: ViewTab[];
-  /** Action buttons (Filter, Date, Columns, etc.) */
+  tabs?: ViewTab[];
+  activeTab?: string;
   actions?: ActionButton[];
-  /** Search placeholder */
   searchPlaceholder?: string;
-  /** Keyboard shortcut label */
-  searchKbd?: string;
-  /** Callbacks */
-  onViewChange?: (key: string) => void;
-  onActionClick?: (label: string) => void;
-  onSortClick?: () => void;
-  onSearch?: (query: string) => void;
+  searchShortcut?: string;
 }
 
-/* ------------------------------------------------------------------ */
-/*  Defaults — one representative item from Figma template             */
-/* ------------------------------------------------------------------ */
-
-const DEFAULT_VIEWS: ViewTab[] = [
-  { key: "kanban", label: "Kanban", active: false },
-  { key: "list", label: "List", active: true },
+const defaultTabs: ViewTab[] = [
+  { key: "kanban", label: "Kanban" },
+  { key: "list", label: "List" },
 ];
 
-const DEFAULT_ACTIONS: ActionButton[] = [
-  { label: "Filter", icon: Funnel },
-  { label: "Date", icon: CalendarMini },
-  { label: "Columns", icon: Adjustments },
+const defaultActions: ActionButton[] = [
+  { icon: <Funnel className="w-[15px] h-[15px]" />, label: "Filter" },
+  { icon: <CalendarMini className="w-[15px] h-[15px]" />, label: "Date" },
+  { icon: <Adjustments className="w-[15px] h-[15px]" />, label: "Columns" },
 ];
-
-/* ------------------------------------------------------------------ */
-/*  Component                                                          */
-/* ------------------------------------------------------------------ */
 
 export function Controls({
-  views = DEFAULT_VIEWS,
-  actions = DEFAULT_ACTIONS,
+  tabs = defaultTabs,
+  activeTab = "list",
+  actions = defaultActions,
   searchPlaceholder = "Search",
-  searchKbd = "⌘K",
-  onViewChange,
-  onActionClick,
-  onSortClick,
-  onSearch,
+  searchShortcut = "⌘K",
 }: ControlsProps) {
   return (
     <div className="flex gap-0 h-8 items-center relative shrink-0 w-full">
-      {/* Segment control */}
       <div className="bg-ui-bg-segment-control flex gap-0.5 items-center p-0.5 rounded-lg shrink-0">
-        {views.map((v) => (
+        {tabs.map((tab) => (
           <button
-            key={v.key}
-            type="button"
-            role="tab"
-            aria-selected={v.active}
-            onClick={() => onViewChange?.(v.key)}
-            className={`px-2.5 py-1 rounded-md txt-compact-small cursor-pointer ${
-              v.active
-                ? "bg-ui-bg-base text-ui-fg-base shadow-elevation-card-rest"
-                : "text-ui-fg-subtle"
-            }`}
+            key={tab.key}
+            className={
+              tab.key === activeTab
+                ? "bg-ui-bg-base text-ui-fg-base shadow-elevation-card-rest px-2.5 py-1 rounded-md txt-compact-small cursor-pointer"
+                : "text-ui-fg-subtle px-2.5 py-1 rounded-md txt-compact-small cursor-pointer"
+            }
           >
-            {v.label}
+            {tab.label}
           </button>
         ))}
       </div>
-
-      {/* Spacer */}
       <div className="flex-1 h-full min-w-[1px] relative" />
-
-      {/* Right-side controls */}
       <div className="flex gap-2 items-center relative shrink-0">
         <div className="flex gap-2 items-center relative shrink-0">
-          {actions.map((a) => {
-            const Icon = a.icon;
-            return (
-              <Button
-                key={a.label}
-                variant="secondary"
-                size="small"
-                onClick={() => onActionClick?.(a.label)}
-              >
-                <Icon className="w-[15px] h-[15px]" />
-                {a.label}
-              </Button>
-            );
-          })}
+          {actions.map((action, i) => (
+            <Button key={i} variant="secondary" size="small">
+              {action.icon}
+              {action.label}
+            </Button>
+          ))}
         </div>
-
-        <IconButton
-          size="small"
-          variant="primary"
-          aria-label="Sort"
-          onClick={() => onSortClick?.()}
-        >
+        <IconButton size="small" variant="primary">
           <DescendingSorting />
         </IconButton>
-
         <div className="relative">
-          <Input
-            type="search"
-            size="small"
-            placeholder={searchPlaceholder}
-            onChange={(e) => onSearch?.(e.target.value)}
-          />
+          <Input type="search" size="small" placeholder={searchPlaceholder} />
           <Kbd className="absolute right-1.5 top-1/2 -translate-y-1/2">
-            {searchKbd}
+            {searchShortcut}
           </Kbd>
         </div>
       </div>
