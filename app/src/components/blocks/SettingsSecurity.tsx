@@ -1,75 +1,61 @@
-import { Switch, Button } from "@medusajs/ui";
-import type { SettingsToggle } from "@/types";
+import { Button, Switch } from "@medusajs/ui"
+import { SettingsToggle } from "@/types"
 
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
-
-export interface SidebarItem {
-  label: string;
-  active?: boolean;
+interface NavItem {
+  label: string
+  active?: boolean
 }
 
 export interface SettingsSecurityProps {
-  sidebarItems?: SidebarItem[];
-  heading?: string;
-  toggles?: SettingsToggle[];
-  saveLabel?: string;
+  navItems?: NavItem[]
+  title?: string
+  toggles?: SettingsToggle[]
+  saveLabel?: string
+  heading?: string
 }
 
-/* ------------------------------------------------------------------ */
-/*  Default Figma data (one representative item per array)             */
-/* ------------------------------------------------------------------ */
-
-const DEFAULT_SIDEBAR: SidebarItem[] = [
+const defaultNavItems: NavItem[] = [
   { label: "Profile" },
   { label: "Notifications" },
   { label: "Security", active: true },
   { label: "Billing" },
-];
+]
 
-const DEFAULT_TOGGLES: SettingsToggle[] = [
+const defaultToggles: SettingsToggle[] = [
   { label: "Two-factor authentication", desc: "Add an extra layer of security to your account", on: false },
-];
-
-/* ------------------------------------------------------------------ */
-/*  Component                                                          */
-/* ------------------------------------------------------------------ */
+  { label: "Login alerts", desc: "Get notified when a new device signs in", on: true },
+  { label: "Require password change", desc: "Force password update every 90 days", on: true },
+]
 
 export function SettingsSecurity({
-  sidebarItems = DEFAULT_SIDEBAR,
-  heading = "Security",
-  toggles = DEFAULT_TOGGLES,
+  navItems = defaultNavItems,
+  title = "Security",
+  toggles = defaultToggles,
   saveLabel = "Save changes",
+  heading = "Security",
 }: SettingsSecurityProps) {
   return (
     <div className="flex gap-6 items-start relative shrink-0 w-full">
-      {/* Sidebar */}
       <div className="bg-ui-bg-base flex flex-col overflow-clip py-2 relative rounded-[8px] shadow-elevation-card-rest shrink-0 w-[240px]">
-        {sidebarItems.map((item, i) =>
-          item.active ? (
-            <div
-              key={i}
-              className="bg-ui-bg-subtle border-ui-fg-base border-l-2 flex items-center px-4 py-2.5 relative shrink-0 w-full"
+        {navItems.map((item, i) => (
+          <div
+            key={i}
+            className={`flex items-center px-4 py-2.5 relative shrink-0 w-full${
+              item.active ? " bg-ui-bg-subtle border-ui-fg-base border-l-2" : ""
+            }`}
+          >
+            <p
+              className={`relative shrink-0 ${
+                item.active
+                  ? "text-ui-fg-base txt-compact-small-plus"
+                  : "text-ui-fg-subtle txt-compact-small"
+              }`}
             >
-              <p className="relative shrink-0 text-ui-fg-base txt-compact-small-plus">
-                {item.label}
-              </p>
-            </div>
-          ) : (
-            <div
-              key={i}
-              className="flex items-center px-4 py-2.5 relative shrink-0 w-full"
-            >
-              <p className="relative shrink-0 text-ui-fg-subtle txt-compact-small">
-                {item.label}
-              </p>
-            </div>
-          ),
-        )}
+              {item.label}
+            </p>
+          </div>
+        ))}
       </div>
-
-      {/* Content */}
       <div className="bg-ui-bg-base flex flex-1 flex-col min-w-[1px] overflow-clip relative rounded-[8px] shadow-elevation-card-rest">
         <div className="flex flex-col px-6 py-3 relative shrink-0 w-full">
           <p className="relative shrink-0 text-ui-fg-base txt-compact-medium-plus">
@@ -107,5 +93,5 @@ export function SettingsSecurity({
         </div>
       </div>
     </div>
-  );
+  )
 }

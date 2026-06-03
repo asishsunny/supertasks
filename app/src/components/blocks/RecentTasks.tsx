@@ -1,116 +1,156 @@
+import type { ReactNode } from "react";
 import { Table, Badge, IconButton } from "@medusajs/ui";
 import { EllipsisHorizontal } from "@medusajs/icons";
 import { ColorAvatar } from "@/components/ColorAvatar";
+import { PRIORITY_COLOR, BAR_COLORS, STATUS_LABEL } from "@/lib/constants";
 import type { Member, Priority, Status } from "@/types";
-import type { BadgeColor } from "@/lib/constants";
 
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
+export interface TableColumn {
+  key: string;
+  header: string;
+  width?: string;
+  render: (row: any) => ReactNode;
+}
 
-export interface RecentTaskRow {
-  title: string;
-  assignee: Pick<Member, "initials" | "avatarBg" | "avatarText">;
-  assigneeName: string;
-  priority: string;
-  priorityColor: BadgeColor;
-  dueDate: string;
-  statusLabel: string;
-  statusColor: string;
+export interface TableRow {
+  id: string | number;
+  [key: string]: unknown;
 }
 
 export interface RecentTasksProps {
-  heading?: string;
-  rows?: RecentTaskRow[];
+  title?: string;
+  columns?: TableColumn[];
+  rows?: TableRow[];
 }
 
-/* ------------------------------------------------------------------ */
-/*  Default Figma data (one representative row from template)          */
-/* ------------------------------------------------------------------ */
-
-const DEFAULT_ROWS: RecentTaskRow[] = [
+const defaultColumns: TableColumn[] = [
   {
-    title: "Icon system audit",
-    assignee: { initials: "L", avatarBg: "tag-green-bg", avatarText: "tag-green-text" },
-    assigneeName: "Lara Sato",
-    priority: "Low",
-    priorityColor: "grey",
-    dueDate: "Jun 21, 2026",
-    statusLabel: "To do",
-    statusColor: "var(--tag-neutral-icon)",
+    key: "task",
+    header: "Task",
+    render: (row) => (
+      <p className="relative shrink-0 text-ui-fg-base txt-compact-small">
+        {(row.title as string) ?? "Icon system audit"}
+      </p>
+    ),
+  },
+  {
+    key: "assignee",
+    header: "Assignee",
+    width: "w-[160px]",
+    render: (row) => {
+      const member = row.member as Member | undefined;
+      const name = (row.assigneeName as string) ?? "Lara Sato";
+      return (
+        <span className="inline-flex items-center gap-2">
+          {member && <ColorAvatar member={member} size="xsmall" />}
+          <p className="relative shrink-0 text-ui-fg-base txt-compact-small">
+            {name}
+          </p>
+        </span>
+      );
+    },
+  },
+  {
+    key: "priority",
+    header: "Priority",
+    width: "w-[120px]",
+    render: (row) => {
+      const priority = (row.priority as Priority) ?? "low";
+      const label =
+        (row.priorityLabel as string) ??
+        priority.charAt(0).toUpperCase() + priority.slice(1);
+      return (
+        <Badge
+          color={PRIORITY_COLOR[priority]}
+          size="2xsmall"
+          rounded="full"
+        >
+          {label}
+        </Badge>
+      );
+    },
+  },
+  {
+    key: "dueDate",
+    header: "Due Date",
+    width: "w-[130px]",
+    render: (row) => (
+      <p className="relative shrink-0 text-ui-fg-subtle txt-compact-small">
+        {(row.dueDate as string) ?? "Jun 21, 2026"}
+      </p>
+    ),
+  },
+  {
+    key: "status",
+    header: "Status",
+    width: "w-[140px]",
+    render: (row) => {
+      const status = (row.status as Status) ?? "todo";
+      return (
+        <span className="inline-flex items-center gap-2">
+          <span className="inline-flex items-center gap-1.5">
+            <span
+              className="inline-block size-2 rounded-[2px] shrink-0 border border-black/[.12] dark:border-white/[.12]"
+              style={{ backgroundColor: BAR_COLORS[status] }}
+            />
+            <span className="txt-compact-small text-ui-fg-subtle">
+              {STATUS_LABEL[status]}
+            </span>
+          </span>
+        </span>
+      );
+    },
+  },
+  {
+    key: "actions",
+    header: "",
+    width: "w-7",
+    render: () => (
+      <IconButton variant="transparent" size="small">
+        <EllipsisHorizontal />
+      </IconButton>
+    ),
   },
 ];
 
-/* ------------------------------------------------------------------ */
-/*  Component                                                          */
-/* ------------------------------------------------------------------ */
+const defaultRows: TableRow[] = [
+  { id: 1, title: "Icon system audit", assigneeName: "Lara Sato", priority: "low", dueDate: "Jun 21, 2026", status: "todo" },
+  { id: 2, title: "Icon system audit", assigneeName: "Lara Sato", priority: "low", dueDate: "Jun 21, 2026", status: "todo" },
+  { id: 3, title: "Icon system audit", assigneeName: "Lara Sato", priority: "low", dueDate: "Jun 21, 2026", status: "todo" },
+  { id: 4, title: "Icon system audit", assigneeName: "Lara Sato", priority: "low", dueDate: "Jun 21, 2026", status: "todo" },
+  { id: 5, title: "Icon system audit", assigneeName: "Lara Sato", priority: "low", dueDate: "Jun 21, 2026", status: "todo" },
+];
 
 export function RecentTasks({
-  heading = "Recent Tasks",
-  rows = DEFAULT_ROWS,
+  title = "Recent Tasks",
+  columns = defaultColumns,
+  rows = defaultRows,
 }: RecentTasksProps) {
   return (
     <div className="bg-ui-bg-base flex flex-col gap-0 overflow-clip p-0 relative rounded-xl shadow-elevation-card-rest shrink-0 w-full">
       <div className="flex items-start overflow-clip pb-4 pt-6 px-6 relative shrink-0 w-full">
         <p className="relative shrink-0 text-ui-fg-base txt-compact-medium-plus">
-          {heading}
+          {title}
         </p>
       </div>
       <Table>
         <Table.Header className="border-t-0">
           <Table.Row>
-            <Table.HeaderCell>Task</Table.HeaderCell>
-            <Table.HeaderCell className="w-[160px]">Assignee</Table.HeaderCell>
-            <Table.HeaderCell className="w-[120px]">Priority</Table.HeaderCell>
-            <Table.HeaderCell className="w-[130px]">Due Date</Table.HeaderCell>
-            <Table.HeaderCell className="w-[140px]">Status</Table.HeaderCell>
-            <Table.HeaderCell className="w-7" />
+            {columns.map((col) => (
+              <Table.HeaderCell key={col.key} className={col.width}>
+                {col.header}
+              </Table.HeaderCell>
+            ))}
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {rows.map((row, i) => (
-            <Table.Row key={i}>
-              <Table.Cell>
-                <p className="relative shrink-0 text-ui-fg-base txt-compact-small">
-                  {row.title}
-                </p>
-              </Table.Cell>
-              <Table.Cell className="w-[160px]">
-                <span className="inline-flex items-center gap-2">
-                  <ColorAvatar member={row.assignee} size="xsmall" />
-                  <p className="relative shrink-0 text-ui-fg-base txt-compact-small">
-                    {row.assigneeName}
-                  </p>
-                </span>
-              </Table.Cell>
-              <Table.Cell className="w-[120px]">
-                <Badge color={row.priorityColor} size="2xsmall" rounded="full">
-                  {row.priority}
-                </Badge>
-              </Table.Cell>
-              <Table.Cell className="w-[130px]">
-                <p className="relative shrink-0 text-ui-fg-subtle txt-compact-small">
-                  {row.dueDate}
-                </p>
-              </Table.Cell>
-              <Table.Cell className="w-[140px]">
-                <span className="inline-flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5">
-                    <span
-                      className="inline-block size-2 rounded-[2px] shrink-0 border border-black/[.12] dark:border-white/[.12]"
-                      style={{ backgroundColor: row.statusColor }}
-                    />
-                    <span className="txt-compact-small text-ui-fg-subtle">
-                      {row.statusLabel}
-                    </span>
-                  </span>
-                </span>
-              </Table.Cell>
-              <Table.Cell>
-                <IconButton variant="transparent" size="small">
-                  <EllipsisHorizontal />
-                </IconButton>
-              </Table.Cell>
+          {rows.map((row) => (
+            <Table.Row key={row.id}>
+              {columns.map((col) => (
+                <Table.Cell key={col.key} className={col.width}>
+                  {col.render(row)}
+                </Table.Cell>
+              ))}
             </Table.Row>
           ))}
         </Table.Body>

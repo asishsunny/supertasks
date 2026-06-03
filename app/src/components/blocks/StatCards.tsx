@@ -1,25 +1,25 @@
-import React from "react";
-
-interface StatCardItem {
-  label: string;
-  value: string;
+export interface StatCardItem {
+  label: string
+  value: string
 }
 
 export interface StatCardsProps {
-  cards?: StatCardItem[];
+  cards?: StatCardItem[]
 }
 
-const defaultCards: StatCardItem[] = [
+const DEFAULT_CARDS: StatCardItem[] = [
   { label: "Total Tasks", value: "18" },
   { label: "Total Tasks", value: "18" },
-];
+  { label: "Total Tasks", value: "18" },
+  { label: "Total Tasks", value: "18" },
+]
 
-export default function StatCards({ cards = defaultCards }: StatCardsProps) {
+export default function StatCards({ cards = DEFAULT_CARDS }: StatCardsProps) {
   return (
     <div className="flex gap-4 items-start relative shrink-0 w-full">
-      {cards.map((card, i) => (
+      {cards.map((card, index) => (
         <div
-          key={i}
+          key={index}
           className="bg-ui-bg-base flex flex-1 flex-col gap-4 min-w-[1px] overflow-clip p-6 relative rounded-xl shadow-elevation-card-rest text-ui-fg-base"
         >
           <p className="relative shrink-0 txt-compact-medium-plus">
@@ -31,5 +31,5 @@ export default function StatCards({ cards = defaultCards }: StatCardsProps) {
         </div>
       ))}
     </div>
-  );
+  )
 }

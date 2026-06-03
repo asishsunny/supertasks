@@ -1,88 +1,84 @@
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
-
-export interface ChartBarItem {
-  label: string;
-  value: number;
-  color: string;
-  /** Max value used to compute bar width proportion (defaults to total) */
+interface ChartBarRow {
+  label: string
+  count: number
+  color: string
 }
 
-export interface ChartCardData {
-  title: string;
-  bars: ChartBarItem[];
+interface ChartCardData {
+  title: string
+  rows: ChartBarRow[]
+  total: number
 }
 
 export interface ChartCardsProps {
-  cards?: ChartCardData[];
+  charts?: ChartCardData[]
 }
 
-/* ------------------------------------------------------------------ */
-/*  Defaults (one representative item per Figma template)              */
-/* ------------------------------------------------------------------ */
-
-const defaultCards: ChartCardData[] = [
+const defaultCharts: ChartCardData[] = [
   {
     title: "Tasks by Priority",
-    bars: [
-      { label: "Critical", value: 4, color: "var(--tag-purple-icon)" },
+    rows: [
+      { label: "Critical", count: 4, color: "#a78bfa" },
+      { label: "High", count: 6, color: "#f87171" },
+      { label: "Medium", count: 8, color: "#fbbf24" },
+      { label: "Low", count: 3, color: "#34d399" },
     ],
+    total: 21,
   },
   {
     title: "Tasks by Status",
-    bars: [
-      { label: "To Do", value: 6, color: "var(--tag-neutral-icon)" },
+    rows: [
+      { label: "To Do", count: 6, color: "#a4aaa1" },
+      { label: "In Progress", count: 5, color: "#60a5fa" },
+      { label: "In Review", count: 4, color: "#c084fc" },
+      { label: "Done", count: 7, color: "#34d399" },
     ],
+    total: 22,
   },
-];
+]
 
-/* ------------------------------------------------------------------ */
-/*  Component                                                          */
-/* ------------------------------------------------------------------ */
-
-export function ChartCards({ cards = defaultCards }: ChartCardsProps) {
+export function ChartCards({ charts = defaultCharts }: ChartCardsProps) {
   return (
     <div className="flex gap-4 items-start relative shrink-0 w-full">
-      {cards.map((card) => {
-        const maxVal = Math.max(...card.bars.map((b) => b.value), 1);
+      {charts.map((chart, ci) => {
+        const maxCount = Math.max(...chart.rows.map((r) => r.count), 1)
         return (
           <div
-            key={card.title}
+            key={ci}
             className="bg-ui-bg-base flex flex-1 flex-col gap-4 min-w-[1px] overflow-clip p-6 relative rounded-xl shadow-elevation-card-rest"
           >
             <p className="relative shrink-0 text-ui-fg-base txt-compact-medium-plus">
-              {card.title}
+              {chart.title}
             </p>
             <div className="flex flex-col gap-4 relative shrink-0 w-full">
-              {card.bars.map((bar) => (
+              {chart.rows.map((row, ri) => (
                 <div
-                  key={bar.label}
+                  key={ri}
                   className="flex flex-col gap-1 relative shrink-0 w-full"
                 >
                   <div className="flex gap-2 items-center relative shrink-0 w-full">
                     <p className="relative shrink-0 text-ui-fg-subtle w-[88px] txt-compact-small">
-                      {bar.label}
+                      {row.label}
                     </p>
                     <div className="bg-ui-border-base flex-1 h-2 min-w-[1px] overflow-clip relative rounded">
                       <div
                         className="absolute h-2 left-0 rounded top-0"
                         style={{
-                          backgroundColor: bar.color,
-                          width: `${(bar.value / maxVal) * 100}%`,
+                          backgroundColor: row.color,
+                          width: `${(row.count / maxCount) * 100}%`,
                         }}
                       />
                     </div>
                     <p className="relative shrink-0 text-ui-fg-base txt-compact-small-plus">
-                      {bar.value}
+                      {row.count}
                     </p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        );
+        )
       })}
     </div>
-  );
+  )
 }

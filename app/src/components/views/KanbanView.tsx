@@ -59,7 +59,7 @@ export function KanbanView({ columns }: KanbanViewProps) {
                   {card.due}
                 </p>
                 <Badge
-                  color={card.priorityColor}
+                  color={card.priorityColor as "blue" | "green" | "grey" | "orange" | "purple" | "red"}
                   size="2xsmall"
                   rounded="full"
                 >

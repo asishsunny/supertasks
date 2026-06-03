@@ -1,102 +1,79 @@
-import {
-  Button,
-  IconButton,
-  Input,
-  Kbd,
-  Label,
-  Select,
-  Textarea,
-} from "@medusajs/ui";
+// source: artifacts/transformed/create-task-modal-templatized.tsx
+// adapt: 3 modal variants → single generic modal driven by fields prop
+
+import { Button, IconButton, Input, Kbd, Label, Select, Textarea } from "@medusajs/ui";
 import { XMark } from "@medusajs/icons";
 import type { ModalField } from "@/types";
-
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
 
 export interface CreateTaskModalProps {
   title?: string;
   fields?: ModalField[];
   primaryAction?: string;
   secondaryAction?: string;
-  onPrimary?: () => void;
-  onSecondary?: () => void;
   onClose?: () => void;
+  onSubmit?: () => void;
 }
-
-/* ------------------------------------------------------------------ */
-/*  Default Figma data                                                 */
-/* ------------------------------------------------------------------ */
-
-const DEFAULT_FIELDS: ModalField[] = [
-  { label: "Priority", type: "select", value: "Select", row: 1 },
-  { label: "Status", type: "select", value: "Select", row: 1 },
-  { label: "Assignee", type: "select", value: "Select", row: 2 },
-  { label: "Due date", type: "select", value: "Select", row: 2 },
-  { label: "Task name", type: "input", placeholder: "Enter task name..." },
-  {
-    label: "Description",
-    type: "textarea",
-    placeholder: "Add a description...",
-  },
-];
-
-/* ------------------------------------------------------------------ */
-/*  Field renderer                                                     */
-/* ------------------------------------------------------------------ */
 
 function FieldControl({ field }: { field: ModalField }) {
   switch (field.type) {
-    case "input":
-      return <Input size="small" className="w-full" placeholder={field.placeholder} />;
     case "textarea":
       return (
         <Textarea
           placeholder={field.placeholder ?? "Placeholder"}
-          defaultValue={field.placeholder}
+          defaultValue={field.value ?? ""}
         />
       );
     case "select":
       return (
         <Select size="small">
           <Select.Trigger>
-            <Select.Value placeholder={field.value ?? "Select"} />
+            <Select.Value placeholder={field.placeholder ?? "Select"} />
           </Select.Trigger>
         </Select>
+      );
+    case "input":
+    default:
+      return (
+        <Input
+          size="small"
+          className="w-full"
+          placeholder={field.placeholder}
+          defaultValue={field.value ?? ""}
+        />
       );
   }
 }
 
-/* ------------------------------------------------------------------ */
-/*  Component                                                          */
-/* ------------------------------------------------------------------ */
+/** Group fields by row number; fields without row get their own row */
+function groupByRow(fields: ModalField[]): ModalField[][] {
+  const rows: Record<number, ModalField[]> = {};
+  let autoRow = 1000;
+  for (const f of fields) {
+    const key = f.row ?? autoRow++;
+    if (!rows[key]) rows[key] = [];
+    rows[key].push(f);
+  }
+  return Object.keys(rows)
+    .sort((a, b) => Number(a) - Number(b))
+    .map((k) => rows[Number(k)]);
+}
 
 export function CreateTaskModal({
   title = "Create new task",
-  fields = DEFAULT_FIELDS,
+  fields = [
+    { label: "Priority", type: "select", placeholder: "Select", row: 1 },
+    { label: "Status", type: "select", placeholder: "Select", row: 1 },
+    { label: "Assignee", type: "select", placeholder: "Select", row: 2 },
+    { label: "Due date", type: "select", placeholder: "Select", row: 2 },
+    { label: "Task name", type: "input" },
+    { label: "Description", type: "textarea", value: "Add a description..." },
+  ],
   primaryAction = "Create task",
   secondaryAction = "Cancel",
-  onPrimary,
-  onSecondary,
   onClose,
+  onSubmit,
 }: CreateTaskModalProps) {
-  /* Group fields by row — undefined row = standalone full-width */
-  const rows: ModalField[][] = [];
-  let i = 0;
-  while (i < fields.length) {
-    const f = fields[i];
-    if (f.row != null) {
-      const group = [f];
-      while (i + 1 < fields.length && fields[i + 1].row === f.row) {
-        i++;
-        group.push(fields[i]);
-      }
-      rows.push(group);
-    } else {
-      rows.push([f]);
-    }
-    i++;
-  }
+  const rows = groupByRow(fields);
 
   return (
     <div className="bg-ui-bg-base flex flex-col overflow-clip relative rounded-[12px] shadow-elevation-card-rest shrink-0 max-w-[480px] w-full">
@@ -118,15 +95,15 @@ export function CreateTaskModal({
 
       {/* Body */}
       <div className="flex flex-col gap-5 p-6 relative shrink-0 w-full">
-        {rows.map((row, ri) =>
-          row.length > 1 ? (
+        {rows.map((rowFields, ri) =>
+          rowFields.length > 1 ? (
             <div
               key={ri}
               className="flex gap-4 items-start relative shrink-0 w-full"
             >
-              {row.map((field, fi) => (
+              {rowFields.map((field) => (
                 <div
-                  key={fi}
+                  key={field.label}
                   className="flex flex-1 flex-col gap-1.5 min-w-[1px]"
                 >
                   <Label size="small">{field.label}</Label>
@@ -139,10 +116,10 @@ export function CreateTaskModal({
               key={ri}
               className="flex flex-1 flex-col gap-1.5 min-w-[1px]"
             >
-              <Label size="small">{row[0].label}</Label>
-              <FieldControl field={row[0]} />
+              <Label size="small">{rowFields[0].label}</Label>
+              <FieldControl field={rowFields[0]} />
             </div>
-          ),
+          )
         )}
       </div>
 
@@ -150,10 +127,10 @@ export function CreateTaskModal({
       <div className="flex flex-col relative shrink-0 w-full">
         <div className="h-px bg-ui-border-base" />
         <div className="flex gap-2 items-center justify-end px-6 py-4 relative shrink-0 w-full">
-          <Button variant="secondary" size="small" onClick={onSecondary}>
+          <Button variant="secondary" size="small" onClick={onClose}>
             {secondaryAction}
           </Button>
-          <Button variant="primary" size="small" onClick={onPrimary}>
+          <Button variant="primary" size="small" onClick={onSubmit}>
             {primaryAction}
           </Button>
         </div>

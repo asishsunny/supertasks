@@ -1,11 +1,8 @@
-import React, { type ReactNode } from "react";
+"use client";
+
+import type { ReactNode } from "react";
 import { Button, IconButton, Input, Kbd } from "@medusajs/ui";
-import {
-  Funnel,
-  CalendarMini,
-  Adjustments,
-  DescendingSorting,
-} from "@medusajs/icons";
+import { DescendingSorting } from "@medusajs/icons";
 
 interface ViewTab {
   key: string;
@@ -25,21 +22,17 @@ export interface ControlsProps {
   searchShortcut?: string;
 }
 
-const defaultTabs: ViewTab[] = [
-  { key: "kanban", label: "Kanban" },
-  { key: "list", label: "List" },
-];
-
-const defaultActions: ActionButton[] = [
-  { icon: <Funnel className="w-[15px] h-[15px]" />, label: "Filter" },
-  { icon: <CalendarMini className="w-[15px] h-[15px]" />, label: "Date" },
-  { icon: <Adjustments className="w-[15px] h-[15px]" />, label: "Columns" },
-];
-
 export function Controls({
-  tabs = defaultTabs,
+  tabs = [
+    { key: "kanban", label: "Kanban" },
+    { key: "list", label: "List" },
+  ],
   activeTab = "list",
-  actions = defaultActions,
+  actions = [
+    { label: "Filter" },
+    { label: "Date" },
+    { label: "Columns" },
+  ],
   searchPlaceholder = "Search",
   searchShortcut = "⌘K",
 }: ControlsProps) {
@@ -49,11 +42,11 @@ export function Controls({
         {tabs.map((tab) => (
           <button
             key={tab.key}
-            className={
+            className={`px-2.5 py-1 rounded-md txt-compact-small cursor-pointer ${
               tab.key === activeTab
-                ? "bg-ui-bg-base text-ui-fg-base shadow-elevation-card-rest px-2.5 py-1 rounded-md txt-compact-small cursor-pointer"
-                : "text-ui-fg-subtle px-2.5 py-1 rounded-md txt-compact-small cursor-pointer"
-            }
+                ? "bg-ui-bg-base text-ui-fg-base shadow-elevation-card-rest"
+                : "text-ui-fg-subtle"
+            }`}
           >
             {tab.label}
           </button>
@@ -62,8 +55,8 @@ export function Controls({
       <div className="flex-1 h-full min-w-[1px] relative" />
       <div className="flex gap-2 items-center relative shrink-0">
         <div className="flex gap-2 items-center relative shrink-0">
-          {actions.map((action, i) => (
-            <Button key={i} variant="secondary" size="small">
+          {actions.map((action) => (
+            <Button key={action.label} variant="secondary" size="small">
               {action.icon}
               {action.label}
             </Button>
