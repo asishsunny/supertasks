@@ -81,7 +81,7 @@ function stripAndResolve(classStr) {
   });
 
   // Replace fixed widths (e.g. w-[1136px] → w-full)
-  classes = classes.map(c => c in REPLACE_WIDTHS ? REPLACE_WIDTHS[c] : c).filter(Boolean);
+  classes = classes.map(c => REPLACE_WIDTHS[c] || c);
 
   return classes.join(" ");
 }
