@@ -1,94 +1,7 @@
 {
   "componentName": "KanbanBoard",
   "exportType": "named",
-  "sampleData": {
-    "columns": [
-      {
-        "status": "todo",
-        "label": "To Do",
-        "count": 6,
-        "statusColor": "bg-ui-tag-neutral-icon",
-        "cards": [
-          {
-            "title": "Customer interviews",
-            "desc": "Schedule and run five user feedback sessions",
-            "member": {
-              "initials": "L",
-              "avatarBg": "tag-blue-bg",
-              "avatarText": "tag-blue-text"
-            },
-            "firstName": "Lara",
-            "dueDate": "Jun 8",
-            "priorityLabel": "",
-            "priorityColor": "grey"
-          }
-        ]
-      },
-      {
-        "status": "in_progress",
-        "label": "In Progress",
-        "count": 5,
-        "statusColor": "bg-ui-tag-blue-icon",
-        "cards": [
-          {
-            "title": "Update onboarding flow",
-            "desc": "Revamp first-run experience for new users",
-            "member": {
-              "initials": "S",
-              "avatarBg": "tag-blue-bg",
-              "avatarText": "tag-blue-text"
-            },
-            "firstName": "Sara",
-            "dueDate": "May 26",
-            "priorityLabel": "",
-            "priorityColor": "grey"
-          }
-        ]
-      },
-      {
-        "status": "in_review",
-        "label": "In Review",
-        "count": 4,
-        "statusColor": "bg-ui-tag-orange-icon",
-        "cards": [
-          {
-            "title": "Q2 roadmap review",
-            "desc": "Align team on priorities for next quarter",
-            "member": {
-              "initials": "P",
-              "avatarBg": "tag-blue-bg",
-              "avatarText": "tag-blue-text"
-            },
-            "firstName": "Priya",
-            "dueDate": "May 31",
-            "priorityLabel": "",
-            "priorityColor": "grey"
-          }
-        ]
-      },
-      {
-        "status": "done",
-        "label": "Done",
-        "count": 3,
-        "statusColor": "bg-ui-tag-green-icon",
-        "cards": [
-          {
-            "title": "Fix login bug",
-            "desc": "Session token not refreshing on mobile browsers",
-            "member": {
-              "initials": "B",
-              "avatarBg": "tag-blue-bg",
-              "avatarText": "tag-blue-text"
-            },
-            "firstName": "Ben",
-            "dueDate": "May 22",
-            "priorityLabel": "",
-            "priorityColor": "grey"
-          }
-        ]
-      }
-    ]
-  },
+  "sampleData": {},
   "props": [
     {
       "name": "columns",
@@ -168,7 +81,6 @@
   },
   "patterns": [
     "kanban",
-    "data-repeat",
     "avatar"
   ]
 }
