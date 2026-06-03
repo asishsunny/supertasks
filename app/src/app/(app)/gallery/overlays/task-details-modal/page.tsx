@@ -1,123 +1,65 @@
-"use client";
-
 import TaskDetailsModal from "@/components/blocks/TaskDetailsModal";
-import type { InfoRow, ActivityEntry } from "@/components/blocks/TaskDetailsModal";
 import { INITIAL_TASKS, MEMBERS, ACTIVITY } from "@/lib/data";
-import { STATUS_COLOR, STATUS_LABEL, PRIORITY_COLOR } from "@/lib/constants";
-import type { Status, Priority } from "@/types";
+import { STATUS_LABEL, STATUS_COLOR, PRIORITY_COLOR } from "@/lib/constants";
+import { formatDueDate, isOverdue } from "@/lib/utils";
 
-/* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
-/* ------------------------------------------------------------------ */
+const task = INITIAL_TASKS[0]; // Task #1: "Update onboarding flow"
+const memberMap = Object.fromEntries(MEMBERS.map((m) => [m.id, m]));
+const assignee = memberMap[task.assignee];
 
-const PRIORITY_LABEL: Record<Priority, string> = {
-  low: "Low",
-  medium: "Medium",
-  high: "High",
-  critical: "Critical",
-};
+const infoRows = [
+  {
+    label: "Status",
+    type: "status" as const,
+    value: STATUS_LABEL[task.status],
+    color: STATUS_COLOR[task.status],
+  },
+  {
+    label: "Priority",
+    type: "priority" as const,
+    value: task.priority.charAt(0).toUpperCase() + task.priority.slice(1),
+    color: PRIORITY_COLOR[task.priority],
+  },
+  {
+    label: "Assignee",
+    type: "assignee" as const,
+    value: assignee.name,
+    member: { initials: assignee.initials, avatarBg: assignee.avatarBg, avatarText: assignee.avatarText },
+  },
+  {
+    label: "Due date",
+    type: "date" as const,
+    value: formatDueDate(task.due),
+    isOverdue: isOverdue(task.due),
+  },
+];
 
-function memberById(id: number) {
-  return MEMBERS.find((m) => m.id === id)!;
-}
-
-function buildInfoRows(task: (typeof INITIAL_TASKS)[number]): InfoRow[] {
-  const assignee = memberById(task.assignee);
-  const isOverdue = new Date(task.due) < new Date();
-  return [
-    {
-      label: "Status",
-      type: "status",
-      value: STATUS_LABEL[task.status as Status],
-      color: STATUS_COLOR[task.status as Status],
-    },
-    {
-      label: "Priority",
-      type: "priority",
-      value: PRIORITY_LABEL[task.priority as Priority],
-      color: PRIORITY_COLOR[task.priority as Priority],
-    },
-    {
-      label: "Assignee",
-      type: "assignee",
-      value: assignee.name,
-      member: {
-        initials: assignee.initials,
-        avatarBg: assignee.avatarBg,
-        avatarText: assignee.avatarText,
-      },
-    },
-    {
-      label: "Due date",
-      type: "date",
-      value: new Date(task.due).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }),
-      isOverdue,
-    },
-  ];
-}
-
-function buildActivityEntries(taskId: number): ActivityEntry[] {
-  return ACTIVITY.filter((a) => a.taskId === taskId).map((a) => {
-    const m = memberById(a.memberId);
-    return {
-      member: {
-        initials: m.initials,
-        avatarBg: m.avatarBg,
-        avatarText: m.avatarText,
-        name: m.name,
-      },
-      time: a.time,
-      text: a.text,
-    };
-  });
-}
-
-/* ------------------------------------------------------------------ */
-/*  Page                                                               */
-/* ------------------------------------------------------------------ */
+const taskActivity = ACTIVITY.filter((a) => a.taskId === task.id);
+const activityEntries = taskActivity.map((a) => {
+  const member = memberMap[a.memberId];
+  return {
+    member: { initials: member.initials, avatarBg: member.avatarBg, avatarText: member.avatarText, name: member.name },
+    time: a.time,
+    text: a.text,
+  };
+});
 
 export default function Page() {
-  // Task 1: "Update onboarding flow" — matches Figma source
-  const task1 = INITIAL_TASKS.find((t) => t.id === 1)!;
-  // Task 4: "Fix billing bug #482" — different status/priority/assignee
-  const task4 = INITIAL_TASKS.find((t) => t.id === 4)!;
-
   return (
     <div className="flex flex-col gap-8 p-6">
-      <section className="flex flex-col gap-3">
-        <h2 className="txt-compact-medium-plus text-ui-fg-subtle">
-          Task 1 — In Progress / High
-        </h2>
+      <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Task Details Modal</h2>
+      <div className="flex justify-center">
         <TaskDetailsModal
-          title={task1.title}
-          description={task1.desc}
-          infoRows={buildInfoRows(task1)}
-          activityEntries={buildActivityEntries(task1.id)}
+          title={task.title}
+          description={task.desc}
+          infoHeading="Info"
+          activityHeading="Activity log"
+          infoRows={infoRows}
+          activityEntries={activityEntries}
+          primaryAction="Mark complete"
+          secondaryAction="Edit"
         />
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="txt-compact-medium-plus text-ui-fg-subtle">
-          Task 4 — In Progress / Critical
-        </h2>
-        <TaskDetailsModal
-          title={task4.title}
-          description={task4.desc}
-          infoRows={buildInfoRows(task4)}
-          activityEntries={buildActivityEntries(task4.id)}
-        />
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="txt-compact-medium-plus text-ui-fg-subtle">
-          Default (Figma values)
-        </h2>
-        <TaskDetailsModal />
-      </section>
+      </div>
     </div>
   );
 }

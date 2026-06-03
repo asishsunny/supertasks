@@ -1,71 +1,46 @@
-"use client";
-
 import { ChartCards } from "@/components/blocks/ChartCards";
-import type { ChartCardData } from "@/components/blocks/ChartCards";
-import { INITIAL_TASKS } from "@/lib/data";
-import {
-  STATUS_LABEL,
-  BAR_COLORS,
-  PRIORITY_BAR_COLORS,
-} from "@/lib/constants";
-import type { Priority, Status } from "@/types";
+import { CHART_STATUS, CHART_PRIORITY } from "@/lib/gallery";
+import { BAR_COLORS, PRIORITY_BAR_COLORS } from "@/lib/constants";
+import type { Status, Priority } from "@/types";
 
-/* ------------------------------------------------------------------ */
-/*  Compute real chart data from INITIAL_TASKS                         */
-/* ------------------------------------------------------------------ */
+const STATUS_KEY: Record<string, Status> = {
+  "Todo": "todo",
+  "In Progress": "in_progress",
+  "In Review": "in_review",
+  "Done": "done",
+};
 
-function buildPriorityCard(): ChartCardData {
-  const counts: Record<Priority, number> = { low: 0, medium: 0, high: 0, critical: 0 };
-  for (const t of INITIAL_TASKS) counts[t.priority]++;
+const PRIORITY_KEY: Record<string, Priority> = {
+  "Low": "low",
+  "Medium": "medium",
+  "High": "high",
+  "Critical": "critical",
+};
 
-  const priorityLabel: Record<Priority, string> = {
-    critical: "Critical",
-    high: "High",
-    medium: "Medium",
-    low: "Low",
-  };
-
-  return {
-    title: "Tasks by Priority",
-    bars: (["critical", "high", "medium", "low"] as Priority[]).map((p) => ({
-      label: priorityLabel[p],
-      value: counts[p],
-      color: PRIORITY_BAR_COLORS[p],
-    })),
-  };
-}
-
-function buildStatusCard(): ChartCardData {
-  const counts: Record<Status, number> = { todo: 0, in_progress: 0, in_review: 0, done: 0 };
-  for (const t of INITIAL_TASKS) counts[t.status]++;
-
-  return {
+const cards = [
+  {
     title: "Tasks by Status",
-    bars: (["todo", "in_progress", "in_review", "done"] as Status[]).map((s) => ({
-      label: STATUS_LABEL[s],
-      value: counts[s],
-      color: BAR_COLORS[s],
+    bars: CHART_STATUS.map((s) => ({
+      label: s.label,
+      value: s.count,
+      color: BAR_COLORS[STATUS_KEY[s.label]],
     })),
-  };
-}
-
-const realCards: ChartCardData[] = [buildPriorityCard(), buildStatusCard()];
-
-/* ------------------------------------------------------------------ */
-/*  Page                                                               */
-/* ------------------------------------------------------------------ */
+  },
+  {
+    title: "Tasks by Priority",
+    bars: CHART_PRIORITY.map((p) => ({
+      label: p.label,
+      value: p.count,
+      color: PRIORITY_BAR_COLORS[PRIORITY_KEY[p.label]],
+    })),
+  },
+];
 
 export default function Page() {
   return (
     <div className="flex flex-col gap-8 p-6">
-      <section className="flex flex-col gap-3">
-        <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Default (Figma defaults)</h2>
-        <ChartCards />
-      </section>
-      <section className="flex flex-col gap-3">
-        <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Dashboard (real data)</h2>
-        <ChartCards cards={realCards} />
-      </section>
+      <h2 className="txt-compact-medium-plus text-ui-fg-subtle">Chart Cards</h2>
+      <ChartCards cards={cards} />
     </div>
   );
 }
